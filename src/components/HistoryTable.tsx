@@ -7,20 +7,19 @@ interface HistoryData {
   ph: number;
   turbidity: number;
   tds: number;
-  temperature: number;
   status: 'Good' | 'Warning' | 'Critical';
   flow: number;
 }
 
 const historyData: HistoryData[] = [
-  { id: 1, time: '08:00', date: '2025-09-12', ph: 7.1, turbidity: 0.78, tds: 434, temperature: 22, status: 'Good', flow: 2.5 },
-  { id: 2, time: '08:30', date: '2025-09-12', ph: 7.2, turbidity: 0.82, tds: 428, temperature: 22.5, status: 'Good', flow: 2.4 },
-  { id: 3, time: '09:00', date: '2025-09-12', ph: 6.8, turbidity: 1.2, tds: 445, temperature: 23, status: 'Warning', flow: 2.3 },
-  { id: 4, time: '09:30', date: '2025-09-12', ph: 7.0, turbidity: 0.95, tds: 440, temperature: 22.8, status: 'Good', flow: 2.6 },
-  { id: 5, time: '10:00', date: '2025-09-12', ph: 7.3, turbidity: 0.75, tds: 430, temperature: 22.2, status: 'Good', flow: 2.5 },
-  { id: 6, time: '10:30', date: '2025-09-12', ph: 6.5, turbidity: 1.8, tds: 460, temperature: 24, status: 'Critical', flow: 2.1 },
-  { id: 7, time: '11:00', date: '2025-09-12', ph: 7.1, turbidity: 0.68, tds: 425, temperature: 22.5, status: 'Good', flow: 2.7 },
-  { id: 8, time: '11:30', date: '2025-09-12', ph: 7.4, turbidity: 0.85, tds: 438, temperature: 22.1, status: 'Good', flow: 2.4 },
+  { id: 1, time: '08:00', date: '2025-09-12', ph: 7.1, turbidity: 0.78, tds: 434, status: 'Good', flow: 2.5 },
+  { id: 2, time: '08:30', date: '2025-09-12', ph: 7.2, turbidity: 0.82, tds: 428, status: 'Good', flow: 2.4 },
+  { id: 3, time: '09:00', date: '2025-09-12', ph: 6.8, turbidity: 1.2, tds: 445, status: 'Warning', flow: 2.3 },
+  { id: 4, time: '09:30', date: '2025-09-12', ph: 7.0, turbidity: 0.95, tds: 440, status: 'Good', flow: 2.6 },
+  { id: 5, time: '10:00', date: '2025-09-12', ph: 7.3, turbidity: 0.75, tds: 430, status: 'Good', flow: 2.5 },
+  { id: 6, time: '10:30', date: '2025-09-12', ph: 6.5, turbidity: 1.8, tds: 460, status: 'Critical', flow: 2.1 },
+  { id: 7, time: '11:00', date: '2025-09-12', ph: 7.1, turbidity: 0.68, tds: 425, status: 'Good', flow: 2.7 },
+  { id: 8, time: '11:30', date: '2025-09-12', ph: 7.4, turbidity: 0.85, tds: 438, status: 'Good', flow: 2.4 },
 ];
 
 const getStatusColor = (status: string) => {
@@ -81,7 +80,6 @@ export function HistoryTable() {
               <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">pH Level</th>
               <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">Turbidity</th>
               <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">TDS (ppm)</th>
-              <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">Temp (°C)</th>
               <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">Flow (L/min)</th>
               <th className="text-left py-3 px-2 text-slate-300 font-medium text-sm">Status</th>
             </tr>
@@ -94,7 +92,6 @@ export function HistoryTable() {
                 <td className="py-3 px-2 text-white font-medium text-sm">{record.ph}</td>
                 <td className="py-3 px-2 text-white font-medium text-sm">{record.turbidity}</td>
                 <td className="py-3 px-2 text-white font-medium text-sm">{record.tds}</td>
-                <td className="py-3 px-2 text-white font-medium text-sm">{record.temperature}</td>
                 <td className="py-3 px-2 text-white font-medium text-sm">{record.flow}</td>
                 <td className="py-3 px-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(record.status)}`}>
