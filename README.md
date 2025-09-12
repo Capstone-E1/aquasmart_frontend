@@ -1,6 +1,48 @@
-# React + TypeScript + Vite
+# AquaSmart Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application built with TypeScript, Vite, and Tailwind CSS.
+
+## Tech Stack
+
+- **React 19** - Modern React with latest features
+- **TypeScript** - Type-safe JavaScript
+- **Vite 7** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **ESLint** - Code linting
+
+## Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
+
+3. Build for production:
+```bash
+npm run build
+```
+
+## Tailwind CSS
+
+This project uses Tailwind CSS for styling. The configuration includes:
+
+- **Dark mode support** - Class-based dark mode
+- **Custom animations** - Slow spinning animation for React logo
+- **Custom utilities** - Extended theme with custom colors and effects
+- **Responsive design** - Mobile-first approach
+
+### Custom Components
+
+- `Button` - Reusable button component with variants and sizes
+- `Card` - Card component with dark mode support
+- Utility functions in `src/lib/utils.ts`
+
+## Available Scripts
 
 Currently, two official plugins are available:
 
