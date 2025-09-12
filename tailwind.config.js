@@ -15,8 +15,13 @@ export default {
         'react-glow': '0 0 2em #61dafbaa',
       },
       fontFamily: {
-        sans: ['system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
       },
+      colors: {
+        primary: '#081028',
+        'primary-light': '#0f1629',
+        'primary-dark': '#050b1a',
+      }
     },
   },
   plugins: [],
