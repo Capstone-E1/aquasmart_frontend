@@ -24,7 +24,7 @@ export function Layout() {
         <header className="bg-primary-light border-b border-slate-700 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-white font-medium">AquaSmart Dashboard</h1>
+              <h1 className="text-white font-medium">AquaSmart Application Capstone Project E-01</h1>
             </div>
             
             <div className="flex items-center gap-4">
