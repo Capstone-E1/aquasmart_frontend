@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Filter, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 
 // Data interface untuk history
 interface HistoryData {
@@ -13,7 +14,6 @@ interface HistoryData {
   status: 'normal' | 'warning' | 'danger';
 }
 
-// Sample data untuk tabel
 const historyData: HistoryData[] = [
   { id: 1, time: '10:30', date: '2024-01-15', ph: 7.2, turbidity: 0.5, tds: 450, flow: 2.5, status: 'normal' },
   { id: 2, time: '10:25', date: '2024-01-15', ph: 6.8, turbidity: 0.8, tds: 520, flow: 2.3, status: 'warning' },
@@ -31,7 +31,20 @@ export function History() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingSkeleton variant="page" />;
+  }
 
   // Filter data berdasarkan search dan status
   const filteredData = historyData.filter(item => {
