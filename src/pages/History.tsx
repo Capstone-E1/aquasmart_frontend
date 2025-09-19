@@ -95,15 +95,15 @@ export function History() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2">History</h1>
-        <p className="text-slate-400">View historical water quality data</p>
+        <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">History</h1>
+        <p className="text-slate-400 text-sm lg:text-base">View historical water quality data</p>
       </div>
 
       {/* Controls */}
-      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           {/* Search */}
           <div className="relative flex-1">
@@ -135,10 +135,11 @@ export function History() {
           {/* Export Button */}
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors whitespace-nowrap"
           >
             <Download className="w-4 h-4" />
-            Export CSV
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">Export</span>
           </button>
         </div>
 
