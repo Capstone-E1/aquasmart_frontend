@@ -1,38 +1,6 @@
 import { useState, useEffect } from 'react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 
-export function UVTimer() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <LoadingSkeleton variant="page" />;
-  }
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white mb-2">UV Timer</h1>
-        <p className="text-slate-400">Schedule and monitor UV sterilization cycles</p>
-      </div>
-
-      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">⏲️</div>
-          <h3 className="text-xl font-semibold text-white mb-2">UV Timer</h3>
-          <p className="text-slate-400">This feature is under development</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function Notification() {
   const [isLoading, setIsLoading] = useState(true);
 

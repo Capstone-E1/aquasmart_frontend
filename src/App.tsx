@@ -6,7 +6,7 @@ import { Turbidity } from './pages/Turbidity';
 import { TDS } from './pages/TDS';
 import { History } from './pages/History';
 import { FilterUV } from './pages/FilterUV';
-import { UVTimer, Notification, Settings } from './pages/OtherPages';
+import { Notification, Settings } from './pages/OtherPages';
 
 function App() {
   return (
@@ -18,7 +18,6 @@ function App() {
           <Route path="turbidity" element={<Turbidity />} />
           <Route path="tds" element={<TDS />} />
           <Route path="filter-uv" element={<FilterUV />} />
-          <Route path="uv-timer" element={<UVTimer />} />
           <Route path="history" element={<History />} />
           <Route path="notification" element={<Notification />} />
           <Route path="settings" element={<Settings />} />

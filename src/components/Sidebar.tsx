@@ -6,7 +6,6 @@ import {
   Waves, 
   FlaskConical, 
   Zap,
-  Clock,
   History as HistoryIcon,
   Bell,
   Settings,
@@ -46,7 +45,6 @@ const menuItems: MenuItem[] = [
     ]
   },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
-  { icon: Clock, label: 'UV Timer', path: '/uv-timer' },
   { icon: HistoryIcon, label: 'History', path: '/history' },
   { icon: Bell, label: 'Notification', path: '/notification' },
   { icon: Settings, label: 'Settings', path: '/settings' },
