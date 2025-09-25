@@ -41,7 +41,7 @@ export function Dashboard() {
       {/* Page Title */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-slate-400 text-sm lg:text-base">Monitor your water quality</p>
+        <p className="text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
       </div>
 
       {/* Metric Cards */}
