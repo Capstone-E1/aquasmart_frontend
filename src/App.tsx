@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { Layout } from './components';
 import { Dashboard } from './pages/Dashboard';
 import { PHLevel } from './pages/PHLevel';
@@ -10,8 +11,9 @@ import { Notification, Settings } from './pages/OtherPages';
 
 function App() {
   return (
-    <Router>
-      <Routes>
+    <NotificationProvider>
+      <Router>
+        <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="ph-level" element={<PHLevel />} />
@@ -24,6 +26,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+    </NotificationProvider>
   );
 }
 
