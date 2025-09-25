@@ -39,7 +39,7 @@ export function GaugeChart({
   showExport = true 
 }: GaugeChartProps) {
   const percentage = Math.min((value / maxValue) * 100, 100);
-  const circumference = 2 * Math.PI * 90; // radius = 90
+  const circumference = 2 * Math.PI * 90;
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
   
@@ -47,7 +47,6 @@ export function GaugeChart({
 
   return (
     <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-white font-medium text-lg">{title}</h3>
         {showExport && (
@@ -58,10 +57,8 @@ export function GaugeChart({
         )}
       </div>
 
-      {/* Gauge Chart */}
       <div className="relative flex items-center justify-center">
         <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 200 200">
-          {/* Background Circle */}
           <circle
             cx="100"
             cy="100"
@@ -72,7 +69,6 @@ export function GaugeChart({
             strokeLinecap="round"
           />
           
-          {/* Progress Circle */}
           <circle
             cx="100"
             cy="100"
@@ -89,7 +85,6 @@ export function GaugeChart({
           />
         </svg>
 
-        {/* Center Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-center">
             <div className="text-3xl font-bold text-white mb-1">
