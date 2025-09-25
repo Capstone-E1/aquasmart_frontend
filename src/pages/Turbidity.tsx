@@ -2,10 +2,17 @@ import { useState, useEffect } from 'react';
 import { GaugeChart } from '../components/GaugeChart';
 import { MetricCard } from '../components/MetricCard';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { NotificationPopup } from '../components/NotificationPopup';
+import { useWaterParameterMonitoring } from '../hooks/useWaterParameterMonitoring';
 
 export function Turbidity() {
   const [isLoading, setIsLoading] = useState(true);
   const [metricsLoading, setMetricsLoading] = useState(true);
+  const [currentTurbidity, setCurrentTurbidity] = useState(0.78);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState<any>(null);
+  
+  const { checkParameterSafety, goToNotifications } = useWaterParameterMonitoring();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -21,6 +28,36 @@ export function Turbidity() {
       clearTimeout(metricsTimer);
     };
   }, []);
+
+  // Monitor Turbidity levels and show notifications for dangerous values
+  useEffect(() => {
+    if (!isLoading && !metricsLoading) {
+      const simulateTurbidityValues = () => {
+        const testValues = [0.78, 0.4, 2.5, 5.2, 0.9, 1.8]; // Mix of safe and dangerous values
+        const randomValue = testValues[Math.floor(Math.random() * testValues.length)];
+        setCurrentTurbidity(randomValue);
+        
+        const notification = checkParameterSafety({
+          type: 'Turbidity',
+          value: randomValue,
+          unit: 'NTU'
+        });
+
+        if (notification) {
+          setPopupData(notification);
+          setShowPopup(true);
+        }
+      };
+
+      // Check Turbidity every 14 seconds for demonstration
+      const interval = setInterval(simulateTurbidityValues, 14000);
+      
+      // Initial check
+      simulateTurbidityValues();
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, metricsLoading, checkParameterSafety]);
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
@@ -45,10 +82,10 @@ export function Turbidity() {
           <>
             <MetricCard
               title="Current Turbidity"
-              value="0.78"
+              value={currentTurbidity.toString()}
               unit="NTU"
-              color="red"
-              status="normal"
+              color={currentTurbidity <= 1.0 ? "green" : currentTurbidity > 4.0 ? "red" : "blue"}
+              status={currentTurbidity <= 1.0 ? "normal" : "warning"}
             />
             <MetricCard
               title="Average Today"
@@ -72,10 +109,16 @@ export function Turbidity() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GaugeChart
           title="Turbidity Level"
-          value={0.78}
+          value={currentTurbidity}
           maxValue={5}
-          color="red"
-          status="Turbidity level is acceptable."
+          color={currentTurbidity <= 1.0 ? "green" : currentTurbidity > 4.0 ? "red" : "blue"}
+          status={
+            currentTurbidity <= 1.0 
+              ? "Turbidity level meets WHO drinking water standards." 
+              : currentTurbidity > 4.0
+              ? "DANGER: Turbidity level is extremely high and unsafe!"
+              : "WARNING: Turbidity level exceeds recommended standards."
+          }
         />
         
         <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
@@ -96,6 +139,20 @@ export function Turbidity() {
           </div>
         </div>
       </div>
+
+      {/* Notification Popup */}
+      {showPopup && popupData && (
+        <NotificationPopup
+          show={showPopup}
+          type={popupData.type}
+          title={popupData.title}
+          message={popupData.message}
+          parameter={popupData.parameter}
+          value={popupData.value}
+          onClose={() => setShowPopup(false)}
+          onGoToNotifications={goToNotifications}
+        />
+      )}
     </div>
   );
 }
