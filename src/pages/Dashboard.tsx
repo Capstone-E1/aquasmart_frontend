@@ -1,39 +1,44 @@
-import { useState, useEffect } from 'react';
 import { MetricCard } from '../components/MetricCard';
 import { GaugeChart } from '../components/GaugeChart';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { useSensorData } from '../hooks/useSensorData';
+import { apiService } from '../services/api';
 
 export function Dashboard() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [metricsLoading, setMetricsLoading] = useState(true);
-  const [chartsLoading, setChartsLoading] = useState(true);
-
-  // Simulate loading data
-  useEffect(() => {
-    // Simulate initial page load
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    // Simulate metrics data loading
-    const metricsTimer = setTimeout(() => {
-      setMetricsLoading(false);
-    }, 1500);
-
-    // Simulate charts data loading
-    const chartsTimer = setTimeout(() => {
-      setChartsLoading(false);
-    }, 2000);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(metricsTimer);
-      clearTimeout(chartsTimer);
-    };
-  }, []);
+  const { latestData, isLoading, error } = useSensorData();
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
+  }
+
+  // Get status for each parameter
+  const phStatus = latestData ? apiService.getParameterStatus('ph', latestData.ph) : 'normal';
+  const turbidityStatus = latestData ? apiService.getParameterStatus('turbidity', latestData.turbidity) : 'normal';
+  const tdsStatus = latestData ? apiService.getParameterStatus('tds', latestData.tds) : 'normal';
+
+  // Status messages for charts
+  const getStatusMessage = (type: string, status: string) => {
+    const messages = {
+      normal: `The ${type} level is within normal limits.`,
+      warning: `The ${type} level requires attention.`,
+      danger: `The ${type} level is critical!`
+    };
+    return messages[status as keyof typeof messages] || messages.normal;
+  };
+
+  if (error) {
+    return (
+      <div className="space-y-4 lg:space-y-6">
+        <div>
+          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
+        </div>
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+          <p className="text-red-400">Error loading sensor data: {error}</p>
+          <p className="text-sm text-slate-400 mt-2">Please check if the backend server is running on localhost:8080</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -46,7 +51,7 @@ export function Dashboard() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-        {metricsLoading ? (
+        {!latestData ? (
           <>
             <LoadingSkeleton variant="card" />
             <LoadingSkeleton variant="card" />
@@ -56,24 +61,24 @@ export function Dashboard() {
           <>
             <MetricCard
               title="PH Level"
-              value="7.1"
+              value={latestData.ph.toFixed(1)}
               color="purple"
-              status="normal"
-              isBest={true}
+              status={phStatus}
+              isBest={phStatus === 'normal'}
             />
             <MetricCard
               title="Turbidity Level"
-              value="0.78"
+              value={latestData.turbidity.toFixed(2)}
               color="red"
-              status="normal"
-              isBest={true}
+              status={turbidityStatus}
+              isBest={turbidityStatus === 'normal'}
             />
             <MetricCard
               title="TDS Value"
-              value="434"
+              value={latestData.tds.toString()}
               color="green"
-              status="normal"
-              isBest={true}
+              status={tdsStatus}
+              isBest={tdsStatus === 'normal'}
             />
           </>
         )}
@@ -81,7 +86,7 @@ export function Dashboard() {
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        {chartsLoading ? (
+        {!latestData ? (
           <>
             <LoadingSkeleton variant="chart" />
             <LoadingSkeleton variant="chart" />
@@ -92,28 +97,28 @@ export function Dashboard() {
             {/* PH Level Chart */}
             <GaugeChart
               title="PH Level"
-              value={12.12}
+              value={latestData.ph}
               maxValue={14}
               color="purple"
-              status="The pH level is too high."
+              status={getStatusMessage('pH', phStatus)}
             />
 
             {/* Turbidity Chart */}
             <GaugeChart
               title="Turbidity Level"
-              value={5.6}
+              value={latestData.turbidity}
               maxValue={10}
               color="red"
-              status="The turbidity level is too high."
+              status={getStatusMessage('turbidity', turbidityStatus)}
             />
 
             {/* TDS Chart */}
             <GaugeChart
               title="TDS Value"
-              value={434}
+              value={latestData.tds}
               maxValue={1000}
               color="green"
-              status="The TDS value is within normal limits."
+              status={getStatusMessage('TDS', tdsStatus)}
             />
           </>
         )}
