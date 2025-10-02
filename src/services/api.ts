@@ -104,8 +104,8 @@ class ApiService {
       
       case 'tds':
         if (value >= 300 && value <= 500) return 'normal';
-        if(value < 50 && value <= 250) return 'too low';
-        if ((value >= 150 && value < 300) || (value > 600 && value <= 1000)) return 'warning';
+        if(value < 50 && value <= 300) return 'too low';
+        if ((value > 500 && value <= 600) || (value > 600 && value <= 900)) return 'warning';
         return 'danger';
       
       default:
