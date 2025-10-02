@@ -4,64 +4,63 @@ import { MetricCard } from '../components/MetricCard';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { NotificationPopup } from '../components/NotificationPopup';
 import { useWaterParameterMonitoring } from '../hooks/useWaterParameterMonitoring';
+import { useParameterData } from '../hooks/useSensorData';
 
 export function Turbidity() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [metricsLoading, setMetricsLoading] = useState(true);
-  const [currentTurbidity, setCurrentTurbidity] = useState(0.78);
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState<any>(null);
   
   const { checkParameterSafety, goToNotifications } = useWaterParameterMonitoring();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-
-    const metricsTimer = setTimeout(() => {
-      setMetricsLoading(false);
-    }, 1200);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(metricsTimer);
-    };
-  }, []);
+  const { value: currentTurbidity, status, timestamp, isLoading, error } = useParameterData('turbidity');
 
   // Monitor Turbidity levels and show notifications for dangerous values
   useEffect(() => {
-    if (!isLoading && !metricsLoading) {
-      const simulateTurbidityValues = () => {
-        const testValues = [0.78, 0.4, 2.5, 5.2, 0.9, 1.8]; // Mix of safe and dangerous values
-        const randomValue = testValues[Math.floor(Math.random() * testValues.length)];
-        setCurrentTurbidity(randomValue);
-        
-        const notification = checkParameterSafety({
-          type: 'Turbidity',
-          value: randomValue,
-          unit: 'NTU'
-        });
+    if (!isLoading && currentTurbidity !== null) {
+      const notification = checkParameterSafety({
+        type: 'Turbidity',
+        value: currentTurbidity,
+        unit: 'NTU'
+      });
 
-        if (notification) {
-          setPopupData(notification);
-          setShowPopup(true);
-        }
-      };
-
-      // Check Turbidity every 14 seconds for demonstration
-      const interval = setInterval(simulateTurbidityValues, 14000);
-      
-      // Initial check
-      simulateTurbidityValues();
-
-      return () => clearInterval(interval);
+      if (notification) {
+        setPopupData(notification);
+        setShowPopup(true);
+      }
     }
-  }, [isLoading, metricsLoading, checkParameterSafety]);
+  }, [currentTurbidity, isLoading, checkParameterSafety]);
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
   }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-2">Turbidity Monitoring</h1>
+          <p className="text-slate-400">Track water clarity and turbidity levels</p>
+        </div>
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+          <p className="text-red-400">Error loading turbidity data: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentTurbidity === null) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-2">Turbidity Monitoring</h1>
+          <p className="text-slate-400">Track water clarity and turbidity levels</p>
+        </div>
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+          <p className="text-yellow-400">No turbidity data available</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Page Title */}
@@ -72,37 +71,25 @@ export function Turbidity() {
 
       {/* Current Status */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {metricsLoading ? (
-          <>
-            <LoadingSkeleton variant="card" />
-            <LoadingSkeleton variant="card" />
-            <LoadingSkeleton variant="card" />
-          </>
-        ) : (
-          <>
-            <MetricCard
-              title="Current Turbidity"
-              value={currentTurbidity.toString()}
-              unit="NTU"
-              color={currentTurbidity <= 1.0 ? "green" : currentTurbidity > 4.0 ? "red" : "blue"}
-              status={currentTurbidity <= 1.0 ? "normal" : "warning"}
-            />
-            <MetricCard
-              title="Average Today"
-              value="0.82"
-              unit="NTU"
-              color="red"
-              status="normal"
-            />
-            <MetricCard
-              title="Peak Reading"
-              value="1.2"
-              unit="NTU"
-              color="red"
-              status="warning"
-            />
-          </>
-        )}
+        <MetricCard
+          title="Current Turbidity"
+          value={currentTurbidity.toFixed(2)}
+          unit="NTU"
+          color={status === 'normal' ? "green" : status === 'warning' ? "blue" : "red"}
+          status={status}
+        />
+        <MetricCard
+          title="Status"
+          value={status.toUpperCase()}
+          color={status === 'normal' ? "green" : status === 'warning' ? "blue" : "red"}
+          status={status}
+        />
+        <MetricCard
+          title="Last Updated"
+          value={timestamp ? new Date(timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-'}
+          color="purple"
+          status="normal"
+        />
       </div>
 
       {/* Main Chart */}
@@ -111,13 +98,13 @@ export function Turbidity() {
           title="Turbidity Level"
           value={currentTurbidity}
           maxValue={5}
-          color={currentTurbidity <= 1.0 ? "green" : currentTurbidity > 4.0 ? "red" : "blue"}
+          color={status === 'normal' ? "green" : status === 'warning' ? "blue" : "red"}
           status={
-            currentTurbidity <= 1.0 
+            status === 'normal'
               ? "Turbidity level meets WHO drinking water standards." 
-              : currentTurbidity > 4.0
-              ? "DANGER: Turbidity level is extremely high and unsafe!"
-              : "WARNING: Turbidity level exceeds recommended standards."
+              : status === 'warning'
+              ? "WARNING: Turbidity level exceeds recommended standards."
+              : "DANGER: Turbidity level is extremely high and unsafe!"
           }
         />
         
@@ -126,15 +113,15 @@ export function Turbidity() {
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-slate-300">0 - 1 NTU: Excellent</span>
+              <span className="text-slate-300">0 - 1 NTU: Safe (WHO Standard)</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <span className="text-slate-300">1 - 4 NTU: Good</span>
+              <span className="text-slate-300">1 - 4 NTU: Warning Level</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-slate-300">&gt; 4 NTU: Poor</span>
+              <span className="text-slate-300">&gt; 4 NTU: Dangerous</span>
             </div>
           </div>
         </div>
