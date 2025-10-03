@@ -16,18 +16,22 @@ export function TDS() {
   // Monitor TDS levels and show notifications for dangerous values
   useEffect(() => {
     if (!isLoading && currentTDS !== null) {
+      console.log('TDS Component: Checking TDS value:', currentTDS, 'Status:', status);
+      
       const notification = checkParameterSafety({
         type: 'TDS',
         value: currentTDS,
         unit: 'ppm'
       });
 
+      console.log('TDS Component: Notification result:', notification);
+
       if (notification) {
         setPopupData(notification);
         setShowPopup(true);
       }
     }
-  }, [currentTDS, isLoading, checkParameterSafety]);
+  }, [currentTDS, isLoading, checkParameterSafety, status]);
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
