@@ -15,8 +15,8 @@ interface SafeRanges {
 }
 
 const SAFE_RANGES: SafeRanges = {
-  pH: { min: 7.0, max: 8.5 },
-  TDS: { min: 50, max: 500 }, // ppm - typical drinking water range
+  pH: { min: 6.5, max: 8.5 }, // WHO standards for drinking water
+  TDS: { min: 300, max: 600 }, // ppm - optimal drinking water range
   Turbidity: { min: 0, max: 1.0 } // NTU - WHO standard for drinking water
 };
 
@@ -45,24 +45,24 @@ export function useWaterParameterMonitoring() {
 
       switch (type) {
         case 'pH':
-          if (value < 6.5 || value > 9.0) {
+          if (value < 6.0 || value > 9.0) {
             notificationType = 'danger';
             title = 'CRITICAL: Dangerous pH Level!';
-            message = `pH level of ${value} is extremely dangerous for human consumption. Safe range is 7.0-8.5.`;
+            message = `pH level of ${value} is extremely dangerous for human consumption. Safe range is 6.5-8.5.`;
           } else {
             title = 'WARNING: pH Level Alert';
-            message = `pH level of ${value} is outside the safe range of 7.0-8.5 for drinking water.`;
+            message = `pH level of ${value} is outside the optimal range of 6.5-8.5 for drinking water.`;
           }
           break;
           
         case 'TDS':
-          if (value > 1000 || value < 30) {
+          if (value < 150 || value > 1000) {
             notificationType = 'danger';
             title = 'CRITICAL: Dangerous TDS Level!';
-            message = `TDS level of ${value} ppm is extremely dangerous. Safe range is 50-500 ppm.`;
+            message = `TDS level of ${value} ppm is extremely ${value < 150 ? 'low' : 'high'}. Optimal range is 300-600 ppm.`;
           } else {
             title = 'WARNING: TDS Level Alert';
-            message = `TDS level of ${value} ppm is outside the recommended range of 50-500 ppm.`;
+            message = `TDS level of ${value} ppm is outside the optimal range of 300-600 ppm.`;
           }
           break;
           
