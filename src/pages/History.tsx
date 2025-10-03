@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, Download, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
-import { useSensorData } from '../hooks/useSensorData';
+import { useHistoryData } from '../hooks/useHistoryData';
 import { apiService } from '../services/api';
 import type { SensorData } from '../services/api';
 
@@ -24,7 +24,7 @@ export function History() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const { allData, isLoading, error } = useSensorData();
+  const { historyData: allData, isLoading, error, refetch } = useHistoryData(50); // Get 50 recent readings
 
   // Convert sensor data to history format
   const historyData: HistoryData[] = useMemo(() => {
@@ -132,7 +132,9 @@ export function History() {
       {/* Page Title */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">History</h1>
-        <p className="text-slate-400 text-sm lg:text-base">View historical water quality data</p>
+        <p className="text-slate-400 text-sm lg:text-base">
+          View recent water quality data ({allData.length} readings)
+        </p>
       </div>
 
       {/* Controls */}
@@ -164,6 +166,16 @@ export function History() {
               <option value="danger">Danger</option>
             </select>
           </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refetch}
+            disabled={isLoading}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors whitespace-nowrap"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
 
           {/* Export Button */}
           <button
