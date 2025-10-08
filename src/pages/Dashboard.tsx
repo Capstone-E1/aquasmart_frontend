@@ -5,7 +5,7 @@ import { useSensorData } from '../hooks/useSensorData';
 import { apiService } from '../services/api';
 
 export function Dashboard() {
-  const { latestData, dailyAnalytics, isLoading, error, refetch } = useSensorData();
+  const { latestData, dailyAnalytics, worstValues, isLoading, error, refetch } = useSensorData();
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
@@ -206,19 +206,19 @@ export function Dashboard() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-300 text-sm">pH:</span>
                     <span className="font-medium text-red-400">
-                      {dailyAnalytics.worst_ph?.toFixed(1) || 'N/A'}
+                      {worstValues.worst_ph?.toFixed(1) || 'N/A'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-slate-300 text-sm">Turbidity:</span>
                     <span className="font-medium text-red-400">
-                      {dailyAnalytics.worst_turbidity?.toFixed(2) || 'N/A'} NTU
+                      {worstValues.worst_turbidity?.toFixed(2) || 'N/A'} NTU
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-slate-300 text-sm">TDS:</span>
                     <span className="font-medium text-red-400">
-                      {dailyAnalytics.worst_tds || 'N/A'} ppm
+                      {worstValues.worst_tds || 'N/A'} ppm
                     </span>
                   </div>
                 </div>
