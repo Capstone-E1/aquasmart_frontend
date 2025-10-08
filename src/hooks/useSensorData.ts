@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
-import type { SensorData, DailyAnalytics } from '../services/api';
+import type { SensorData, DailyAnalytics, WorstDailyValues } from '../services/api';
 
 interface UseSensorDataReturn {
   latestData: SensorData | null;
   allData: SensorData[];
   dailyAnalytics: DailyAnalytics;
+  worstValues: WorstDailyValues;
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
@@ -21,12 +22,16 @@ export function useSensorData(refreshInterval = 10000): UseSensorDataReturn {
     best_tds: 400,
     best_turbidity: 0.5,
     best_flow: 2.5,
-    worst_ph: 7.0,
-    worst_tds: 400,
-    worst_turbidity: 0.5,
     total_readings: 0,
     overall_quality: 'Loading...',
     summary: 'Loading daily analytics...'
+  });
+  const [worstValues, setWorstValues] = useState<WorstDailyValues>({
+    date: new Date().toISOString().split('T')[0],
+    worst_ph: 7.0,
+    worst_tds: 400,
+    worst_turbidity: 0.5,
+    total_readings: 0
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,19 +40,22 @@ export function useSensorData(refreshInterval = 10000): UseSensorDataReturn {
     try {
       console.log('useSensorData: Starting to fetch data...');
       setError(null);
-      const [latest, all, analytics] = await Promise.all([
+      const [latest, all, analytics, worst] = await Promise.all([
         apiService.getLatestSensorData(),
         apiService.getAllSensorData(),
-        apiService.getDailyAnalytics()
+        apiService.getDailyAnalytics(),
+        apiService.getWorstDailyValues()
       ]);
       
       console.log('useSensorData: Received latest data:', latest);
       console.log('useSensorData: Received all data:', all);
       console.log('useSensorData: Received daily analytics:', analytics);
+      console.log('useSensorData: Received worst values:', worst);
       
       setLatestData(latest);
       setAllData(all);
       setDailyAnalytics(analytics);
+      setWorstValues(worst);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data';
       console.error('useSensorData: Error occurred:', errorMessage);
@@ -85,6 +93,7 @@ export function useSensorData(refreshInterval = 10000): UseSensorDataReturn {
     latestData,
     allData,
     dailyAnalytics,
+    worstValues,
     isLoading,
     error,
     refetch
