@@ -22,12 +22,17 @@ export interface DailyAnalytics {
   best_tds: number;
   best_turbidity: number;
   best_flow: number;
+  total_readings: number;
+  overall_quality: string;
+  summary: string;
+}
+
+export interface WorstDailyValues {
+  date: string;
   worst_ph: number;
   worst_tds: number;
   worst_turbidity: number;
   total_readings: number;
-  overall_quality: string;
-  summary: string;
 }
 
 export interface DailyAnalyticsResponse {
@@ -178,9 +183,6 @@ class ApiService {
         best_tds: 400,
         best_turbidity: 0.5,
         best_flow: 2.5,
-        worst_ph: 7.0,
-        worst_tds: 400,
-        worst_turbidity: 0.5,
         total_readings: 0,
         overall_quality: 'No Data',
         summary: 'No data available for today.'
@@ -195,9 +197,6 @@ class ApiService {
         best_tds: 400,
         best_turbidity: 0.5,
         best_flow: 2.5,
-        worst_ph: 7.0,
-        worst_tds: 400,
-        worst_turbidity: 0.5,
         total_readings: 0,
         overall_quality: 'Error',
         summary: 'Error fetching daily analytics.'
@@ -229,6 +228,45 @@ class ApiService {
     } catch (error) {
       console.error('Error fetching recent sensor data:', error);
       throw error;
+    }
+  }
+
+  async getWorstDailyValues(): Promise<WorstDailyValues> {
+    try {
+      console.log('API: Fetching worst daily values from:', `${API_BASE_URL}/sensors/worst-daily`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/worst-daily`);
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { success: boolean; data: WorstDailyValues } = await response.json();
+      console.log('API: Received worst daily values response:', data);
+      
+      if (data.success && data.data) {
+        console.log('API: Returning worst daily values');
+        return data.data;
+      }
+      
+      // Return default values if no data
+      return {
+        date: new Date().toISOString().split('T')[0],
+        worst_ph: 7.0,
+        worst_tds: 400,
+        worst_turbidity: 0.5,
+        total_readings: 0
+      };
+    } catch (error) {
+      console.error('Error fetching worst daily values:', error);
+      // Return default values on error
+      return {
+        date: new Date().toISOString().split('T')[0],
+        worst_ph: 7.0,
+        worst_tds: 400,
+        worst_turbidity: 0.5,
+        total_readings: 0
+      };
     }
   }
 }
