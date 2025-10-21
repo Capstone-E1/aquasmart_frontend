@@ -4,12 +4,14 @@ import { Sidebar } from './Sidebar';
 import { Bell, HelpCircle, Menu } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useAccentColor } from '../hooks/useAccentColor';
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+  useAccentColor(); // Apply accent color to CSS variables
 
   useEffect(() => {
     const checkMobile = () => {
@@ -30,7 +32,7 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen bg-slate-200 dark:bg-primary">
       <Sidebar 
         isOpen={sidebarOpen} 
         onToggle={toggleSidebar} 
@@ -42,7 +44,7 @@ export function Layout() {
         !isMobile && (sidebarOpen ? "lg:ml-64" : "lg:ml-16"),
         isMobile && "ml-0"
       )}>
-        <header className="bg-primary-light border-b border-slate-700 px-4 lg:px-6 py-4">
+        <header className="bg-white dark:bg-primary-light border-b border-slate-300 dark:border-slate-700 px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {isMobile && (
@@ -54,7 +56,7 @@ export function Layout() {
                 </button>
               )}
               
-              <h1 className="text-white font-medium text-sm lg:text-base">
+              <h1 className="text-slate-800 dark:text-white font-medium text-sm lg:text-base">
                 <span className="hidden sm:inline">AquaSmart Application Capstone Project E-01</span>
                 <span className="sm:hidden">AquaSmart</span>
               </h1>
@@ -63,7 +65,7 @@ export function Layout() {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => navigate('/notification')}
-                className="relative p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -73,7 +75,7 @@ export function Layout() {
                 )}
               </button>
               
-              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
+              <button className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg transition-colors">
                 <HelpCircle className="w-5 h-5" />
               </button>
             </div>

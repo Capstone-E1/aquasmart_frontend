@@ -5,3 +5,4 @@ export { Layout } from './Layout';
 export { MetricCard } from './MetricCard';
 export { GaugeChart } from './GaugeChart';
 export { LoadingSkeleton } from './LoadingSkeleton';
+export { FlexibleChart } from './FlexibleChart';
