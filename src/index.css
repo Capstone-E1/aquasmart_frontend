@@ -8,6 +8,22 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
+    /* Default accent color (blue) */
+    --accent-primary: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-light: #60a5fa;
+    --accent-dark: #1d4ed8;
+  }
+
+  /* Light mode (default) */
+  html:not(.dark) {
+    background-color: #e2e8f0; /* slate-200 */
+  }
+
+  /* Dark mode */
+  html.dark {
+    background-color: #081028; /* primary */
   }
 
   * {

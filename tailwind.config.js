@@ -21,6 +21,12 @@ export default {
         primary: '#081028',
         'primary-light': '#0f1629',
         'primary-dark': '#050b1a',
+        accent: {
+          DEFAULT: 'var(--accent-primary)',
+          hover: 'var(--accent-hover)',
+          light: 'var(--accent-light)',
+          dark: 'var(--accent-dark)',
+        },
       }
     },
   },
