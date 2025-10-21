@@ -7,7 +7,8 @@ import { Turbidity } from './pages/Turbidity';
 import { TDS } from './pages/TDS';
 import { History } from './pages/History';
 import { FilterUV } from './pages/FilterUV';
-import { Notification, Settings } from './pages/OtherPages';
+import { Settings } from './pages/Settings';
+import { Notification } from './pages/OtherPages';
 
 function App() {
   return (
