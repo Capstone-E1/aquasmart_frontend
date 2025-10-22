@@ -30,12 +30,12 @@ export function Dashboard() {
     return (
       <div className="space-y-4 lg:space-y-6">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-2">Dashboard</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-          <p className="text-red-400">Error loading sensor data: {error}</p>
-          <p className="text-sm text-slate-400 mt-2">Please check if the backend server is running on localhost:8080</p>
+          <p className="text-red-600 dark:text-red-400">Error loading sensor data: {error}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Please check if the backend server is running on localhost:8080</p>
         </div>
       </div>
     );
@@ -46,8 +46,8 @@ export function Dashboard() {
       {/* Page Title */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-2">Dashboard</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
           {latestData && (
             <p className="text-xs text-slate-500 mt-1">
               Last updated: {new Date(latestData.timestamp).toLocaleString('id-ID')}
