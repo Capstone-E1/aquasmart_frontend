@@ -269,6 +269,79 @@ class ApiService {
       };
     }
   }
+
+  // LED Control Methods
+  async sendLedCommand(command: 'on' | 'off' | 'blink'): Promise<{ success: boolean; message: string }> {
+    try {
+      console.log(`API: Sending LED command "${command}" to:`, `${API_BASE_URL}/sensors/stm32/led`);
+      console.log(`API: Request body:`, { action: command });
+      
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/led`, {
+        method: 'POST',
+        body: JSON.stringify({ action: command }),
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('API: LED command response:', data);
+      
+      return {
+        success: true,
+        message: data.message || `LED ${command} command sent successfully`
+      };
+    } catch (error) {
+      console.error(`Error sending LED ${command} command:`, error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to send LED command'
+      };
+    }
+  }
+
+  async ledOn(): Promise<{ success: boolean; message: string }> {
+    return this.sendLedCommand('on');
+  }
+
+  async ledOff(): Promise<{ success: boolean; message: string }> {
+    return this.sendLedCommand('off');
+  }
+
+  async ledBlink(): Promise<{ success: boolean; message: string }> {
+    return this.sendLedCommand('blink');
+  }
+
+  // Get current LED status
+  async getLedStatus(): Promise<{ success: boolean; status: 'on' | 'off' | 'blinking'; message?: string }> {
+    try {
+      console.log('API: Fetching LED status from:', `${API_BASE_URL}/sensors/stm32/led`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/led`);
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('API: LED status response:', data);
+      
+      return {
+        success: true,
+        status: data.status || data.led_status || 'off',
+        message: data.message
+      };
+    } catch (error) {
+      console.error('Error fetching LED status:', error);
+      return {
+        success: false,
+        status: 'off',
+        message: error instanceof Error ? error.message : 'Failed to fetch LED status'
+      };
+    }
+  }
 }
 
 export const apiService = new ApiService();
