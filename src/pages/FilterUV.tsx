@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
-import { User, Droplets, Eye, Sprout, Filter, Shield, Layers } from 'lucide-react';
+import { User, Droplets, Eye, Sprout, Filter, Shield, Layers, Lightbulb, Power, Zap } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { apiService } from '../services/api';
+import { useNotifications } from '../contexts/NotificationContext';
 
 export function FilterUV() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'household' | 'drinking'>('household');
+  const [ledStatus, setLedStatus] = useState<'off' | 'on' | 'blinking'>('off');
+  const [isLedLoading, setIsLedLoading] = useState(false);
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -13,6 +18,85 @@ export function FilterUV() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Fetch LED status on mount and periodically
+  useEffect(() => {
+    const fetchLedStatus = async () => {
+      try {
+        const result = await apiService.getLedStatus();
+        if (result.success) {
+          setLedStatus(result.status);
+        }
+      } catch (error) {
+        console.error('Error fetching LED status:', error);
+      }
+    };
+
+    // Fetch immediately
+    fetchLedStatus();
+
+    // Fetch every 2 seconds
+    const interval = setInterval(fetchLedStatus, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLedCommand = async (command: 'on' | 'off' | 'blink') => {
+    setIsLedLoading(true);
+    try {
+      const result = await apiService.sendLedCommand(command);
+      
+      if (result.success) {
+        // Fetch updated LED status from backend
+        const statusResult = await apiService.getLedStatus();
+        if (statusResult.success) {
+          setLedStatus(statusResult.status);
+        } else {
+          // Fallback to local state update if status fetch fails
+          if (command === 'on') setLedStatus('on');
+          else if (command === 'off') setLedStatus('off');
+          else if (command === 'blink') {
+            setLedStatus('blinking');
+            // Reset to off after 3 blinks (approximately 3 seconds)
+            setTimeout(async () => {
+              const updatedStatus = await apiService.getLedStatus();
+              if (updatedStatus.success) {
+                setLedStatus(updatedStatus.status);
+              } else {
+                setLedStatus('off');
+              }
+            }, 3000);
+          }
+        }
+        
+        addNotification({
+          type: 'info',
+          title: 'LED Control',
+          message: `LED ${command.toUpperCase()} command sent successfully`,
+          parameter: 'pH',
+          value: 0,
+        });
+      } else {
+        addNotification({
+          type: 'danger',
+          title: 'LED Control Error',
+          message: `Failed to send LED command: ${result.message}`,
+          parameter: 'pH',
+          value: 0,
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'danger',
+        title: 'LED Control Error',
+        message: 'Error sending LED command to backend',
+        parameter: 'pH',
+        value: 0,
+      });
+    } finally {
+      setIsLedLoading(false);
+    }
+  };
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
@@ -257,6 +341,79 @@ export function FilterUV() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* LED Test Control Panel */}
+      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Lightbulb className={`w-6 h-6 ${
+              ledStatus === 'on' ? 'text-yellow-400' : 
+              ledStatus === 'blinking' ? 'text-yellow-300 animate-pulse' : 
+              'text-slate-600'
+            }`} />
+            <div>
+              <h2 className="text-xl font-bold text-white">LED Test Control</h2>
+              <p className="text-sm text-slate-400">
+                Status: <span className={`font-semibold ${
+                  ledStatus === 'on' ? 'text-yellow-400' : 
+                  ledStatus === 'blinking' ? 'text-yellow-300' : 
+                  'text-slate-500'
+                }`}>
+                  {ledStatus === 'on' ? 'ON' : ledStatus === 'blinking' ? 'BLINKING' : 'OFF'}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="text-xs text-slate-500">
+            <p>Auto-refresh: 2s</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
+          <button
+            onClick={() => handleLedCommand('on')}
+            disabled={isLedLoading}
+            className="flex items-center justify-center gap-2 p-4 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-lg transition-all font-semibold"
+          >
+            <Power className="w-5 h-5" />
+            LED ON
+          </button>
+
+          <button
+            onClick={() => handleLedCommand('off')}
+            disabled={isLedLoading}
+            className="flex items-center justify-center gap-2 p-4 bg-red-600 hover:bg-red-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-lg transition-all font-semibold"
+          >
+            <Power className="w-5 h-5" />
+            LED OFF
+          </button>
+
+          <button
+            onClick={() => handleLedCommand('blink')}
+            disabled={isLedLoading}
+            className="flex items-center justify-center gap-2 p-4 bg-yellow-600 hover:bg-yellow-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-lg transition-all font-semibold"
+          >
+            <Zap className="w-5 h-5" />
+            BLINK 3x
+          </button>
+        </div>
+
+        {isLedLoading && (
+          <div className="mt-4 text-center">
+            <p className="text-sm text-slate-400">Sending command to backend...</p>
+          </div>
+        )}
+
+        <div className="mt-4 p-4 bg-slate-700/30 rounded-lg">
+          <h3 className="text-sm font-semibold text-white mb-2">Test Instructions:</h3>
+          <ul className="text-xs text-slate-400 space-y-1">
+            <li>• <strong>LED ON:</strong> Turn on the LED continuously</li>
+            <li>• <strong>LED OFF:</strong> Turn off the LED</li>
+            <li>• <strong>BLINK 3x:</strong> Make the LED blink 3 times (testing purposes)</li>
+            <li>• <strong>Auto Status:</strong> LED status updates automatically every 2 seconds from STM32</li>
+          </ul>
         </div>
       </div>
     </div>
