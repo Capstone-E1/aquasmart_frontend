@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useSettings } from '../contexts/SettingsContext';
 
 export interface WaterParameter {
   type: 'pH' | 'TDS' | 'Turbidity';
@@ -8,26 +9,22 @@ export interface WaterParameter {
   unit?: string;
 }
 
-interface SafeRanges {
-  pH: { min: number; max: number };
-  TDS: { min: number; max: number };
-  Turbidity: { min: number; max: number };
-}
-
-const SAFE_RANGES: SafeRanges = {
-  pH: { min: 6.5, max: 8.5 }, // WHO standards for drinking water
-  TDS: { min: 300, max: 600 }, // ppm - optimal drinking water range
-  Turbidity: { min: 0, max: 1.0 } // NTU - WHO standard for drinking water
-};
-
 export function useWaterParameterMonitoring() {
   const { addNotification } = useNotifications();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const lastNotificationRef = useRef<Record<string, number>>({});
 
   const checkParameterSafety = (parameter: WaterParameter) => {
     const { type, value } = parameter;
-    const range = SAFE_RANGES[type];
+    
+    // Get threshold ranges from settings
+    const ranges = {
+      pH: settings.notifications.phThreshold,
+      TDS: settings.notifications.tdsThreshold,
+      Turbidity: { min: 0, max: settings.notifications.turbidityThreshold }
+    };
+    const range = ranges[type];
     const now = Date.now();
     
     // Prevent spam notifications - only notify once per 30 seconds for same parameter
@@ -100,6 +97,10 @@ export function useWaterParameterMonitoring() {
   return {
     checkParameterSafety,
     goToNotifications,
-    SAFE_RANGES
+    thresholds: {
+      pH: settings.notifications.phThreshold,
+      TDS: settings.notifications.tdsThreshold,
+      Turbidity: { min: 0, max: settings.notifications.turbidityThreshold }
+    }
   };
 }

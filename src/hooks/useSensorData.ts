@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 import type { SensorData, DailyAnalytics, WorstDailyValues } from '../services/api';
 
 interface UseSensorDataReturn {
@@ -12,7 +13,9 @@ interface UseSensorDataReturn {
   refetch: () => void;
 }
 
-export function useSensorData(refreshInterval = 10000): UseSensorDataReturn {
+export function useSensorData(overrideInterval?: number): UseSensorDataReturn {
+  const { settings } = useSettings();
+  const refreshInterval = overrideInterval !== undefined ? overrideInterval : settings.data.refreshInterval;
   const [latestData, setLatestData] = useState<SensorData | null>(null);
   const [allData, setAllData] = useState<SensorData[]>([]);
   const [dailyAnalytics, setDailyAnalytics] = useState<DailyAnalytics>({
