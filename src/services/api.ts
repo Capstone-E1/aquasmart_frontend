@@ -270,10 +270,10 @@ class ApiService {
     }
   }
 
-  // LED Control Methods
-  async sendLedCommand(command: 'on' | 'off' | 'blink'): Promise<{ success: boolean; message: string }> {
+  // Filter Mode Control Methods (using LED endpoint for hardware control)
+  async sendLedCommand(command: 'on' | 'off'): Promise<{ success: boolean; message: string }> {
     try {
-      console.log(`API: Sending LED command "${command}" to:`, `${API_BASE_URL}/sensors/stm32/led`);
+      console.log(`API: Sending filter mode command "${command}" to:`, `${API_BASE_URL}/sensors/stm32/led`);
       console.log(`API: Request body:`, { action: command });
       
       const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/led`, {
@@ -287,37 +287,25 @@ class ApiService {
       }
       
       const data = await response.json();
-      console.log('API: LED command response:', data);
+      console.log('API: Filter mode command response:', data);
       
       return {
         success: true,
-        message: data.message || `LED ${command} command sent successfully`
+        message: data.message || `Filter mode ${command} command sent successfully`
       };
     } catch (error) {
-      console.error(`Error sending LED ${command} command:`, error);
+      console.error(`Error sending filter mode ${command} command:`, error);
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to send LED command'
+        message: error instanceof Error ? error.message : 'Failed to send filter mode command'
       };
     }
   }
 
-  async ledOn(): Promise<{ success: boolean; message: string }> {
-    return this.sendLedCommand('on');
-  }
-
-  async ledOff(): Promise<{ success: boolean; message: string }> {
-    return this.sendLedCommand('off');
-  }
-
-  async ledBlink(): Promise<{ success: boolean; message: string }> {
-    return this.sendLedCommand('blink');
-  }
-
-  // Get current LED status
-  async getLedStatus(): Promise<{ success: boolean; status: 'on' | 'off' | 'blinking'; message?: string }> {
+  // Get current filter mode status
+  async getLedStatus(): Promise<{ success: boolean; status: 'on' | 'off'; message?: string }> {
     try {
-      console.log('API: Fetching LED status from:', `${API_BASE_URL}/sensors/stm32/led`);
+      console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/sensors/stm32/led`);
       const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/led`);
       
       if (!response.ok) {
@@ -326,7 +314,7 @@ class ApiService {
       }
       
       const data = await response.json();
-      console.log('API: LED status response:', data);
+      console.log('API: Filter mode status response:', data);
       
       return {
         success: true,
@@ -334,11 +322,11 @@ class ApiService {
         message: data.message
       };
     } catch (error) {
-      console.error('Error fetching LED status:', error);
+      console.error('Error fetching filter mode status:', error);
       return {
         success: false,
         status: 'off',
-        message: error instanceof Error ? error.message : 'Failed to fetch LED status'
+        message: error instanceof Error ? error.message : 'Failed to fetch filter mode status'
       };
     }
   }
