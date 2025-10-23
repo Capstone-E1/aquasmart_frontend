@@ -11,6 +11,24 @@ export function FilterUV() {
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const { addNotification } = useNotifications();
 
+  // Initialize cooldown from localStorage on mount
+  useEffect(() => {
+    const savedCooldownEnd = localStorage.getItem('filterCooldownEnd');
+    if (savedCooldownEnd) {
+      const endTime = parseInt(savedCooldownEnd);
+      const now = Date.now();
+      const remainingSeconds = Math.ceil((endTime - now) / 1000);
+      
+      if (remainingSeconds > 0) {
+        setCooldownSeconds(remainingSeconds);
+        console.log('Restored cooldown from localStorage:', remainingSeconds, 'seconds remaining');
+      } else {
+        // Cooldown expired, remove from storage
+        localStorage.removeItem('filterCooldownEnd');
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -51,7 +69,17 @@ export function FilterUV() {
   useEffect(() => {
     if (cooldownSeconds > 0) {
       const timer = setInterval(() => {
-        setCooldownSeconds((prev) => prev - 1);
+        setCooldownSeconds((prev) => {
+          const newValue = prev - 1;
+          
+          // Remove from localStorage when cooldown reaches 0
+          if (newValue <= 0) {
+            localStorage.removeItem('filterCooldownEnd');
+            console.log('Cooldown completed, removed from localStorage');
+          }
+          
+          return newValue;
+        });
       }, 1000);
       
       return () => clearInterval(timer);
@@ -81,13 +109,17 @@ export function FilterUV() {
       if (result.success) {
         setActiveFilter(filterType);
         
-        // Set 20 second cooldown
-        setCooldownSeconds(20);
+        // Set 20 second cooldown and save end time to localStorage
+        const cooldownDuration = 20;
+        const cooldownEndTime = Date.now() + (cooldownDuration * 1000);
+        localStorage.setItem('filterCooldownEnd', cooldownEndTime.toString());
+        setCooldownSeconds(cooldownDuration);
+        console.log('Cooldown started, end time saved to localStorage:', new Date(cooldownEndTime).toLocaleTimeString());
         
         addNotification({
           type: 'info',
           title: 'Filter Mode Changed',
-          message: `Successfully switched to ${filterType === 'drinking' ? 'Drinking Water' : 'Household Water'} mode. Please wait 20 seconds before switching again.`,
+          message: `Successfully switched to ${filterType === 'drinking' ? 'Drinking Water' : 'Household Water'} mode. Please wait ${cooldownDuration} seconds before switching again.`,
           parameter: 'pH',
           value: 0,
         });
