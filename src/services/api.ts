@@ -313,13 +313,15 @@ class ApiService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data = await response.json();
-      console.log('API: Filter mode status response:', data);
+      // Backend returns plain text "on" or "off", not JSON
+      const text = await response.text();
+      const status = text.trim().toLowerCase() as 'on' | 'off';
+      console.log('API: Filter mode status response (plain text):', status);
       
       return {
         success: true,
-        status: data.status || data.led_status || 'off',
-        message: data.message
+        status: status === 'on' ? 'on' : 'off',
+        message: `Filter mode is ${status}`
       };
     } catch (error) {
       console.error('Error fetching filter mode status:', error);
