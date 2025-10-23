@@ -6,7 +6,7 @@ import { useNotifications } from '../contexts/NotificationContext';
 
 export function FilterUV() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState<'household' | 'drinking'>('household');
+  const [activeFilter, setActiveFilter] = useState<'household' | 'drinking' | null>(null);
   const [isSwitchingFilter, setIsSwitchingFilter] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const { addNotification } = useNotifications();
@@ -25,17 +25,27 @@ export function FilterUV() {
       try {
         const result = await apiService.getLedStatus();
         if (result.success) {
-          setActiveFilter(result.status === 'on' ? 'drinking' : 'household');
+          const newFilter = result.status === 'on' ? 'drinking' : 'household';
+          setActiveFilter(newFilter);
+          console.log('Filter status fetched from backend:', newFilter);
         }
       } catch (error) {
         console.error('Error fetching filter status:', error);
+        // Fallback to household if fetch fails
+        if (activeFilter === null) {
+          setActiveFilter('household');
+        }
       }
     };
+    
+    // Fetch immediately on mount
     fetchFilterStatus();
+    
+    // Then poll every 5 seconds
     const interval = setInterval(fetchFilterStatus, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [activeFilter]);
 
   // Cooldown timer effect
   useEffect(() => {
@@ -202,21 +212,25 @@ export function FilterUV() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className={`w-3 h-3 rounded-full ${
+              activeFilter === null ? 'bg-gray-500 animate-pulse' :
               activeFilter === 'drinking' ? 'bg-blue-500 animate-pulse' : 'bg-green-500'
             }`}></div>
             <div>
               <p className="text-xs text-slate-400">Current Filter Mode</p>
               <p className="text-base lg:text-lg font-bold text-white">
-                {activeFilter === 'drinking' ? 'Drinking Water' : 'Household Water'}
+                {activeFilter === null ? 'Loading...' :
+                 activeFilter === 'drinking' ? 'Drinking Water' : 'Household Water'}
               </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-xs text-slate-400">Status</p>
             <p className={`text-sm font-semibold ${
+              activeFilter === null ? 'text-gray-400' :
               activeFilter === 'drinking' ? 'text-blue-400' : 'text-green-400'
             }`}>
-              {activeFilter === 'drinking' ? 'Advanced Mode' : 'Basic Mode'}
+              {activeFilter === null ? 'Fetching...' :
+               activeFilter === 'drinking' ? 'Advanced Mode' : 'Basic Mode'}
             </p>
             {cooldownSeconds > 0 && (
               <p className="text-xs text-yellow-400 mt-1">
@@ -231,17 +245,18 @@ export function FilterUV() {
       <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 mb-4 lg:mb-6">
         <button
           onClick={() => handleFilterChange('household')}
-          disabled={isSwitchingFilter || cooldownSeconds > 0}
+          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
               ? 'bg-blue-600 border-blue-500 text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${(isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Household Water</h3>
             <p className="text-xs lg:text-sm opacity-75">
-              {cooldownSeconds > 0 && activeFilter !== 'household' 
+              {activeFilter === null ? 'Loading...' :
+               cooldownSeconds > 0 && activeFilter !== 'household' 
                 ? `Wait ${cooldownSeconds}s` 
                 : 'Basic filtration for daily use'}
             </p>
@@ -250,17 +265,18 @@ export function FilterUV() {
         
         <button
           onClick={() => handleFilterChange('drinking')}
-          disabled={isSwitchingFilter || cooldownSeconds > 0}
+          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
               ? 'bg-blue-600 border-blue-500 text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${(isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Drinking Water</h3>
             <p className="text-xs lg:text-sm opacity-75">
-              {cooldownSeconds > 0 && activeFilter !== 'drinking' 
+              {activeFilter === null ? 'Loading...' :
+               cooldownSeconds > 0 && activeFilter !== 'drinking' 
                 ? `Wait ${cooldownSeconds}s` 
                 : 'Advanced purification for consumption'}
             </p>
@@ -273,7 +289,8 @@ export function FilterUV() {
         {/* Left Side - Water Uses */}
         <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
           <h2 className="text-xl font-bold text-white mb-4">
-            {activeFilter === 'household' ? 'Household Water' : 'Drinking Water'}
+            {activeFilter === null ? 'Loading...' : 
+             activeFilter === 'household' ? 'Household Water' : 'Drinking Water'}
           </h2>
           
           <div className="space-y-4">
