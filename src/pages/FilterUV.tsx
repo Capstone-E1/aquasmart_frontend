@@ -8,6 +8,7 @@ export function FilterUV() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'household' | 'drinking'>('household');
   const [isSwitchingFilter, setIsSwitchingFilter] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const { addNotification } = useNotifications();
 
   useEffect(() => {
@@ -36,7 +37,30 @@ export function FilterUV() {
     return () => clearInterval(interval);
   }, []);
 
+  // Cooldown timer effect
+  useEffect(() => {
+    if (cooldownSeconds > 0) {
+      const timer = setInterval(() => {
+        setCooldownSeconds((prev) => prev - 1);
+      }, 1000);
+      
+      return () => clearInterval(timer);
+    }
+  }, [cooldownSeconds]);
+
   const handleFilterChange = async (filterType: 'household' | 'drinking') => {
+    // Check if cooldown is active
+    if (cooldownSeconds > 0) {
+      addNotification({
+        type: 'warning',
+        title: 'Mode Change Cooldown',
+        message: `Please wait ${cooldownSeconds} seconds before switching mode again`,
+        parameter: 'pH',
+        value: 0,
+      });
+      return;
+    }
+
     setIsSwitchingFilter(true);
     
     const command = filterType === 'drinking' ? 'on' : 'off';
@@ -47,10 +71,13 @@ export function FilterUV() {
       if (result.success) {
         setActiveFilter(filterType);
         
+        // Set 20 second cooldown
+        setCooldownSeconds(20);
+        
         addNotification({
           type: 'info',
           title: 'Filter Mode Changed',
-          message: `Switched to ${filterType === 'drinking' ? 'Drinking Water' : 'Household Water'} mode`,
+          message: `Successfully switched to ${filterType === 'drinking' ? 'Drinking Water' : 'Household Water'} mode. Please wait 20 seconds before switching again.`,
           parameter: 'pH',
           value: 0,
         });
@@ -191,6 +218,11 @@ export function FilterUV() {
             }`}>
               {activeFilter === 'drinking' ? 'Advanced Mode' : 'Basic Mode'}
             </p>
+            {cooldownSeconds > 0 && (
+              <p className="text-xs text-yellow-400 mt-1">
+                Cooldown: {cooldownSeconds}s
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -199,31 +231,39 @@ export function FilterUV() {
       <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 mb-4 lg:mb-6">
         <button
           onClick={() => handleFilterChange('household')}
-          disabled={isSwitchingFilter}
+          disabled={isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
               ? 'bg-blue-600 border-blue-500 text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${isSwitchingFilter ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Household Water</h3>
-            <p className="text-xs lg:text-sm opacity-75">Basic filtration for daily use</p>
+            <p className="text-xs lg:text-sm opacity-75">
+              {cooldownSeconds > 0 && activeFilter !== 'household' 
+                ? `Wait ${cooldownSeconds}s` 
+                : 'Basic filtration for daily use'}
+            </p>
           </div>
         </button>
         
         <button
           onClick={() => handleFilterChange('drinking')}
-          disabled={isSwitchingFilter}
+          disabled={isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
               ? 'bg-blue-600 border-blue-500 text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${isSwitchingFilter ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Drinking Water</h3>
-            <p className="text-xs lg:text-sm opacity-75">Advanced purification for consumption</p>
+            <p className="text-xs lg:text-sm opacity-75">
+              {cooldownSeconds > 0 && activeFilter !== 'drinking' 
+                ? `Wait ${cooldownSeconds}s` 
+                : 'Advanced purification for consumption'}
+            </p>
           </div>
         </button>
       </div>
