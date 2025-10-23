@@ -24,19 +24,13 @@ export function FilterUV() {
       try {
         const result = await apiService.getLedStatus();
         if (result.success) {
-          // Map backend status to filter type
-          // "on" = drinking water, "off" = household water
           setActiveFilter(result.status === 'on' ? 'drinking' : 'household');
         }
       } catch (error) {
         console.error('Error fetching filter status:', error);
       }
     };
-
-    // Fetch immediately
     fetchFilterStatus();
-
-    // Fetch every 5 seconds
     const interval = setInterval(fetchFilterStatus, 5000);
 
     return () => clearInterval(interval);
@@ -45,8 +39,6 @@ export function FilterUV() {
   const handleFilterChange = async (filterType: 'household' | 'drinking') => {
     setIsSwitchingFilter(true);
     
-    // Map filter type to backend command
-    // drinking water = "on", household water = "off"
     const command = filterType === 'drinking' ? 'on' : 'off';
     
     try {
@@ -90,28 +82,28 @@ export function FilterUV() {
 
   const filtrationSteps = [
     {
-      name: "Palm Fiber Layer",
-      description: "Primarily for removing larger debris.",
+      name: "Palm Fiber Layer (Lapisan Ijuk)",
+      description: "Primary and secondary filter, trapping coarse debris and slowing the water flow for optimal filtration.",
       active: true
     },
     {
-      name: "Silica Sand",
-      description: "Acts as a finer filter",
+      name: "Silica Sand (Pasir Silika)",
+      description: "Remove turbidity and clarify the water.",
       active: true
     },
     {
-      name: "Biochar / Charcoal",
-      description: "Its main role here is to remove heavy metals.",
+      name: "Biochar (Activated Carbon Layer)",
+      description: "Uses its vast porous structure for adsorption to remove heavy metals, harmful organic compounds, and pathogens.",
       active: true
     },
     {
-      name: "Fine Gravel",
-      description: "Maintains the physical stability of the filter system",
+      name: "Fine Gravel (Kerikil Halus)",
+      description: "Ensures even water distribution to the layer above and prevents the different media layers from mixing.",
       active: true
     },
     {
-      name: "Coarse Stone/Gravel",
-      description: "This bottom layer of coarse stone or gravel acts as the foundation, prevents clogging at the base of the system.",
+      name: "Coarse Stone/Gravel (Batu)",
+      description: "Filters remaining large particles and facilitates smooth water flow to the outlet, preventing clogs.",
       active: true
     }
   ];
