@@ -2,6 +2,7 @@
 const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 export interface SensorData {
+  device_id: string;
   timestamp: string;
   filter_mode: string;
   flow: number;
