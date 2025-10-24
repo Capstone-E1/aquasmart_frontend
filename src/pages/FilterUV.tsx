@@ -280,7 +280,7 @@ export function FilterUV() {
           disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
-              ? 'bg-blue-600 border-blue-500 text-white'
+              ? 'bg-accent border-accent text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
@@ -300,7 +300,7 @@ export function FilterUV() {
           disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
-              ? 'bg-blue-600 border-blue-500 text-white'
+              ? 'bg-accent border-accent text-white'
               : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
