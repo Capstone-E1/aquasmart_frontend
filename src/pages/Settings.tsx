@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Palette, 
   Database, 
@@ -11,7 +11,7 @@ import {
   RotateCcw,
   CheckCircle
 } from 'lucide-react';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettings, type AppSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 
 export function Settings() {
@@ -19,6 +19,15 @@ export function Settings() {
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'appearance' | 'data' | 'about'>('appearance');
   const [saved, setSaved] = useState(false);
+  
+  // Temporary state for unsaved changes
+  const [tempSettings, setTempSettings] = useState(settings);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Update temp settings when settings change from context (e.g., on mount)
+  useEffect(() => {
+    setTempSettings(settings);
+  }, [settings]);
 
   const tabs = [
     { id: 'appearance', label: 'Appearance', icon: Palette },
@@ -27,16 +36,34 @@ export function Settings() {
   ] as const;
 
   const handleSave = () => {
+    updateSettings(tempSettings);
+    setHasChanges(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleTempUpdate = (updates: Partial<AppSettings>) => {
+    setTempSettings((prev) => ({
+      ...prev,
+      ...updates,
+      appearance: { ...prev.appearance, ...updates.appearance },
+      notifications: { ...prev.notifications, ...updates.notifications },
+      data: { ...prev.data, ...updates.data },
+    }));
+    setHasChanges(true);
+    
+    // Auto-apply data settings immediately (don't wait for save)
+    if (updates.data) {
+      updateSettings({ data: { ...settings.data, ...updates.data } });
+    }
   };
 
   const handleThemeChange = (newTheme: 'light' | 'dark') => {
     if (theme !== newTheme) {
       toggleTheme();
     }
-    updateSettings({ 
-      appearance: { ...settings.appearance, theme: newTheme } 
+    handleTempUpdate({ 
+      appearance: { ...tempSettings.appearance, theme: newTheme } 
     });
   };
 
@@ -87,8 +114,8 @@ export function Settings() {
                       onClick={() => handleThemeChange('light')}
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                         theme === 'light'
-                          ? 'border-accent bg-accent/10 dark:bg-accent/20'
-                          : 'border-slate-300 dark:border-slate-600 hover:border-accent-light'
+                          ? 'border-accent bg-accent/10 dark:bg-accent/20 text-slate-800 dark:text-white'
+                          : 'border-slate-300 dark:border-slate-600 hover:border-accent-light text-slate-800 dark:text-white'
                       }`}
                     >
                       <Sun className="w-5 h-5" />
@@ -98,8 +125,8 @@ export function Settings() {
                       onClick={() => handleThemeChange('dark')}
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                         theme === 'dark'
-                          ? 'border-accent bg-accent/10 dark:bg-accent/20'
-                          : 'border-slate-300 dark:border-slate-600 hover:border-accent-light'
+                          ? 'border-accent bg-accent/10 dark:bg-accent/20 text-slate-800 dark:text-white'
+                          : 'border-slate-300 dark:border-slate-600 hover:border-accent-light text-slate-800 dark:text-white'
                       }`}
                     >
                       <Moon className="w-5 h-5" />
@@ -116,13 +143,13 @@ export function Settings() {
                     {(['blue', 'green', 'purple'] as const).map((color) => (
                       <button
                         key={color}
-                        onClick={() => updateSettings({ 
-                          appearance: { ...settings.appearance, accentColor: color } 
+                        onClick={() => handleTempUpdate({ 
+                          appearance: { ...tempSettings.appearance, accentColor: color } 
                         })}
                         className={`px-4 py-3 rounded-lg border-2 capitalize transition-all ${
-                          settings.appearance.accentColor === color
-                            ? 'border-accent bg-accent/10 dark:bg-accent/20'
-                            : 'border-slate-300 dark:border-slate-600 hover:border-accent-light'
+                          tempSettings.appearance.accentColor === color
+                            ? 'border-accent bg-accent/10 dark:bg-accent/20 text-slate-800 dark:text-white'
+                            : 'border-slate-300 dark:border-slate-600 hover:border-accent-light text-slate-800 dark:text-white'
                         }`}
                       >
                         <div className={`w-6 h-6 rounded-full mx-auto mb-1 ${
@@ -141,9 +168,9 @@ export function Settings() {
                     Chart Style
                   </label>
                   <select
-                    value={settings.appearance.chartStyle}
-                    onChange={(e) => updateSettings({ 
-                      appearance: { ...settings.appearance, chartStyle: e.target.value as any } 
+                    value={tempSettings.appearance.chartStyle}
+                    onChange={(e) => handleTempUpdate({ 
+                      appearance: { ...tempSettings.appearance, chartStyle: e.target.value as any } 
                     })}
                     className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
@@ -165,9 +192,9 @@ export function Settings() {
                     Auto-refresh Interval
                   </label>
                   <select
-                    value={settings.data.refreshInterval}
-                    onChange={(e) => updateSettings({ 
-                      data: { ...settings.data, refreshInterval: parseInt(e.target.value) } 
+                    value={tempSettings.data.refreshInterval}
+                    onChange={(e) => handleTempUpdate({ 
+                      data: { ...tempSettings.data, refreshInterval: parseInt(e.target.value) } 
                     })}
                     className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
@@ -178,7 +205,7 @@ export function Settings() {
                     <option value="0">Manual only</option>
                   </select>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Changes take effect immediately. Set to "Manual only" to disable auto-refresh.
+                    Changes apply immediately.
                   </p>
                 </div>
 
@@ -188,9 +215,9 @@ export function Settings() {
                     Default Export Format
                   </label>
                   <select
-                    value={settings.data.exportFormat}
-                    onChange={(e) => updateSettings({ 
-                      data: { ...settings.data, exportFormat: e.target.value as any } 
+                    value={tempSettings.data.exportFormat}
+                    onChange={(e) => handleTempUpdate({ 
+                      data: { ...tempSettings.data, exportFormat: e.target.value as any } 
                     })}
                     className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
@@ -208,9 +235,9 @@ export function Settings() {
                     Default Dashboard View
                   </label>
                   <select
-                    value={settings.data.defaultView}
-                    onChange={(e) => updateSettings({ 
-                      data: { ...settings.data, defaultView: e.target.value as any } 
+                    value={tempSettings.data.defaultView}
+                    onChange={(e) => handleTempUpdate({ 
+                      data: { ...tempSettings.data, defaultView: e.target.value as any } 
                     })}
                     className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
@@ -293,7 +320,12 @@ export function Settings() {
         
         <button
           onClick={handleSave}
-          className="w-full sm:w-auto px-6 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+          disabled={!hasChanges || saved}
+          className={`w-full sm:w-auto px-6 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+            !hasChanges || saved
+              ? 'bg-slate-400 dark:bg-slate-600 text-slate-200 dark:text-slate-400 cursor-not-allowed'
+              : 'bg-accent hover:bg-accent-hover text-white'
+          }`}
         >
           {saved ? (
             <>
@@ -303,7 +335,7 @@ export function Settings() {
           ) : (
             <>
               <Save className="w-4 h-4" />
-              Save Changes
+              {hasChanges ? 'Save Changes' : 'No Changes'}
             </>
           )}
         </button>
