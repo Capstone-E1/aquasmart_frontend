@@ -36,9 +36,9 @@ const menuItems: MenuItem[] = [
   { 
     icon: LayoutDashboard, 
     label: 'Dashboard', 
-    path: '/',
+    path: '/dashboard',
     children: [
-      { icon: Gauge, label: 'All Parameters', path: '/' },
+      { icon: Gauge, label: 'All Parameters', path: '/dashboard' },
       { icon: Droplets, label: 'PH Level', path: '/ph-level' },
       { icon: Waves, label: 'Turbidity', path: '/turbidity' },
       { icon: FlaskConical, label: 'TDS', path: '/tds' }
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
   // Auto-expand Dashboard submenu yang mengandung current route
   useEffect(() => {
     const currentPath = location.pathname;
-    const dashboardPaths = ['/', '/ph-level', '/turbidity', '/tds'];
+    const dashboardPaths = ['/', '/dashboard', '/ph-level', '/turbidity', '/tds'];
     
     if (dashboardPaths.includes(currentPath) && !expandedMenus.includes('Dashboard')) {
       setExpandedMenus(prev => [...prev, 'Dashboard']);
@@ -175,7 +175,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                   placeholder="Search menu..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2 bg-slate-100 dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-10 py-2 bg-slate-100 dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-accent transition-colors"
                 />
                 {searchQuery && (
                   <button
@@ -239,7 +239,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                     className={({ isActive }) =>
                       cn(
                         "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-colors",
-                        isActive && "bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700",
+                        isActive && "bg-accent hover:bg-accent-hover text-white",
                         !isOpen && "lg:justify-center lg:px-2"
                       )
                     }
@@ -262,7 +262,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                         className={({ isActive }) =>
                           cn(
                             "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/30 transition-colors text-sm",
-                            isActive && "bg-blue-500/80 dark:bg-blue-600/80 text-white hover:bg-blue-600/80 dark:hover:bg-blue-700/80"
+                            isActive && "bg-accent/80 hover:bg-accent text-white"
                           )
                         }
                       >
