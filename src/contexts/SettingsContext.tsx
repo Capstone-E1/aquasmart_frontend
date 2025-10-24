@@ -59,6 +59,38 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
   });
 
+  // Update CSS variables when accent color changes
+  useEffect(() => {
+    const accentColors = {
+      blue: {
+        primary: '#3b82f6',
+        hover: '#2563eb',
+        light: '#60a5fa',
+        dark: '#1d4ed8',
+      },
+      green: {
+        primary: '#10b981',
+        hover: '#059669',
+        light: '#34d399',
+        dark: '#047857',
+      },
+      purple: {
+        primary: '#8b5cf6',
+        hover: '#7c3aed',
+        light: '#a78bfa',
+        dark: '#6d28d9',
+      },
+    };
+
+    const colors = accentColors[settings.appearance.accentColor];
+    const root = document.documentElement;
+    
+    root.style.setProperty('--accent-primary', colors.primary);
+    root.style.setProperty('--accent-hover', colors.hover);
+    root.style.setProperty('--accent-light', colors.light);
+    root.style.setProperty('--accent-dark', colors.dark);
+  }, [settings.appearance.accentColor]);
+
   useEffect(() => {
     localStorage.setItem('aquasmart-settings', JSON.stringify(settings));
   }, [settings]);
