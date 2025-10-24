@@ -3,11 +3,13 @@ import { Search, Filter, Download, ChevronLeft, ChevronRight, RefreshCw } from '
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { useHistoryData } from '../hooks/useHistoryData';
 import { apiService } from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 import type { SensorData } from '../services/api';
 
 // Data interface untuk history
 interface HistoryData {
   id: number;
+  device_id: string;
   time: string;
   date: string;
   ph: number;
@@ -23,6 +25,7 @@ export function History() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const { settings } = useSettings();
 
   const { historyData: allData, isLoading, error, refetch } = useHistoryData(50); // Get 50 recent readings
 
@@ -48,6 +51,7 @@ export function History() {
 
       return {
         id: index + 1,
+        device_id: data.device_id || 'N/A',
         time,
         date,
         ph: data.ph,
@@ -111,20 +115,90 @@ export function History() {
 
   // Export function
   const handleExport = () => {
-    const csvContent = [
-      ['Time', 'Date', 'pH', 'Turbidity (NTU)', 'TDS', 'Flow', 'Filter Mode', 'Status'].join(','),
-      ...filteredData.map(item => 
-        [item.time, item.date, item.ph, item.turbidity, item.tds, item.flow, item.filter_mode, item.status].join(',')
-      )
-    ].join('\n');
+    const format = settings.data.exportFormat;
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    if (format === 'csv') {
+      // CSV Export
+      const csvContent = [
+        ['Sensor Reading', 'Time', 'Date', 'pH', 'Turbidity (NTU)', 'TDS', 'Flow', 'Filter Mode', 'Status'].join(','),
+        ...filteredData.map(item => 
+          [item.device_id, item.time, item.date, item.ph, item.turbidity, item.tds, item.flow, item.filter_mode, item.status].join(',')
+        )
+      ].join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'water_quality_history.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `water_quality_history_${timestamp}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (format === 'json') {
+      // JSON Export
+      const jsonContent = JSON.stringify(filteredData, null, 2);
+      const blob = new Blob([jsonContent], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `water_quality_history_${timestamp}.json`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (format === 'excel') {
+      // Excel Export (as HTML table that Excel can open)
+      const htmlContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+        <head>
+          <meta charset="utf-8">
+          <style>
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #4CAF50; color: white; }
+          </style>
+        </head>
+        <body>
+          <table>
+            <thead>
+              <tr>
+                <th>Sensor Reading</th>
+                <th>Time</th>
+                <th>Date</th>
+                <th>pH</th>
+                <th>Turbidity (NTU)</th>
+                <th>TDS</th>
+                <th>Flow</th>
+                <th>Filter Mode</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredData.map(item => `
+                <tr>
+                  <td>${item.device_id}</td>
+                  <td>${item.time}</td>
+                  <td>${item.date}</td>
+                  <td>${item.ph}</td>
+                  <td>${item.turbidity}</td>
+                  <td>${item.tds}</td>
+                  <td>${item.flow}</td>
+                  <td>${item.filter_mode}</td>
+                  <td>${item.status}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+      
+      const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `water_quality_history_${timestamp}.xls`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
   };
 
   return (
@@ -148,7 +222,7 @@ export function History() {
               placeholder="Search history..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -158,7 +232,7 @@ export function History() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-10 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">All Status</option>
               <option value="normal">Normal</option>
@@ -180,10 +254,10 @@ export function History() {
           {/* Export Button */}
           <button
             onClick={handleExport}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors whitespace-nowrap"
           >
             <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <span className="hidden sm:inline">Export {settings.data.exportFormat.toUpperCase()}</span>
             <span className="sm:hidden">Export</span>
           </button>
         </div>
@@ -193,6 +267,7 @@ export function History() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-600">
+                <th className="text-left py-3 px-4 text-slate-300 font-medium">Sensor Reading</th>
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">Time</th>
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">Date</th>
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">pH</th>
@@ -206,6 +281,7 @@ export function History() {
             <tbody>
               {paginatedData.map((item) => (
                 <tr key={item.id} className="border-b border-slate-700/50 hover:bg-slate-700/20">
+                  <td className="py-3 px-4 text-white font-mono text-sm">{item.device_id}</td>
                   <td className="py-3 px-4 text-white">{item.time}</td>
                   <td className="py-3 px-4 text-white">{item.date}</td>
                   <td className="py-3 px-4 text-white">{item.ph.toFixed(1)}</td>
@@ -246,7 +322,7 @@ export function History() {
                   onClick={() => setCurrentPage(page)}
                   className={`px-3 py-1 rounded-lg text-sm ${
                     currentPage === page
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-accent text-white'
                       : 'text-slate-400 hover:text-white hover:bg-slate-700'
                   }`}
                 >
