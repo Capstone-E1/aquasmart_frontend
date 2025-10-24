@@ -41,7 +41,7 @@ export function Notification() {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                className="px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors text-sm"
               >
                 Mark All Read
               </button>
@@ -75,7 +75,7 @@ export function Notification() {
             return (
               <div
                 key={notification.id}
-                className={`${bgColor} ${!notification.read ? 'ring-2 ring-blue-500/30' : ''} backdrop-blur-sm rounded-xl border p-6 transition-all cursor-pointer hover:bg-slate-800/30`}
+                className={`${bgColor} ${!notification.read ? 'ring-2 ring-accent/30' : ''} backdrop-blur-sm rounded-xl border p-6 transition-all cursor-pointer hover:bg-slate-800/30`}
                 onClick={() => markAsRead(notification.id)}
               >
                 <div className="flex items-start gap-4">
@@ -87,7 +87,7 @@ export function Notification() {
                       <div className="flex items-center gap-3">
                         <span className="text-slate-400 text-sm">{formatDate(notification.timestamp)}</span>
                         {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <div className="w-2 h-2 bg-accent rounded-full"></div>
                         )}
                       </div>
                     </div>
