@@ -271,7 +271,71 @@ class ApiService {
     }
   }
 
-  // Filter Mode Control Methods (using LED endpoint for hardware control)
+  // Filter Mode Control Methods
+  async sendFilterCommand(mode: 'household_water' | 'drinking_water'): Promise<{ success: boolean; message: string }> {
+    try {
+      console.log(`API: Sending filter mode command "${mode}" to:`, `${API_BASE_URL}/commands/filter`);
+      console.log(`API: Request body:`, { mode });
+      
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/commands/filter`, {
+        method: 'POST',
+        body: JSON.stringify({ mode }),
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('API: Filter mode command response:', data);
+      
+      return {
+        success: true,
+        message: data.message || `Filter mode changed to ${mode} successfully`
+      };
+    } catch (error) {
+      console.error(`Error sending filter mode ${mode} command:`, error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to send filter mode command'
+      };
+    }
+  }
+
+  // Get current filter mode status from STM32 command endpoint
+  async getFilterStatus(): Promise<{ success: boolean; mode: 'household_water' | 'drinking_water'; message?: string }> {
+    try {
+      console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/sensors/stm32/command`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/command`);
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('API: Filter mode status response:', data);
+      
+      // Response format: { success: true, data: { filter_mode: "household_water", ... } }
+      const filterMode = data.data?.filter_mode || 'household_water';
+      
+      return {
+        success: true,
+        mode: filterMode,
+        message: `Current filter mode is ${filterMode}`
+      };
+    } catch (error) {
+      console.error('Error fetching filter mode status:', error);
+      return {
+        success: false,
+        mode: 'household_water',
+        message: error instanceof Error ? error.message : 'Failed to fetch filter mode status'
+      };
+    }
+  }
+
+  // Legacy LED methods (deprecated, keeping for backward compatibility)
   async sendLedCommand(command: 'on' | 'off'): Promise<{ success: boolean; message: string }> {
     try {
       console.log(`API: Sending filter mode command "${command}" to:`, `${API_BASE_URL}/sensors/stm32/led`);
