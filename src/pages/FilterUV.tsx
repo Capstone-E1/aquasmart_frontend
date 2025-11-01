@@ -41,11 +41,11 @@ export function FilterUV() {
   useEffect(() => {
     const fetchFilterStatus = async () => {
       try {
-        const result = await apiService.getLedStatus();
+        const result = await apiService.getFilterStatus();
         if (result.success) {
-          const newFilter = result.status === 'on' ? 'drinking' : 'household';
+          const newFilter = result.mode === 'drinking_water' ? 'drinking' : 'household';
           setActiveFilter(newFilter);
-          console.log('Filter status fetched from backend:', newFilter);
+          console.log('Filter status fetched from backend:', result.mode, '→', newFilter);
         }
       } catch (error) {
         console.error('Error fetching filter status:', error);
@@ -101,10 +101,10 @@ export function FilterUV() {
 
     setIsSwitchingFilter(true);
     
-    const command = filterType === 'drinking' ? 'on' : 'off';
+    const mode = filterType === 'drinking' ? 'drinking_water' : 'household_water';
     
     try {
-      const result = await apiService.sendLedCommand(command);
+      const result = await apiService.sendFilterCommand(mode);
       
       if (result.success) {
         setActiveFilter(filterType);
