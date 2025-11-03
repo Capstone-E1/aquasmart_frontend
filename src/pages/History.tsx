@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Download, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { Filter, Download, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { useHistoryData } from '../hooks/useHistoryData';
 import { apiService } from '../services/api';
@@ -21,13 +21,13 @@ interface HistoryData {
 }
 
 export function History() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [sensorFilter, setSensorFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 20;
   const { settings } = useSettings();
 
-  const { historyData: allData, isLoading, error, refetch } = useHistoryData(50); // Get 50 recent readings
+  const { historyData: allData, isLoading, error, refetch } = useHistoryData(100); // Get 50 recent readings
 
   // Convert sensor data to history format
   const historyData: HistoryData[] = useMemo(() => {
@@ -82,20 +82,16 @@ export function History() {
     );
   }
 
-  // Filter data berdasarkan search dan status
+  // Filter data berdasarkan sensor reading dan status
   const filteredData = historyData.filter(item => {
-    const matchesSearch = 
-      item.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.ph.toString().includes(searchTerm) ||
-      item.turbidity.toString().includes(searchTerm) ||
-      item.tds.toString().includes(searchTerm) ||
-      item.flow.toString().includes(searchTerm) ||
-      item.filter_mode.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSensor = 
+      sensorFilter === 'all' || 
+      (sensorFilter === 'pre' && item.device_id.toLowerCase().includes('stm32_pre')) ||
+      (sensorFilter === 'post' && item.device_id.toLowerCase().includes('stm32_post'));
     
     const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSensor && matchesStatus;
   });
 
   // Pagination
@@ -214,25 +210,49 @@ export function History() {
       {/* Controls */}
       <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search history..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
+          {/* Sensor Reading Filter Buttons */}
+          <div className="flex items-center gap-2 flex-1">
+            <Filter className="text-slate-400 w-4 h-4" />
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => setSensorFilter('all')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  sensorFilter === 'all'
+                    ? 'bg-accent text-white shadow-lg shadow-accent/30'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                }`}
+              >
+                All Sensors
+              </button>
+              <button
+                onClick={() => setSensorFilter('pre')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  sensorFilter === 'pre'
+                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                }`}
+              >
+                Pre-Filter
+              </button>
+              <button
+                onClick={() => setSensorFilter('post')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  sensorFilter === 'post'
+                    ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                }`}
+              >
+                Post-Filter
+              </button>
+            </div>
           </div>
 
           {/* Status Filter */}
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-10 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+              className="pl-4 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">All Status</option>
               <option value="normal">Normal</option>
