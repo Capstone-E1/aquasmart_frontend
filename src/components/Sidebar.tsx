@@ -15,7 +15,8 @@ import {
   Search,
   ChevronDown,
   ChevronUp,
-  Gauge
+  Gauge,
+  Calendar
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -45,6 +46,7 @@ const menuItems: MenuItem[] = [
     ]
   },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
+  { icon: Calendar, label: 'Schedules', path: '/schedules' },
   { icon: HistoryIcon, label: 'History', path: '/history' },
   { icon: Bell, label: 'Notification', path: '/notification' },
   { icon: Settings, label: 'Settings', path: '/settings' },
