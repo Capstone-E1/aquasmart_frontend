@@ -8,6 +8,7 @@ import { Turbidity } from './pages/Turbidity';
 import { TDS } from './pages/TDS';
 import { History } from './pages/History';
 import { FilterUV } from './pages/FilterUV';
+import { Schedules } from './pages/Schedules';
 import { Settings } from './pages/Settings';
 import { Notification } from './pages/OtherPages';
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="turbidity" element={<Turbidity />} />
           <Route path="tds" element={<TDS />} />
           <Route path="filter-uv" element={<FilterUV />} />
+          <Route path="schedules" element={<Schedules />} />
           <Route path="history" element={<History />} />
           <Route path="notification" element={<Notification />} />
           <Route path="settings" element={<Settings />} />
