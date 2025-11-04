@@ -41,7 +41,6 @@ export function useSensorData(overrideInterval?: number): UseSensorDataReturn {
 
   const fetchData = useCallback(async () => {
     try {
-      console.log('useSensorData: Starting to fetch data...');
       setError(null);
       const [latest, all, analytics, worst] = await Promise.all([
         apiService.getLatestSensorData(),
@@ -49,11 +48,6 @@ export function useSensorData(overrideInterval?: number): UseSensorDataReturn {
         apiService.getDailyAnalytics(),
         apiService.getWorstDailyValues()
       ]);
-      
-      console.log('useSensorData: Received latest data:', latest);
-      console.log('useSensorData: Received all data:', all);
-      console.log('useSensorData: Received daily analytics:', analytics);
-      console.log('useSensorData: Received worst values:', worst);
       
       setLatestData(latest);
       setAllData(all);
@@ -65,7 +59,6 @@ export function useSensorData(overrideInterval?: number): UseSensorDataReturn {
       setError(errorMessage);
     } finally {
       setIsLoading(false);
-      console.log('useSensorData: Fetch completed, loading set to false');
     }
   }, []);
 
@@ -75,18 +68,13 @@ export function useSensorData(overrideInterval?: number): UseSensorDataReturn {
   }, [fetchData]);
 
   useEffect(() => {
-    console.log('useSensorData: useEffect triggered, starting initial fetch...');
     fetchData();
 
-    // Set up periodic refresh
-    if (refreshInterval > 0) {
-      console.log('useSensorData: Setting up refresh interval:', refreshInterval, 'ms');
+    if (refreshInterval && refreshInterval > 0) {
       const interval = setInterval(() => {
-        console.log('useSensorData: Refresh interval triggered, fetching data...');
         fetchData();
       }, refreshInterval);
       return () => {
-        console.log('useSensorData: Cleaning up refresh interval');
         clearInterval(interval);
       };
     }
@@ -109,14 +97,6 @@ export function useParameterData(parameter: 'ph' | 'turbidity' | 'tds') {
 
   const value = latestData ? latestData[parameter] : null;
   const status = value !== null ? apiService.getParameterStatus(parameter, value) : 'normal';
-
-  console.log(`useParameterData(${parameter}):`, {
-    latestData,
-    value,
-    status,
-    isLoading,
-    error
-  });
 
   return {
     value,

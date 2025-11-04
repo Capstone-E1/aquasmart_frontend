@@ -14,19 +14,17 @@ export const useHistoryData = (limit: number = 20): UseHistoryDataReturn => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchHistoryData = useCallback(async () => {
+  const fetchHistory = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-      console.log(`🔄 Fetching recent ${limit} sensor readings for history...`);
       
       const data = await apiService.getRecentSensorData(limit);
-      setHistoryData(data);
-      console.log(`✅ History data loaded: ${data.length} readings`);
       
+      setHistoryData(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch history data';
-      console.error('❌ History data fetch error:', errorMessage);
+      console.error('useHistoryData: Error occurred:', errorMessage);
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -34,12 +32,12 @@ export const useHistoryData = (limit: number = 20): UseHistoryDataReturn => {
   }, [limit]);
 
   const refetch = useCallback(async () => {
-    await fetchHistoryData();
-  }, [fetchHistoryData]);
+    await fetchHistory();
+  }, [fetchHistory]);
 
   useEffect(() => {
-    fetchHistoryData();
-  }, [fetchHistoryData]);
+    fetchHistory();
+  }, [fetchHistory]);
 
   return {
     historyData,
