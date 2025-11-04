@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { MetricCard } from '../components/MetricCard';
 import { GaugeChart } from '../components/GaugeChart';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
@@ -5,10 +6,119 @@ import { useSensorData } from '../hooks/useSensorData';
 import { apiService } from '../services/api';
 import { Card } from '../components';
 import { useNavigate } from 'react-router-dom';
+import { RefreshCw } from 'lucide-react';
+
+// Water facts data
+const waterFacts = {
+  healthFacts: [
+    'Do you know? The "2 liters per day" rule is a myth — your hydration needs depend on your diet, activity, and environment. But in most cases, more water is better than less!',
+    'On a hot day above 30 °C, you should drink at least 500 mL more water than usual to make up for sweat loss.',
+    'Nearly 70% of the human body is made of water — even a 2% loss in body water can affect concentration and physical performance.',
+    'Clean household water matters too — metals and residues in tap water can stay on dishes, laundry, and even your skin.',
+    'Boiling water removes bacteria but not heavy metals or chemicals — filtration bridges that gap.',
+    'Long-term exposure to heavy metals in water can cause neurological and developmental problems — zeolite filtration helps remove them safely.',
+    'Filtered water extends the lifespan of home appliances like kettles, washing machines, and irons by reducing scale.',
+    'Your skin absorbs chlorine and metals during showers — filtering household water benefits skin and hair health.',
+    'Filtered water in cooking preserves flavor and nutritional value, especially in soups and rice.',
+    'Pure water is not only for drinking — it\'s for better cooking, cleaner homes, healthier lives, and a sustainable planet.',
+  ],
+  sensorInsights: [
+    'Turbidity, or "cloudiness," indicates the presence of suspended particles. Clear-looking water isn\'t always clean — microbes can still lurk invisibly.',
+    'A TDS (Total Dissolved Solids) value above 500 ppm means the water may taste salty or metallic — filtration helps restore its freshness.',
+    'Ideal drinking water has a pH of 6.5–8.5 — too acidic or too alkaline water can corrode pipes and affect taste.',
+    'Even if water looks clear, it may still contain invisible chemical contaminants — sensors like TDS and pH can reveal hidden risks.',
+    'High TDS can come from natural minerals — but when values rise too high, it can mean industrial or sewage contamination.',
+    'Smart water systems can track pH and TDS to predict when filters need replacement — reducing guesswork and maintenance costs.',
+    'Household water with a pH below 6 can corrode pipes, releasing lead — sensors and filtration safeguard plumbing.',
+    'Using smart sensors allows you to detect abnormalities before they affect your family — real-time pH and TDS data keeps you informed.',
+    'The turbidity sensor in AquaSmart mimics industrial water treatment monitoring, bringing lab-level precision to your home.',
+    'Safe pH and low turbidity help ensure effective UV sterilization — a synergy that AquaSmart manages automatically.',
+  ],
+  filtrationFacts: [
+    'Zeolite, a natural mineral, traps heavy metals like lead and copper, protecting you from long-term exposure risks.',
+    'Activated charcoal removes chlorine, organic residues, and pesticides — giving water a neutral taste and natural purity.',
+    'Silica sand acts as the first defense, catching mud and sediment — it\'s like a "rough filter" that keeps the rest of your system clean.',
+    'UV filtration destroys microorganisms such as E. coli and viruses without adding chemicals — a clean and green disinfection method.',
+    'Water hardness (high calcium and magnesium) can cause scale buildup on faucets and reduce soap efficiency.',
+    'Turbid or cloudy water can reduce UV disinfection efficiency — pre-filtration using sand or carbon is essential.',
+    'The World Health Organization recommends keeping turbidity below 5 NTU for safe drinking water.',
+    'Each time you wash dishes, trace metals and soap residues can cling to your plates — filtration minimizes these residues for safer reuse.',
+    'Using filtered water for laundry preserves fabric color and texture — minerals in hard water wear down fibers faster.',
+    'Chlorine in tap water kills bacteria but can leave harmful by-products called trihalomethanes (THMs); activated carbon removes them effectively.',
+    'Even small leaks in pipes can let contaminants in — smart monitoring of water quality ensures early detection.',
+    'Rainwater is naturally soft but can pick up pollutants as it falls — filtering rain-harvested water makes it safe for use.',
+    'A UV filter can kill 99.99% of bacteria — but always pair it with a prefilter for maximum safety.',
+    'Filter changes are crucial — a dirty filter can harbor bacteria and reduce flow efficiency.',
+    'Using multi-layer natural filters like charcoal, zeolite, and sand mimics the Earth\'s own purification process underground.',
+    'Some bottled waters contain more microplastics than tap water — home filtration helps you cut both cost and waste.',
+    'Heavy rain or floods can spike turbidity and bacterial content in local wells — filtration keeps your supply stable.',
+    'Water left standing for long periods can develop biofilms — regular flow and smart monitoring prevent bacterial buildup.',
+    'Zeolite not only filters heavy metals but also balances ammonium and hardness ions, improving taste and clarity.',
+    'Using a centralized filtration system in villages cuts maintenance cost per household while improving public hygiene.',
+    'IoT monitoring empowers communities in remote areas to track water quality even from their phones — a leap for equal access.',
+  ],
+};
+
+// Flatten all facts into one array
+const allFacts = [
+  ...waterFacts.healthFacts,
+  ...waterFacts.sensorInsights,
+  ...waterFacts.filtrationFacts,
+];
 
 export function Dashboard() {
   const { latestData, dailyAnalytics, worstValues, isLoading, error, refetch } = useSensorData();
   const navigate = useNavigate();
+  const [totalFlowLiters, setTotalFlowLiters] = useState<{
+    today: number;
+    week: number;
+    month: number;
+    readings: number;
+  }>({
+    today: 0,
+    week: 0,
+    month: 0,
+    readings: 0,
+  });
+  const [currentFactIndex, setCurrentFactIndex] = useState(0);
+
+  // Auto-rotate facts every 15 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Function to manually refresh fact
+  const refreshFact = () => {
+    setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+  };
+
+  // Fetch flow statistics
+  useEffect(() => {
+    const fetchFlowStats = async () => {
+      try {
+        const status = await apiService.getFilterStatus();
+        
+        if (status.statistics) {
+          setTotalFlowLiters({
+            today: status.statistics.today?.total_liters || 0,
+            week: status.statistics.this_week?.total_liters || 0,
+            month: status.statistics.this_month?.total_liters || 0,
+            readings: status.statistics.today?.total_readings || 0,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching flow statistics:', error);
+      }
+    };
+
+    fetchFlowStats();
+    // Poll every 5 seconds
+    const interval = setInterval(fetchFlowStats, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (isLoading) {
     return <LoadingSkeleton variant="page" />;
@@ -185,6 +295,61 @@ export function Dashboard() {
         </div>
       </div>
 
+      {/* Water Facts Card */}
+      <div className="bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 backdrop-blur-sm rounded-xl border border-cyan-500/30 p-6 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl"></div>
+        
+        <div className="relative">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-cyan-500/20 rounded-lg">
+                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-white font-semibold text-lg">Did You Know?</h3>
+                <p className="text-xs text-cyan-300">Water Facts & Insights</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={refreshFact}
+              className="group p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-110"
+              title="Next fact"
+            >
+              <RefreshCw className="w-4 h-4 text-cyan-400 group-hover:rotate-180 transition-transform duration-500" />
+            </button>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-cyan-500/20">
+            <p className="text-slate-200 text-sm leading-relaxed">
+              {allFacts[currentFactIndex]}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    i === Math.floor((currentFactIndex / allFacts.length) * 5)
+                      ? 'w-8 bg-cyan-400'
+                      : 'w-2 bg-slate-600'
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-slate-400">
+              {currentFactIndex + 1} / {allFacts.length}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Daily Best & Worst Values */}
       <div className="space-y-4">
         <h2 className="text-lg lg:text-xl font-semibold text-white">Today's Performance</h2>
@@ -218,6 +383,74 @@ export function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-slate-300 text-sm">Total Readings:</span>
                   <span className="font-medium text-cyan-400">{dailyAnalytics.total_readings}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Water Flow Statistics */}
+            <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+              <h3 className="text-white font-medium text-base mb-4 flex items-center">
+                <span className="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+                Water Flow Statistics
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                {/* Today */}
+                <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-xs text-slate-400">Today</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {totalFlowLiters.today.toFixed(2)}
+                    <span className="text-sm text-slate-400 ml-1">L</span>
+                  </p>
+                  <p className="text-xs text-blue-400 mt-1">Total Water</p>
+                </div>
+
+                {/* This Week */}
+                <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-xs text-slate-400">This Week</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {totalFlowLiters.week.toFixed(2)}
+                    <span className="text-sm text-slate-400 ml-1">L</span>
+                  </p>
+                  <p className="text-xs text-green-400 mt-1">Total Water</p>
+                </div>
+
+                {/* This Month */}
+                <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span className="text-xs text-slate-400">This Month</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {totalFlowLiters.month.toFixed(2)}
+                    <span className="text-sm text-slate-400 ml-1">L</span>
+                  </p>
+                  <p className="text-xs text-purple-400 mt-1">Total Water</p>
+                </div>
+
+                {/* Total Readings */}
+                <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="text-xs text-slate-400">Readings</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {totalFlowLiters.readings}
+                  </p>
+                  <p className="text-xs text-cyan-400 mt-1">Data Points</p>
                 </div>
               </div>
             </div>
