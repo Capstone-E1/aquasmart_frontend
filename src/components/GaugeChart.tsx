@@ -83,7 +83,7 @@ export function GaugeChart({
         {/* Value in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-3xl lg:text-4xl font-bold text-white leading-none">
+            <div className="text-3xl lg:text-2xl font-bold text-white leading-none">
               {value.toFixed(2)}
             </div>
             {unit && (
