@@ -6,64 +6,73 @@ import { useSensorData } from '../hooks/useSensorData';
 import { apiService } from '../services/api';
 import { Card } from '../components';
 import { useNavigate } from 'react-router-dom';
-import { RefreshCw } from 'lucide-react';
 
-// Water facts data
+
+// Water facts data with categories
 const waterFacts = {
-  healthFacts: [
-    'Do you know? The "2 liters per day" rule is a myth — your hydration needs depend on your diet, activity, and environment. But in most cases, more water is better than less!',
-    'On a hot day above 30 °C, you should drink at least 500 mL more water than usual to make up for sweat loss.',
-    'Nearly 70% of the human body is made of water — even a 2% loss in body water can affect concentration and physical performance.',
-    'Clean household water matters too — metals and residues in tap water can stay on dishes, laundry, and even your skin.',
-    'Boiling water removes bacteria but not heavy metals or chemicals — filtration bridges that gap.',
-    'Long-term exposure to heavy metals in water can cause neurological and developmental problems — zeolite filtration helps remove them safely.',
-    'Filtered water extends the lifespan of home appliances like kettles, washing machines, and irons by reducing scale.',
-    'Your skin absorbs chlorine and metals during showers — filtering household water benefits skin and hair health.',
-    'Filtered water in cooking preserves flavor and nutritional value, especially in soups and rice.',
-    'Pure water is not only for drinking — it\'s for better cooking, cleaner homes, healthier lives, and a sustainable planet.',
-  ],
-  sensorInsights: [
-    'Turbidity, or "cloudiness," indicates the presence of suspended particles. Clear-looking water isn\'t always clean — microbes can still lurk invisibly.',
-    'A TDS (Total Dissolved Solids) value above 500 ppm means the water may taste salty or metallic — filtration helps restore its freshness.',
-    'Ideal drinking water has a pH of 6.5–8.5 — too acidic or too alkaline water can corrode pipes and affect taste.',
-    'Even if water looks clear, it may still contain invisible chemical contaminants — sensors like TDS and pH can reveal hidden risks.',
-    'High TDS can come from natural minerals — but when values rise too high, it can mean industrial or sewage contamination.',
-    'Smart water systems can track pH and TDS to predict when filters need replacement — reducing guesswork and maintenance costs.',
-    'Household water with a pH below 6 can corrode pipes, releasing lead — sensors and filtration safeguard plumbing.',
-    'Using smart sensors allows you to detect abnormalities before they affect your family — real-time pH and TDS data keeps you informed.',
-    'The turbidity sensor in AquaSmart mimics industrial water treatment monitoring, bringing lab-level precision to your home.',
-    'Safe pH and low turbidity help ensure effective UV sterilization — a synergy that AquaSmart manages automatically.',
-  ],
-  filtrationFacts: [
-    'Zeolite, a natural mineral, traps heavy metals like lead and copper, protecting you from long-term exposure risks.',
-    'Activated charcoal removes chlorine, organic residues, and pesticides — giving water a neutral taste and natural purity.',
-    'Silica sand acts as the first defense, catching mud and sediment — it\'s like a "rough filter" that keeps the rest of your system clean.',
-    'UV filtration destroys microorganisms such as E. coli and viruses without adding chemicals — a clean and green disinfection method.',
-    'Water hardness (high calcium and magnesium) can cause scale buildup on faucets and reduce soap efficiency.',
-    'Turbid or cloudy water can reduce UV disinfection efficiency — pre-filtration using sand or carbon is essential.',
-    'The World Health Organization recommends keeping turbidity below 5 NTU for safe drinking water.',
-    'Each time you wash dishes, trace metals and soap residues can cling to your plates — filtration minimizes these residues for safer reuse.',
-    'Using filtered water for laundry preserves fabric color and texture — minerals in hard water wear down fibers faster.',
-    'Chlorine in tap water kills bacteria but can leave harmful by-products called trihalomethanes (THMs); activated carbon removes them effectively.',
-    'Even small leaks in pipes can let contaminants in — smart monitoring of water quality ensures early detection.',
-    'Rainwater is naturally soft but can pick up pollutants as it falls — filtering rain-harvested water makes it safe for use.',
-    'A UV filter can kill 99.99% of bacteria — but always pair it with a prefilter for maximum safety.',
-    'Filter changes are crucial — a dirty filter can harbor bacteria and reduce flow efficiency.',
-    'Using multi-layer natural filters like charcoal, zeolite, and sand mimics the Earth\'s own purification process underground.',
-    'Some bottled waters contain more microplastics than tap water — home filtration helps you cut both cost and waste.',
-    'Heavy rain or floods can spike turbidity and bacterial content in local wells — filtration keeps your supply stable.',
-    'Water left standing for long periods can develop biofilms — regular flow and smart monitoring prevent bacterial buildup.',
-    'Zeolite not only filters heavy metals but also balances ammonium and hardness ions, improving taste and clarity.',
-    'Using a centralized filtration system in villages cuts maintenance cost per household while improving public hygiene.',
-    'IoT monitoring empowers communities in remote areas to track water quality even from their phones — a leap for equal access.',
-  ],
+  healthFacts: {
+    category: 'Health Facts',
+    facts: [
+      'Do you know? The "2 liters per day" rule is a myth — your hydration needs depend on your diet, activity, and environment. But in most cases, more water is better than less!',
+      'On a hot day above 30 °C, you should drink at least 500 mL more water than usual to make up for sweat loss.',
+      'Nearly 70% of the human body is made of water — even a 2% loss in body water can affect concentration and physical performance.',
+      'Clean household water matters too — metals and residues in tap water can stay on dishes, laundry, and even your skin.',
+      'Boiling water removes bacteria but not heavy metals or chemicals — filtration bridges that gap.',
+      'Long-term exposure to heavy metals in water can cause neurological and developmental problems — zeolite filtration helps remove them safely.',
+      'Filtered water extends the lifespan of home appliances like kettles, washing machines, and irons by reducing scale.',
+      'Your skin absorbs chlorine and metals during showers — filtering household water benefits skin and hair health.',
+      'Filtered water in cooking preserves flavor and nutritional value, especially in soups and rice.',
+      'Pure water is not only for drinking — it\'s for better cooking, cleaner homes, healthier lives, and a sustainable planet.',
+    ]
+  },
+  sensorInsights: {
+    category: 'Sensor Insights',
+    facts: [
+      'Turbidity, or "cloudiness," indicates the presence of suspended particles. Clear-looking water isn\'t always clean — microbes can still lurk invisibly.',
+      'A TDS (Total Dissolved Solids) value above 500 ppm means the water may taste salty or metallic — filtration helps restore its freshness.',
+      'Ideal drinking water has a pH of 6.5–8.5 — too acidic or too alkaline water can corrode pipes and affect taste.',
+      'Even if water looks clear, it may still contain invisible chemical contaminants — sensors like TDS and pH can reveal hidden risks.',
+      'High TDS can come from natural minerals — but when values rise too high, it can mean industrial or sewage contamination.',
+      'Smart water systems can track pH and TDS to predict when filters need replacement — reducing guesswork and maintenance costs.',
+      'Household water with a pH below 6 can corrode pipes, releasing lead — sensors and filtration safeguard plumbing.',
+      'Using smart sensors allows you to detect abnormalities before they affect your family — real-time pH and TDS data keeps you informed.',
+      'The turbidity sensor in AquaSmart mimics industrial water treatment monitoring, bringing lab-level precision to your home.',
+      'Safe pH and low turbidity help ensure effective UV sterilization — a synergy that AquaSmart manages automatically.',
+    ]
+  },
+  filtrationFacts: {
+    category: 'Water Filtration 101',
+    facts: [
+      'Zeolite, a natural mineral, traps heavy metals like lead and copper, protecting you from long-term exposure risks.',
+      'Activated charcoal removes chlorine, organic residues, and pesticides — giving water a neutral taste and natural purity.',
+      'Silica sand acts as the first defense, catching mud and sediment — it\'s like a "rough filter" that keeps the rest of your system clean.',
+      'UV filtration destroys microorganisms such as E. coli and viruses without adding chemicals — a clean and green disinfection method.',
+      'Water hardness (high calcium and magnesium) can cause scale buildup on faucets and reduce soap efficiency.',
+      'Turbid or cloudy water can reduce UV disinfection efficiency — pre-filtration using sand or carbon is essential.',
+      'The World Health Organization recommends keeping turbidity below 5 NTU for safe drinking water.',
+      'Each time you wash dishes, trace metals and soap residues can cling to your plates — filtration minimizes these residues for safer reuse.',
+      'Using filtered water for laundry preserves fabric color and texture — minerals in hard water wear down fibers faster.',
+      'Chlorine in tap water kills bacteria but can leave harmful by-products called trihalomethanes (THMs); activated carbon removes them effectively.',
+      'Even small leaks in pipes can let contaminants in — smart monitoring of water quality ensures early detection.',
+      'Rainwater is naturally soft but can pick up pollutants as it falls — filtering rain-harvested water makes it safe for use.',
+      'A UV filter can kill 99.99% of bacteria — but always pair it with a prefilter for maximum safety.',
+      'Filter changes are crucial — a dirty filter can harbor bacteria and reduce flow efficiency.',
+      'Using multi-layer natural filters like charcoal, zeolite, and sand mimics the Earth\'s own purification process underground.',
+      'Some bottled waters contain more microplastics than tap water — home filtration helps you cut both cost and waste.',
+      'Heavy rain or floods can spike turbidity and bacterial content in local wells — filtration keeps your supply stable.',
+      'Water left standing for long periods can develop biofilms — regular flow and smart monitoring prevent bacterial buildup.',
+      'Zeolite not only filters heavy metals but also balances ammonium and hardness ions, improving taste and clarity.',
+      'Using a centralized filtration system in villages cuts maintenance cost per household while improving public hygiene.',
+      'IoT monitoring empowers communities in remote areas to track water quality even from their phones — a leap for equal access.',
+    ]
+  },
 };
 
-// Flatten all facts into one array
+// Flatten all facts into one array with category info
 const allFacts = [
-  ...waterFacts.healthFacts,
-  ...waterFacts.sensorInsights,
-  ...waterFacts.filtrationFacts,
+  ...waterFacts.healthFacts.facts.map(fact => ({ text: fact, category: waterFacts.healthFacts.category })),
+  ...waterFacts.sensorInsights.facts.map(fact => ({ text: fact, category: waterFacts.sensorInsights.category })),
+  ...waterFacts.filtrationFacts.facts.map(fact => ({ text: fact, category: waterFacts.filtrationFacts.category })),
 ];
 
 export function Dashboard() {
@@ -81,18 +90,27 @@ export function Dashboard() {
     readings: 0,
   });
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Auto-rotate facts every 15 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+        setIsAnimating(false);
+      }, 300);
     }, 15000);
     return () => clearInterval(interval);
   }, []);
 
   // Function to manually refresh fact
   const refreshFact = () => {
-    setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentFactIndex((prev) => (prev + 1) % allFacts.length);
+      setIsAnimating(false);
+    }, 300);
   };
 
   // Fetch flow statistics
@@ -311,22 +329,32 @@ export function Dashboard() {
               </div>
               <div>
                 <h3 className="text-white font-semibold text-lg">Did You Know?</h3>
-                <p className="text-xs text-cyan-300">Water Facts & Insights</p>
+                <p className="text-xs text-cyan-300">{allFacts[currentFactIndex].category}</p>
               </div>
             </div>
             
             <button
               onClick={refreshFact}
-              className="group p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-110"
+              className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-105 group"
               title="Next fact"
             >
-              <RefreshCw className="w-4 h-4 text-cyan-400 group-hover:rotate-180 transition-transform duration-500" />
+              <span className="text-xs text-cyan-300 group-hover:text-cyan-200 font-medium whitespace-nowrap">
+                Get to know more
+              </span>
             </button>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-cyan-500/20">
+          <div 
+            className={`bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-cyan-500/20 transition-all duration-300 ${
+              isAnimating ? 'opacity-0 scale-95 rotate-y-90' : 'opacity-100 scale-100 rotate-y-0'
+            }`}
+            style={{
+              transformStyle: 'preserve-3d',
+              transition: 'all 0.3s ease-in-out'
+            }}
+          >
             <p className="text-slate-200 text-sm leading-relaxed">
-              {allFacts[currentFactIndex]}
+              {allFacts[currentFactIndex].text}
             </p>
           </div>
 
