@@ -41,6 +41,32 @@ export interface DailyAnalyticsResponse {
   data: DailyAnalytics;
 }
 
+export interface Schedule {
+  id: number;
+  name: string;
+  filter_mode: 'household_water' | 'drinking_water';
+  start_time: string;
+  duration_minutes: number;
+  days_of_week: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScheduleResponse {
+  schedule: Schedule;
+  next_execution: string | null;
+}
+
+export interface CreateScheduleData {
+  name: string;
+  filter_mode: string;
+  start_time: string;
+  duration_minutes: number;
+  days_of_week: string[];
+  is_active: boolean;
+}
+
 class ApiService {
   private async fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 10000) {
     const controller = new AbortController();
@@ -304,7 +330,35 @@ class ApiService {
   }
 
   // Get current filter mode status from STM32 command endpoint
-  async getFilterStatus(): Promise<{ success: boolean; mode: 'household_water' | 'drinking_water'; message?: string }> {
+  async getFilterStatus(): Promise<{ 
+    success: boolean; 
+    mode: 'household_water' | 'drinking_water'; 
+    message?: string;
+    filter_mode_duration_seconds?: number;
+    filter_mode_started_at?: string;
+    filtration_active?: boolean;
+    total_flow_liters?: number;
+    statistics?: {
+      today?: {
+        total_liters: number;
+        household_water_liters: number;
+        drinking_water_liters: number;
+        total_readings: number;
+      };
+      this_week?: {
+        total_liters: number;
+        household_water_liters: number;
+        drinking_water_liters: number;
+        total_readings: number;
+      };
+      this_month?: {
+        total_liters: number;
+        household_water_liters: number;
+        drinking_water_liters: number;
+        total_readings: number;
+      };
+    };
+  }> {
     try {
       console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/sensors/stm32/command`);
       const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/command`);
@@ -317,13 +371,18 @@ class ApiService {
       const data = await response.json();
       console.log('API: Filter mode status response:', data);
       
-      // Response format: { success: true, data: { filter_mode: "household_water", ... } }
+      // Response format: { success: true, data: { filter_mode: "household_water", statistics: {...} } }
       const filterMode = data.data?.filter_mode || 'household_water';
       
       return {
         success: true,
         mode: filterMode,
-        message: `Current filter mode is ${filterMode}`
+        message: `Current filter mode is ${filterMode}`,
+        filter_mode_duration_seconds: data.data?.filter_mode_duration_seconds,
+        filter_mode_started_at: data.data?.filter_mode_started_at,
+        filtration_active: data.data?.filtration_active,
+        total_flow_liters: data.data?.total_flow_liters || 0,
+        statistics: data.data?.statistics
       };
     } catch (error) {
       console.error('Error fetching filter mode status:', error);
@@ -395,6 +454,120 @@ class ApiService {
         status: 'off',
         message: error instanceof Error ? error.message : 'Failed to fetch filter mode status'
       };
+    }
+  }
+
+  // Schedule Management Methods
+  async getSchedules(activeOnly: boolean = false): Promise<ScheduleResponse[]> {
+    try {
+      const url = activeOnly ? `${API_BASE_URL}/schedules?active_only=true` : `${API_BASE_URL}/schedules`;
+      console.log('API: Fetching schedules from:', url);
+      const response = await this.fetchWithTimeout(url);
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { success: boolean; data: ScheduleResponse[] } = await response.json();
+      console.log('API: Received schedules response:', data);
+      
+      if (data.success && data.data) {
+        return data.data;
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error fetching schedules:', error);
+      throw error;
+    }
+  }
+
+  async createSchedule(scheduleData: CreateScheduleData): Promise<Schedule> {
+    try {
+      console.log('API: Creating schedule with data:', scheduleData);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/schedules`, {
+        method: 'POST',
+        body: JSON.stringify(scheduleData),
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { success: boolean; data: Schedule } = await response.json();
+      console.log('API: Schedule created:', data);
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error creating schedule:', error);
+      throw error;
+    }
+  }
+
+  async updateSchedule(id: number, scheduleData: Partial<CreateScheduleData>): Promise<Schedule> {
+    try {
+      console.log('API: Updating schedule', id, 'with data:', scheduleData);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/schedules/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(scheduleData),
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { success: boolean; data: Schedule } = await response.json();
+      console.log('API: Schedule updated:', data);
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error updating schedule:', error);
+      throw error;
+    }
+  }
+
+  async deleteSchedule(id: number): Promise<void> {
+    try {
+      console.log('API: Deleting schedule', id);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/schedules/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      console.log('API: Schedule deleted successfully');
+    } catch (error) {
+      console.error('Error deleting schedule:', error);
+      throw error;
+    }
+  }
+
+  async toggleScheduleStatus(id: number, isActive: boolean): Promise<Schedule> {
+    try {
+      console.log('API: Toggling schedule', id, 'to', isActive);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/schedules/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ is_active: isActive }),
+      });
+      
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { success: boolean; data: Schedule } = await response.json();
+      console.log('API: Schedule status toggled:', data);
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error toggling schedule status:', error);
+      throw error;
     }
   }
 }
