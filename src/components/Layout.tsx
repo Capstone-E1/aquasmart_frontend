@@ -32,7 +32,21 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-200 dark:bg-primary">
+    <div className="min-h-screen bg-slate-200 dark:bg-primary relative">
+      {/* Global Background Image */}
+      <div 
+        className="fixed inset-0 bg-slate-800"
+        style={{ 
+          backgroundImage: 'url("/background.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0
+        }}
+      >
+        <div className="absolute inset-0 bg-slate-900/30"></div>
+      </div>
+
       <Sidebar 
         isOpen={sidebarOpen} 
         onToggle={toggleSidebar} 
@@ -40,11 +54,11 @@ export function Layout() {
       />
       
       <div className={cn(
-        "transition-all duration-300",
+        "transition-all duration-300 relative z-10",
         !isMobile && (sidebarOpen ? "lg:ml-64" : "lg:ml-16"),
         isMobile && "ml-0"
       )}>
-        <header className="sticky top-0 z-50 bg-white dark:bg-primary-light border-b border-slate-300 dark:border-slate-700 px-4 lg:px-6 py-4 shadow-sm">
+        <header className="sticky top-0 z-50 bg-white/10 dark:bg-slate-900/50 backdrop-blur-xl border-b border-white/20 dark:border-slate-700/50 px-4 lg:px-6 py-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {isMobile && (
