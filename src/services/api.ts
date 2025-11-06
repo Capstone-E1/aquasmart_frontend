@@ -1,5 +1,5 @@
 // API service for AquaSmart backend
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
 
 export interface SensorData {
   device_id: string;
@@ -567,6 +567,89 @@ class ApiService {
       return data.data;
     } catch (error) {
       console.error('Error toggling schedule status:', error);
+      throw error;
+    }
+  }
+
+  // Weather API Methods
+  async getWeatherByCoordinates(lat: number, lon: number): Promise<any> {
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('OpenWeatherMap API key is not configured. Please add VITE_OPENWEATHER_API_KEY to your .env file.');
+    }
+
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+      console.log('Weather API: Fetching weather data for coordinates:', { lat, lon });
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Weather API error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Weather API: Received weather data:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      throw error;
+    }
+  }
+
+  async getWeatherByCity(city: string): Promise<any> {
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('OpenWeatherMap API key is not configured. Please add VITE_OPENWEATHER_API_KEY to your .env file.');
+    }
+
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+      console.log('Weather API: Fetching weather data for city:', city);
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Weather API error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Weather API: Received weather data:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      throw error;
+    }
+  }
+
+  // Get 5 day / 3 hour forecast
+  async getWeatherForecast(lat: number, lon: number): Promise<any> {
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('OpenWeatherMap API key is not configured. Please add VITE_OPENWEATHER_API_KEY to your .env file.');
+    }
+
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+      console.log('Weather API: Fetching forecast data for coordinates:', { lat, lon });
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Weather forecast API error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Weather API: Received forecast data:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching weather forecast:', error);
       throw error;
     }
   }
