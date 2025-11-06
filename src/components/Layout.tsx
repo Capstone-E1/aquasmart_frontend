@@ -44,7 +44,7 @@ export function Layout() {
         !isMobile && (sidebarOpen ? "lg:ml-64" : "lg:ml-16"),
         isMobile && "ml-0"
       )}>
-        <header className="bg-white dark:bg-primary-light border-b border-slate-300 dark:border-slate-700 px-4 lg:px-6 py-4">
+        <header className="sticky top-0 z-50 bg-white dark:bg-primary-light border-b border-slate-300 dark:border-slate-700 px-4 lg:px-6 py-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {isMobile && (
