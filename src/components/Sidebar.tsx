@@ -16,7 +16,8 @@ import {
   ChevronDown,
   ChevronUp,
   Gauge,
-  Calendar
+  Calendar,
+  CloudRain
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -46,6 +47,7 @@ const menuItems: MenuItem[] = [
     ]
   },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
+  { icon: CloudRain, label: 'Weather Condition', path: '/weather' },
   { icon: Calendar, label: 'Schedules', path: '/schedules' },
   { icon: HistoryIcon, label: 'History', path: '/history' },
   { icon: Bell, label: 'Notification', path: '/notification' },
@@ -77,6 +79,12 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
 
   const isSubmenuExpanded = (label: string) => {
     return expandedMenus.includes(label);
+  };
+
+  // Check if any submenu is active
+  const isSubmenuActive = (children?: MenuItem[]) => {
+    if (!children) return false;
+    return children.some(child => child.path === location.pathname);
   };
 
   // Filter menu items based on search query
@@ -214,9 +222,19 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                 {/* Parent Menu Item */}
                 {item.children ? (
                   <button
-                    onClick={() => toggleSubmenu(item.label)}
+                    onClick={() => {
+                      toggleSubmenu(item.label);
+                      // Close sidebar on mobile when clicking collapsed parent menu
+                      if (isMobile && !isSubmenuExpanded(item.label)) {
+                        // Don't close immediately, let user see the submenu
+                      } else if (isMobile && isSubmenuExpanded(item.label)) {
+                        // Close when collapsing submenu on mobile
+                        onToggle();
+                      }
+                    }}
                     className={cn(
-                      "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors",
+                      "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-colors",
+                      isSubmenuActive(item.children) && "bg-accent hover:bg-accent-hover !text-white",
                       !isOpen && "lg:justify-center lg:px-2"
                     )}
                   >
@@ -241,7 +259,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                     className={({ isActive }) =>
                       cn(
                         "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-colors",
-                        isActive && "bg-accent hover:bg-accent-hover text-white",
+                        isActive && "bg-accent hover:bg-accent-hover !text-white",
                         !isOpen && "lg:justify-center lg:px-2"
                       )
                     }
@@ -263,8 +281,8 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                         onClick={isMobile ? onToggle : undefined}
                         className={({ isActive }) =>
                           cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/30 transition-colors text-sm",
-                            isActive && "bg-accent/80 hover:bg-accent text-white"
+                            "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700/30 transition-colors text-sm",
+                            isActive && "bg-accent hover:bg-accent-hover !text-white"
                           )
                         }
                       >
