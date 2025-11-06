@@ -107,3 +107,36 @@ export function useParameterData(parameter: 'ph' | 'turbidity' | 'tds') {
     refetch
   };
 }
+
+// Hook for getting pre and post filtration data for a specific parameter
+export function usePrePostParameterData(parameter: 'ph' | 'turbidity' | 'tds') {
+  const { allData, isLoading, error, refetch } = useSensorData();
+
+  // Get the latest data for pre and post devices
+  const preData = allData.find(data => data.device_id.toLowerCase().includes('stm32_pre'));
+  const postData = allData.find(data => data.device_id.toLowerCase().includes('stm32_post'));
+
+  const preValue = preData ? preData[parameter] : null;
+  const postValue = postData ? postData[parameter] : null;
+
+  const preStatus = preValue !== null ? apiService.getParameterStatus(parameter, preValue) : 'normal';
+  const postStatus = postValue !== null ? apiService.getParameterStatus(parameter, postValue) : 'normal';
+
+  return {
+    pre: {
+      value: preValue,
+      status: preStatus,
+      timestamp: preData?.timestamp,
+      deviceId: preData?.device_id
+    },
+    post: {
+      value: postValue,
+      status: postStatus,
+      timestamp: postData?.timestamp,
+      deviceId: postData?.device_id
+    },
+    isLoading,
+    error,
+    refetch
+  };
+}
