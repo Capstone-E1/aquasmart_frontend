@@ -38,10 +38,10 @@ export function Turbidity() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-2">Turbidity Monitoring</h1>
-          <p className="text-slate-400">Track water clarity and turbidity levels</p>
+          <p className="text-slate-300">Track water clarity and turbidity levels</p>
         </div>
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-          <p className="text-red-400">Error loading turbidity data: {error}</p>
+        <div className="bg-red-500/20 backdrop-blur-lg border border-red-400/40 shadow-lg rounded-lg p-4">
+          <p className="text-red-300">Error loading turbidity data: {error}</p>
         </div>
       </div>
     );
@@ -52,10 +52,10 @@ export function Turbidity() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-2">Turbidity Monitoring</h1>
-          <p className="text-slate-400">Track water clarity and turbidity levels</p>
+          <p className="text-slate-300">Track water clarity and turbidity levels</p>
         </div>
-        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
-          <p className="text-yellow-400">No turbidity data available</p>
+        <div className="bg-yellow-500/20 backdrop-blur-lg border border-yellow-400/40 shadow-lg rounded-lg p-4">
+          <p className="text-yellow-300">No turbidity data available</p>
         </div>
       </div>
     );
@@ -67,7 +67,7 @@ export function Turbidity() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-white mb-2">Turbidity Monitoring</h1>
-          <p className="text-slate-400">Track water clarity and turbidity levels</p>
+          <p className="text-slate-300">Track water clarity and turbidity levels</p>
         </div>
         <button
           onClick={refetch}
@@ -121,7 +121,7 @@ export function Turbidity() {
                   : "DANGER: Turbidity level is extremely high!"
               }
             />
-            <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6">
               <h3 className="text-white font-medium text-lg mb-4">Pre-Filtration Info</h3>
               <div className="space-y-3">
                 <p className="text-slate-300 text-sm">This shows water quality <span className="text-cyan-400 font-semibold">before</span> the filtration process.</p>
@@ -180,7 +180,7 @@ export function Turbidity() {
               }
             />
             
-            <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6">
               <h3 className="text-white font-medium text-lg mb-4">Turbidity Standards</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">

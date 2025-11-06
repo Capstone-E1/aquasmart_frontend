@@ -242,7 +242,7 @@ export function Schedules() {
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               showActiveOnly
                 ? 'bg-accent text-white shadow-lg shadow-accent/30'
-                : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
             }`}
           >
             {showActiveOnly ? 'Active Only' : 'All Schedules'}
@@ -276,7 +276,7 @@ export function Schedules() {
           return (
             <div
               key={schedule.id}
-              className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6 hover:border-slate-500 transition-colors"
+              className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-4 lg:p-6 hover:border-slate-500 transition-colors"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
@@ -345,7 +345,7 @@ export function Schedules() {
                 </div>
 
                 {next_execution && (
-                  <div className="mt-3 pt-3 border-t border-slate-600">
+                  <div className="mt-3 pt-3 border-t border-white/20">
                     <p className="text-xs text-slate-400">
                       Next run: <span className="text-slate-300">{new Date(next_execution).toLocaleString()}</span>
                     </p>
@@ -386,7 +386,7 @@ export function Schedules() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 rounded-xl border border-slate-600 p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-slate-800 rounded-xl border border-white/20 p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-white mb-4">
               {editingSchedule ? 'Edit Schedule' : 'Create Schedule'}
             </h2>
@@ -401,7 +401,7 @@ export function Schedules() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   placeholder="e.g., Morning Drinking Water"
                   required
                 />
@@ -421,7 +421,7 @@ export function Schedules() {
                       className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                         formData.filter_mode === mode.value
                           ? `${mode.color} border-white/30 text-white`
-                          : 'bg-slate-700/30 border-slate-600 text-slate-300 hover:border-slate-500'
+                          : 'bg-slate-700/30 border-white/20 text-slate-300 hover:border-slate-500'
                       }`}
                     >
                       <span className="text-2xl">{mode.icon}</span>
@@ -440,7 +440,7 @@ export function Schedules() {
                   type="time"
                   value={formData.start_time.substring(0, 5)}
                   onChange={(e) => setFormData({ ...formData, start_time: e.target.value + ':00' })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   required
                 />
               </div>
@@ -454,7 +454,7 @@ export function Schedules() {
                   type="number"
                   value={formData.duration_minutes}
                   onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   min="1"
                   required
                 />
@@ -542,7 +542,7 @@ export function Schedules() {
                   id="is_active"
                   checked={formData.is_active}
                   onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="w-4 h-4 text-accent bg-slate-700 border-slate-600 rounded focus:ring-accent"
+                  className="w-4 h-4 text-accent bg-slate-700 border-white/20 rounded focus:ring-accent"
                 />
                 <label htmlFor="is_active" className="text-sm text-slate-300">
                   Activate schedule immediately

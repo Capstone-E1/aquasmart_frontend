@@ -163,12 +163,12 @@ export function Dashboard() {
     return (
       <div className="space-y-4 lg:space-y-6">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-2">Dashboard</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-slate-300 text-sm lg:text-base">Monitor your filtration water quality</p>
         </div>
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error loading sensor data: {error}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Please check if the backend server is running and properly configured in .env file</p>
+        <div className="bg-red-500/20 backdrop-blur-lg border border-red-400/40 rounded-lg shadow-lg p-4">
+          <p className="text-red-300">Error loading sensor data: {error}</p>
+          <p className="text-sm text-slate-300 mt-2">Please check if the backend server is running and properly configured in .env file</p>
         </div>
       </div>
     );
@@ -179,8 +179,8 @@ export function Dashboard() {
       {/* Page Title */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-2">Dashboard</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-slate-300 text-sm lg:text-base">Monitor your filtration water quality</p>
           {latestData && (
             <p className="text-xs text-slate-500 mt-1">
               Last data sensor updated: {new Date(latestData.timestamp).toLocaleString('id-ID')}
@@ -314,7 +314,7 @@ export function Dashboard() {
       </div>
 
       {/* Water Facts Card */}
-      <div className="bg-gradient-to-br from-slate-800/50 via-blue-900/30 to-indigo-900/30 backdrop-blur-sm rounded-xl border border-blue-500/30 p-6 relative overflow-hidden">
+      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl"></div>
@@ -345,7 +345,7 @@ export function Dashboard() {
           </div>
 
           <div 
-            className={`bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-blue-500/20 transition-all duration-300 ${
+            className={`bg-white/5 backdrop-blur-sm rounded-lg p-5 border border-white/20 transition-all duration-300 ${
               isAnimating ? 'opacity-0 scale-95 rotate-y-90' : 'opacity-100 scale-100 rotate-y-0'
             }`}
             style={{
@@ -390,7 +390,7 @@ export function Dashboard() {
         ) : (
           <div className="space-y-4">
             {/* Summary Section */}
-            <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
               <h3 className="text-white font-medium text-base mb-4 flex items-center">
                 <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
                 Daily Summary
@@ -416,7 +416,7 @@ export function Dashboard() {
             </div>
 
             {/* Water Flow Statistics */}
-            <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
               <h3 className="text-white font-medium text-base mb-4 flex items-center">
                 <span className="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
                 Water Flow Statistics
@@ -486,7 +486,7 @@ export function Dashboard() {
             {/* Best/Worst Values Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               {/* Best Values */}
-              <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
                 <h3 className="text-white font-medium text-base mb-4 flex items-center">
                   <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                   Best Values Today
@@ -514,7 +514,7 @@ export function Dashboard() {
               </div>
 
               {/* Worst Values */}
-              <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
                 <h3 className="text-white font-medium text-base mb-4 flex items-center">
                   <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                   Worst Values Today

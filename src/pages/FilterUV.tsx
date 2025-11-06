@@ -340,7 +340,7 @@ export function FilterUV() {
       {/* Confirmation Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 border border-slate-600 rounded-xl p-6 max-w-md w-full shadow-2xl">
+          <div className="bg-slate-800 border border-white/20 rounded-xl p-6 max-w-md w-full shadow-2xl">
             <h3 className="text-xl font-bold text-white mb-4">
               Confirm Filter Mode Change
             </h3>
@@ -371,7 +371,7 @@ export function FilterUV() {
                   value={targetLiters}
                   onChange={(e) => setTargetLiters(e.target.value)}
                   placeholder="e.g., 50"
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-slate-700 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   min="0"
                   step="0.1"
                 />
@@ -515,7 +515,7 @@ export function FilterUV() {
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
               ? 'bg-accent border-accent text-white'
-              : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
+              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
@@ -535,7 +535,7 @@ export function FilterUV() {
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
               ? 'bg-accent border-accent text-white'
-              : 'bg-primary-light/50 border-slate-600 text-slate-400 hover:text-white hover:border-slate-500'
+              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
@@ -553,7 +553,7 @@ export function FilterUV() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
         {/* Left Side - Water Uses */}
-        <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
           <h2 className="text-xl font-bold text-white mb-4">
             {activeFilter === null ? 'Loading...' : 
              activeFilter === 'household' ? 'Household Water' : 'Drinking Water'}
@@ -586,7 +586,7 @@ export function FilterUV() {
         </div>
 
         {/* Right Side - Filtration Process */}
-        <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
           <h2 className="text-xl font-bold text-white mb-4">
             {activeFilter === 'household' ? '7 - Segment Filtration :' : '7 - Segment Filtration + UV Purification :'}
           </h2>
@@ -607,7 +607,7 @@ export function FilterUV() {
 
             {/* Advanced Purification Steps (only for drinking water) */}
             {activeFilter === 'drinking' && (
-              <div className="mt-6 pt-4 border-t border-slate-600">
+              <div className="mt-6 pt-4 border-t border-white/20">
                 {purificationSteps.map((step, index) => (
                   <div key={index} className="flex items-start gap-3 mb-3">
                     <div className="flex items-center gap-2">
@@ -705,7 +705,7 @@ export function FilterUV() {
       </div>
 
       {/* System Status */}
-      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
         <h2 className="text-xl font-bold text-white mb-4">System Status</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

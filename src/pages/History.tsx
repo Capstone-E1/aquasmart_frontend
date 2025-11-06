@@ -208,7 +208,7 @@ export function History() {
       </div>
 
       {/* Controls */}
-      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6">
+      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           {/* Sensor Reading Filter Buttons */}
           <div className="flex items-center gap-2 flex-1">
@@ -219,7 +219,7 @@ export function History() {
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'all'
                     ? 'bg-accent text-white shadow-lg shadow-accent/30'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
                 All Sensors
@@ -229,7 +229,7 @@ export function History() {
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'pre'
                     ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
                 Pre-Filter
@@ -239,7 +239,7 @@ export function History() {
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'post'
                     ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
                 Post-Filter
@@ -252,7 +252,7 @@ export function History() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-4 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+              className="pl-4 pr-8 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">All Status</option>
               <option value="normal">Normal</option>
@@ -286,7 +286,7 @@ export function History() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-600">
+              <tr className="border-b border-white/20">
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">Sensor Reading</th>
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">Time</th>
                 <th className="text-left py-3 px-4 text-slate-300 font-medium">Date</th>
@@ -330,7 +330,7 @@ export function History() {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-slate-600 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg border border-white/20 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -354,7 +354,7 @@ export function History() {
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-lg border border-slate-600 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg border border-white/20 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

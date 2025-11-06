@@ -58,7 +58,7 @@ export function Notification() {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
           <div className="text-center py-12">
             <Bell className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">No Notifications</h3>
@@ -141,7 +141,7 @@ export function Settings() {
         <p className="text-slate-400">Configure system preferences and parameters</p>
       </div>
 
-      <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6">
+      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
         <div className="text-center py-12">
           <div className="text-6xl mb-4">⚙️</div>
           <h3 className="text-xl font-semibold text-white mb-2">System Settings</h3>

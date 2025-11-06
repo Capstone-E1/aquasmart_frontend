@@ -210,48 +210,12 @@ export function Weather() {
   };
 
   if (locationLoading || (weatherLoading && !weatherData)) {
-    return (
-      <div className="relative min-h-screen -m-6 lg:-m-8 overflow-hidden">
-        {/* Background Image - Loading State */}
-        <div 
-          className="absolute inset-0 bg-slate-800"
-          style={{ 
-            backgroundImage: 'url("/background.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        >
-          <div className="absolute inset-0 bg-slate-900/30"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 p-6 lg:p-8">
-          <LoadingSkeleton variant="page" />
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton variant="page" />;
   }
 
   if (locationError) {
     return (
-      <div className="relative min-h-screen -m-6 lg:-m-8 overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-slate-800"
-          style={{ 
-            backgroundImage: 'url("/background.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        >
-          <div className="absolute inset-0 bg-slate-900/30"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 p-6 lg:p-8 space-y-4 lg:space-y-6">
+      <div className="space-y-4 lg:space-y-6">
           <div>
             <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Weather Condition</h1>
             <p className="text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
@@ -273,29 +237,13 @@ export function Weather() {
               </div>
             </div>
           </div>
-        </div>
       </div>
     );
   }
 
   if (weatherError) {
     return (
-      <div className="relative min-h-screen -m-6 lg:-m-8 overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-slate-800"
-          style={{ 
-            backgroundImage: 'url("/background.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        >
-          <div className="absolute inset-0 bg-slate-900/30"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 p-6 lg:p-8 space-y-4 lg:space-y-6">
+      <div className="space-y-4 lg:space-y-6">
           <div>
             <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Weather Condition</h1>
             <p className="text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
@@ -317,7 +265,6 @@ export function Weather() {
               </div>
             </div>
           </div>
-        </div>
       </div>
     );
   }
@@ -327,22 +274,7 @@ export function Weather() {
   }
 
   return (
-    <div className="relative min-h-screen -m-6 lg:-m-8 overflow-hidden">
-      <div 
-        className="absolute inset-0 bg-slate-800"
-        style={{ 
-          backgroundImage: 'url("/background.jpg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
-        }}
-      >
-        <div className="absolute inset-0 bg-slate-900/30"></div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 p-6 lg:p-8 space-y-4 lg:space-y-6">
+    <div className="space-y-4 lg:space-y-6">
         {/* Page Title */}
         <div className="flex justify-between items-start">
         <div>
@@ -692,7 +624,6 @@ export function Weather() {
           )}
         </div>
       )}
-      </div>
     </div>
   );
 }
