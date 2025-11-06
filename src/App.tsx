@@ -11,6 +11,7 @@ import { FilterUV } from './pages/FilterUV';
 import { Schedules } from './pages/Schedules';
 import { Settings } from './pages/Settings';
 import { Notification } from './pages/OtherPages';
+import { Weather } from './pages/Weather';
 
 function DefaultRoute() {
   const { settings } = useSettings();
@@ -37,6 +38,7 @@ function App() {
           <Route path="turbidity" element={<Turbidity />} />
           <Route path="tds" element={<TDS />} />
           <Route path="filter-uv" element={<FilterUV />} />
+          <Route path="weather" element={<Weather />} />
           <Route path="schedules" element={<Schedules />} />
           <Route path="history" element={<History />} />
           <Route path="notification" element={<Notification />} />
