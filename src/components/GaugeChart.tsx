@@ -44,7 +44,7 @@ export function GaugeChart({
   const colorClass = colorClasses[color];
 
   return (
-    <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-4 lg:p-6 flex flex-col">
+    <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6 flex flex-col">
       <div className="mb-4">
         <h3 className="text-white font-medium text-base lg:text-lg">{title}</h3>
       </div>

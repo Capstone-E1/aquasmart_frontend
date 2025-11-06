@@ -41,7 +41,7 @@ export function MetricCard({ title, value, unit, status, color, isBest }: Metric
   const colorClass = colorClasses[color];
   
   return (
-    <div className="bg-primary-light/50 backdrop-blur-sm rounded-xl border border-slate-600 p-6 hover:border-slate-500 transition-colors">
+    <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6 hover:border-white/30 transition-colors">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
