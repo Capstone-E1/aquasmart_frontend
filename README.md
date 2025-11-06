@@ -6,10 +6,12 @@ Dashboard web modern untuk monitoring kualitas air secara real-time dengan antar
 
 - **🌊 Real-time Monitoring** - Monitor pH, turbidity, TDS, dan temperature secara real-time
 - **📊 Visual Analytics** - Gauge charts dan metric cards yang interaktif
-- **🎯 Responsive Design** - Optimal di desktop, tablet, dan mobile
+- **�️ Weather Integration** - Monitor cuaca lokal dan auto-schedule saat hujan
+- **�🎯 Responsive Design** - Optimal di desktop, tablet, dan mobile
 - **🌙 Dark Theme** - Modern dark theme dengan glass morphism effects
 - **🔄 Router Navigation** - Single Page Application dengan smooth transitions
 - **📱 Mobile-First** - Sidebar yang bisa ditoggle untuk mobile experience
+- **🤖 Smart Automation** - Otomatis buat schedule filtrasi saat hujan terdeteksi
 
 ## 🛠 Tech Stack
 
@@ -30,6 +32,10 @@ Dashboard web modern untuk monitoring kualitas air secara real-time dengan antar
 
 ### Installation
 
+> **⚠️ PENTING:** Untuk setup lengkap termasuk konfigurasi environment variables, baca [SETUP.md](./SETUP.md)
+
+**Quick Start:**
+
 1. Clone repository:
 ```bash
 git clone https://github.com/Capstone-E1/aquasmart_frontend.git
@@ -41,12 +47,28 @@ cd aquasmart_frontend
 npm install
 ```
 
-3. Start development server:
+3. Setup environment variables:
+```bash
+cp .env.example .env
+```
+
+4. Edit file `.env` dan tambahkan konfigurasi Anda:
+```bash
+# Backend API URL
+VITE_API_BASE_URL=http://localhost:8080/api/v1
+
+# OpenWeatherMap API Key
+VITE_OPENWEATHER_API_KEY=your_actual_api_key_here
+```
+
+5. Start development server:
 ```bash
 npm run dev
 ```
 
-4. Open browser dan buka http://localhost:5173
+6. Open browser dan buka http://localhost:5173
+
+📖 **Baca [SETUP.md](./SETUP.md) untuk instruksi lengkap dan troubleshooting!**
 
 ## 📦 Build for Production
 
@@ -78,8 +100,8 @@ npm run build
 | `/ph-level` | pH Level | Detail monitoring pH level |
 | `/turbidity` | Turbidity | Detail monitoring turbidity |
 | `/tds` | TDS | Detail monitoring Total Dissolved Solids |
-| `/temperature` | Temperature | Detail monitoring temperature |
 | `/filter-uv` | Filter + UV | Control sistem filter dan UV |
+| `/weather` | Weather Condition | Weather monitoring dengan auto-schedule |
 | `/uv-timer` | UV Timer | Timer dan scheduling UV |
 | `/history` | History | Historical data dan trends |
 | `/notification` | Notification | Alert dan notifikasi sistem |
@@ -104,6 +126,22 @@ npm run build
 - **Color Coding** - Purple (pH), Red (Turbidity), Green (TDS), Blue (Temperature)
 - **Status Messages** - Contextual status descriptions
 - **Responsive Design** - Optimal viewing di berbagai screen sizes
+
+### Weather Integration 🌦️
+- **Location Detection** - Otomatis deteksi lokasi pengguna menggunakan browser geolocation
+- **Real-time Weather** - Data cuaca dari OpenWeatherMap API
+- **Comprehensive Data** - Temperature, feels like, humidity, pressure, wind, clouds, visibility
+- **Rain Detection** - Automatic detection hujan dengan alert banner
+- **Smart Automation** - Auto-create filtration schedule saat hujan terdeteksi
+- **Sun Times** - Sunrise dan sunset untuk lokasi pengguna
+- **Auto-refresh** - Data cuaca update otomatis setiap 10 menit
+
+**Why Weather Integration?**
+Hujan dapat mempengaruhi kualitas air dan meningkatkan turbidity. Dengan monitoring cuaca otomatis, sistem dapat:
+- Mendeteksi kapan hujan terjadi
+- Otomatis membuat schedule filtrasi drinking water
+- Memastikan air tetap bersih saat kondisi cuaca buruk
+- Preventive action untuk menjaga kualitas air
 
 ## 🎨 Design System
 
