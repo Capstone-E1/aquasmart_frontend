@@ -168,7 +168,7 @@ export function Dashboard() {
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-600 dark:text-red-400">Error loading sensor data: {error}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Please check if the backend server is running on localhost:8080</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Please check if the backend server is running and properly configured in .env file</p>
         </div>
       </div>
     );
@@ -277,24 +277,24 @@ export function Dashboard() {
           <Card
             title="Start Your Water Filtration"
             description="Keep your water clean and safe with UV filtration. Monitor and control your filtration system in real-time for optimal water quality."
-            className="h-full min-h-[500px] flex flex-col justify-between p-8 bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-400 text-white shadow-2xl"
+            className="h-full min-h-[500px] flex flex-col justify-between p-8 bg-gradient-to-br from-slate-800 via-blue-900 to-indigo-900 text-white shadow-2xl border border-blue-500/20"
           >
             <div className="flex-1 flex flex-col justify-center items-center space-y-8">
-              <div className="w-24 h-24 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-white/40 shadow-lg">
-                <svg className="w-12 h-12 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-24 h-24 bg-blue-500/30 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-blue-400/40 shadow-lg">
+                <svg className="w-12 h-12 text-blue-300 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               
               {/* Features */}
               <div className="grid grid-cols-2 gap-4 w-full mt-6">
-                <div className="bg-white/20 backdrop-blur-lg rounded-xl p-4 text-center border border-white/30 shadow-xl">
-                  <p className="text-2xl font-bold text-white drop-shadow-md">UV</p>
-                  <p className="text-xs text-white/90">Sterilization</p>
+                <div className="bg-blue-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-blue-400/30 shadow-xl">
+                  <p className="text-2xl font-bold text-blue-200 drop-shadow-md">UV</p>
+                  <p className="text-xs text-blue-300/90">Sterilization</p>
                 </div>
-                <div className="bg-white/20 backdrop-blur-lg rounded-xl p-4 text-center border border-white/30 shadow-xl">
-                  <p className="text-2xl font-bold text-white drop-shadow-md">Safe</p>
-                  <p className="text-xs text-white/90">Water Quality</p>
+                <div className="bg-indigo-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-indigo-400/30 shadow-xl">
+                  <p className="text-2xl font-bold text-indigo-200 drop-shadow-md">Safe</p>
+                  <p className="text-xs text-indigo-300/90">Water Quality</p>
                 </div>
               </div>
             </div>
@@ -303,49 +303,49 @@ export function Dashboard() {
             <div className="flex flex-col items-center space-y-3 mt-8">
               <button 
                 onClick={() => navigate('/filter-uv')}
-                className="w-full px-8 py-4 bg-white/30 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-white/50 hover:bg-white/40 hover:scale-105 transform transition-all duration-200 shadow-xl"
+                className="w-full px-8 py-4 bg-blue-500/30 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-blue-400/50 hover:bg-blue-500/40 hover:scale-105 transform transition-all duration-200 shadow-xl"
               >
                 Start UV Filtration
               </button>
-              <p className="text-sm text-white/90 drop-shadow">Begin filtering your water now</p>
+              <p className="text-sm text-blue-200/90 drop-shadow">Begin filtering your water now</p>
             </div>
           </Card>
         </div>
       </div>
 
       {/* Water Facts Card */}
-      <div className="bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 backdrop-blur-sm rounded-xl border border-cyan-500/30 p-6 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800/50 via-blue-900/30 to-indigo-900/30 backdrop-blur-sm rounded-xl border border-blue-500/30 p-6 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl"></div>
         
         <div className="relative">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-cyan-500/20 rounded-lg">
-                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
               <div>
                 <h3 className="text-white font-semibold text-lg">Did You Know?</h3>
-                <p className="text-xs text-cyan-300">{allFacts[currentFactIndex].category}</p>
+                <p className="text-xs text-blue-300">{allFacts[currentFactIndex].category}</p>
               </div>
             </div>
             
             <button
               onClick={refreshFact}
-              className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-105 group"
+              className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105 group"
               title="Next fact"
             >
-              <span className="text-xs text-cyan-300 group-hover:text-cyan-200 font-medium whitespace-nowrap">
+              <span className="text-xs text-blue-300 group-hover:text-blue-200 font-medium whitespace-nowrap">
                 Get to know more
               </span>
             </button>
           </div>
 
           <div 
-            className={`bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-cyan-500/20 transition-all duration-300 ${
+            className={`bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-blue-500/20 transition-all duration-300 ${
               isAnimating ? 'opacity-0 scale-95 rotate-y-90' : 'opacity-100 scale-100 rotate-y-0'
             }`}
             style={{
@@ -365,7 +365,7 @@ export function Dashboard() {
                   key={i}
                   className={`h-1 rounded-full transition-all duration-300 ${
                     i === Math.floor((currentFactIndex / allFacts.length) * 5)
-                      ? 'w-8 bg-cyan-400'
+                      ? 'w-8 bg-blue-400'
                       : 'w-2 bg-slate-600'
                   }`}
                 />
