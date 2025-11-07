@@ -67,6 +67,121 @@ export interface CreateScheduleData {
   is_active: boolean;
 }
 
+// ML Feature Interfaces
+export interface Anomaly {
+  id: number;
+  device_id: string;
+  timestamp: string;
+  parameter_type: string;
+  value: number;
+  anomaly_type: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  z_score: number;
+  is_resolved: boolean;
+  is_false_positive: boolean;
+  resolved_at?: string;
+  created_at: string;
+}
+
+export interface AnomalyStats {
+  total_anomalies: number;
+  last_24_hours: number;
+  last_7_days: number;
+  by_severity: Record<string, number>;
+  by_type: Record<string, number>;
+  by_metric: Record<string, number>;
+  false_positive_rate: number;
+  most_affected_device: string;
+}
+
+export interface FilterHealth {
+  id?: number;
+  device_id: string;
+  filter_mode: string;
+  health_score: number;
+  predicted_days_remaining: number;
+  estimated_replacement: string;
+  current_efficiency: number;
+  average_efficiency: number;
+  efficiency_trend: string;
+  turbidity_reduction: number;
+  tds_reduction: number;
+  ph_stabilization: number;
+  total_flow_processed?: number;
+  filter_age_days?: number;
+  maintenance_required: boolean;
+  replacement_urgent: boolean;
+  recommendations: string[];
+  last_calculated: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SensorBaseline {
+  device_id: string;
+  parameter_type: string;
+  mean: number;
+  std_dev: number;
+  min: number;
+  max: number;
+  sample_count: number;
+  last_updated: string;
+}
+
+export interface MLDashboard {
+  anomalies: {
+    recent: Anomaly[] | null;
+    stats: AnomalyStats;
+    unresolved: Anomaly[] | null;
+    unresolved_count: number;
+  };
+  filter_health: FilterHealth;
+  system_status: {
+    last_updated: string;
+    ml_features_enabled: boolean;
+  };
+}
+
+// Sensor Prediction Interfaces (matches backend PascalCase response)
+export interface SensorPrediction {
+  Timestamp: string;
+  PredictedFlow: number;
+  PredictedPh: number;
+  PredictedTurbidity: number;
+  PredictedTDS: number;
+  ConfidenceScore: number;
+  Method: string;
+}
+
+export interface PredictionGenerateResponse {
+  message: string;
+  device_id: string;
+  filter_mode: string;
+  predictions_count: number;
+  execution_time_ms: number;
+  predictions: SensorPrediction[];
+  historical_data_used: number;
+}
+
+export interface PredictionSystemStatus {
+  prediction_system_status: {
+    running: boolean;
+    real_time_anomaly_enabled: boolean;
+    auto_prediction_update_enabled: boolean;
+    baseline_update_interval: string;
+    health_analysis_interval: string;
+    prediction_update_interval: string;
+  };
+  features: {
+    autonomous_updates: string;
+    trigger_on_new_data: string;
+    scheduled_updates: string;
+    forecast_horizon: string;
+    prediction_method: string;
+  };
+}
+
 class ApiService {
   private async fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 10000) {
     const controller = new AbortController();
@@ -629,7 +744,7 @@ class ApiService {
   // Get 5 day / 3 hour forecast
   async getWeatherForecast(lat: number, lon: number): Promise<any> {
     const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
-    
+
     if (!apiKey) {
       throw new Error('OpenWeatherMap API key is not configured. Please add VITE_OPENWEATHER_API_KEY to your .env file.');
     }
@@ -637,19 +752,351 @@ class ApiService {
     try {
       const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
       console.log('Weather API: Fetching forecast data for coordinates:', { lat, lon });
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Weather forecast API error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log('Weather API: Received forecast data:', data);
-      
+
       return data;
     } catch (error) {
       console.error('Error fetching weather forecast:', error);
+      throw error;
+    }
+  }
+
+  // ML Feature Methods
+  async getMLDashboard(): Promise<MLDashboard> {
+    try {
+      console.log('ML API: Fetching ML dashboard from:', `${API_BASE_URL}/ml/dashboard`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/dashboard`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: MLDashboard = await response.json();
+      console.log('ML API: Received ML dashboard response:', data);
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching ML dashboard:', error);
+      throw error;
+    }
+  }
+
+  async getFilterHealth(deviceId: string = 'filter_system'): Promise<FilterHealth> {
+    try {
+      console.log('ML API: Fetching filter health for device:', deviceId);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/filter/health?device_id=${deviceId}`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: FilterHealth } = await response.json();
+      console.log('ML API: Received filter health response:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      throw new Error('Invalid filter health response');
+    } catch (error) {
+      console.error('Error fetching filter health:', error);
+      throw error;
+    }
+  }
+
+  async analyzeFilterHealth(deviceId: string = 'filter_system'): Promise<FilterHealth> {
+    try {
+      console.log('ML API: Triggering filter health analysis for device:', deviceId);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/filter/analyze`, {
+        method: 'POST',
+        body: JSON.stringify({ device_id: deviceId }),
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: FilterHealth } = await response.json();
+      console.log('ML API: Filter health analysis complete:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      throw new Error('Invalid filter health analysis response');
+    } catch (error) {
+      console.error('Error analyzing filter health:', error);
+      throw error;
+    }
+  }
+
+  async getAnomalies(params?: {
+    limit?: number;
+    deviceId?: string;
+    severity?: 'low' | 'medium' | 'high' | 'critical';
+  }): Promise<Anomaly[]> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.limit) queryParams.set('limit', params.limit.toString());
+      if (params?.deviceId) queryParams.set('device_id', params.deviceId);
+      if (params?.severity) queryParams.set('severity', params.severity);
+
+      const url = `${API_BASE_URL}/ml/anomalies${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+      console.log('ML API: Fetching anomalies from:', url);
+
+      const response = await this.fetchWithTimeout(url);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: Anomaly[] } = await response.json();
+      console.log('ML API: Received anomalies response:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching anomalies:', error);
+      throw error;
+    }
+  }
+
+  async getUnresolvedAnomalies(): Promise<Anomaly[]> {
+    try {
+      console.log('ML API: Fetching unresolved anomalies from:', `${API_BASE_URL}/ml/anomalies/unresolved`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/anomalies/unresolved`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: Anomaly[] } = await response.json();
+      console.log('ML API: Received unresolved anomalies response:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching unresolved anomalies:', error);
+      throw error;
+    }
+  }
+
+  async getAnomalyStats(): Promise<AnomalyStats> {
+    try {
+      console.log('ML API: Fetching anomaly stats from:', `${API_BASE_URL}/ml/anomalies/stats`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/anomalies/stats`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: AnomalyStats } = await response.json();
+      console.log('ML API: Received anomaly stats response:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      throw new Error('Invalid anomaly stats response');
+    } catch (error) {
+      console.error('Error fetching anomaly stats:', error);
+      throw error;
+    }
+  }
+
+  async resolveAnomaly(anomalyId: number): Promise<void> {
+    try {
+      console.log('ML API: Resolving anomaly:', anomalyId);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/anomalies/${anomalyId}/resolve`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('ML API: Anomaly resolved successfully');
+    } catch (error) {
+      console.error('Error resolving anomaly:', error);
+      throw error;
+    }
+  }
+
+  async markAnomalyFalsePositive(anomalyId: number): Promise<void> {
+    try {
+      console.log('ML API: Marking anomaly as false positive:', anomalyId);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/anomalies/${anomalyId}/false-positive`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('ML API: Anomaly marked as false positive successfully');
+    } catch (error) {
+      console.error('Error marking anomaly as false positive:', error);
+      throw error;
+    }
+  }
+
+  async detectAnomalies(deviceId?: string): Promise<void> {
+    try {
+      console.log('ML API: Triggering anomaly detection for device:', deviceId || 'all');
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/anomalies/detect`, {
+        method: 'POST',
+        body: deviceId ? JSON.stringify({ device_id: deviceId }) : undefined,
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('ML API: Anomaly detection triggered successfully');
+    } catch (error) {
+      console.error('Error triggering anomaly detection:', error);
+      throw error;
+    }
+  }
+
+  async getBaselines(): Promise<SensorBaseline[]> {
+    try {
+      console.log('ML API: Fetching baselines from:', `${API_BASE_URL}/ml/baselines`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/baselines`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: SensorBaseline[] } = await response.json();
+      console.log('ML API: Received baselines response:', data);
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching baselines:', error);
+      throw error;
+    }
+  }
+
+  async calculateBaselines(deviceId?: string): Promise<void> {
+    try {
+      console.log('ML API: Calculating baselines for device:', deviceId || 'all');
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/baselines/calculate`, {
+        method: 'POST',
+        body: deviceId ? JSON.stringify({ device_id: deviceId }) : undefined,
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('ML API: Baseline calculation triggered successfully');
+    } catch (error) {
+      console.error('Error calculating baselines:', error);
+      throw error;
+    }
+  }
+
+  // Sensor Prediction Methods
+  async generatePredictions(params?: {
+    deviceId?: string;
+    filterMode?: 'drinking_water' | 'household_water';
+  }): Promise<PredictionGenerateResponse> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.deviceId) queryParams.set('device_id', params.deviceId);
+      if (params?.filterMode) queryParams.set('filter_mode', params.filterMode);
+
+      const url = `${API_BASE_URL}/ml/predictions/generate${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+      console.log('ML API: Generating predictions from:', url);
+
+      const response = await this.fetchWithTimeout(url, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const data: PredictionGenerateResponse = await response.json();
+      console.log('ML API: Received predictions response:', data);
+
+      return data;
+    } catch (error) {
+      console.error('Error generating predictions:', error);
+      throw error;
+    }
+  }
+
+  async updatePredictions(): Promise<{ message: string; status: string; timestamp: string }> {
+    try {
+      console.log('ML API: Triggering prediction update from:', `${API_BASE_URL}/ml/predictions/update`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/predictions/update`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('ML API: Prediction update triggered:', data);
+
+      return data;
+    } catch (error) {
+      console.error('Error updating predictions:', error);
+      throw error;
+    }
+  }
+
+  async getPredictionStatus(): Promise<PredictionSystemStatus> {
+    try {
+      console.log('ML API: Fetching prediction status from:', `${API_BASE_URL}/ml/predictions/status`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/predictions/status`);
+
+      if (!response.ok) {
+        console.error('ML API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: PredictionSystemStatus = await response.json();
+      console.log('ML API: Received prediction status response:', data);
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching prediction status:', error);
       throw error;
     }
   }

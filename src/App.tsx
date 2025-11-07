@@ -12,6 +12,7 @@ import { Schedules } from './pages/Schedules';
 import { Settings } from './pages/Settings';
 import { Notification } from './pages/OtherPages';
 import { Weather } from './pages/Weather';
+import { MLDashboard } from './pages/MLDashboard';
 
 function DefaultRoute() {
   const { settings } = useSettings();
@@ -34,6 +35,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<DefaultRoute />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="ai-predictions" element={<MLDashboard />} />
           <Route path="ph-level" element={<PHLevel />} />
           <Route path="turbidity" element={<Turbidity />} />
           <Route path="tds" element={<TDS />} />

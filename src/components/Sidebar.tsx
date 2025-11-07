@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Droplets, 
-  Waves, 
-  FlaskConical, 
+import {
+  LayoutDashboard,
+  Droplets,
+  Waves,
+  FlaskConical,
   Zap,
   History as HistoryIcon,
   Bell,
@@ -17,7 +17,8 @@ import {
   ChevronUp,
   Gauge,
   Calendar,
-  CloudRain
+  CloudRain,
+  Brain
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -35,9 +36,9 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { 
-    icon: LayoutDashboard, 
-    label: 'Dashboard', 
+  {
+    icon: LayoutDashboard,
+    label: 'Dashboard',
     path: '/dashboard',
     children: [
       { icon: Gauge, label: 'All Parameters', path: '/dashboard' },
@@ -46,6 +47,7 @@ const menuItems: MenuItem[] = [
       { icon: FlaskConical, label: 'TDS', path: '/tds' }
     ]
   },
+  { icon: Brain, label: 'AI Predictions', path: '/ai-predictions' },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
   { icon: CloudRain, label: 'Weather Condition', path: '/weather' },
   { icon: Calendar, label: 'Schedules', path: '/schedules' },
