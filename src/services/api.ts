@@ -329,7 +329,7 @@ class ApiService {
     }
   }
 
-  // Get current filter mode status from STM32 command endpoint
+  // Get current filter mode status from commands/filter endpoint
   async getFilterStatus(): Promise<{ 
     success: boolean; 
     mode: 'household_water' | 'drinking_water'; 
@@ -338,6 +338,7 @@ class ApiService {
     filter_mode_started_at?: string;
     filtration_active?: boolean;
     total_flow_liters?: number;
+    active_filters?: string[];
     statistics?: {
       today?: {
         total_liters: number;
@@ -360,8 +361,8 @@ class ApiService {
     };
   }> {
     try {
-      console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/sensors/stm32/command`);
-      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/stm32/command`);
+      console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/commands/filter`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/commands/filter`);
       
       if (!response.ok) {
         console.error('API: HTTP Error:', response.status, response.statusText);
@@ -371,18 +372,21 @@ class ApiService {
       const data = await response.json();
       console.log('API: Filter mode status response:', data);
       
-      // Response format: { success: true, data: { filter_mode: "household_water", statistics: {...} } }
-      const filterMode = data.data?.filter_mode || 'household_water';
+      // Response format: { success: true, data: { current_mode: "drinking_water", filter_mode_tracking: {...} } }
+      const filterMode = data.data?.current_mode || 'household_water';
+      const tracking = data.data?.filter_mode_tracking || {};
+      const activeFilters = data.data?.active_filters || [];
       
       return {
         success: true,
         mode: filterMode,
         message: `Current filter mode is ${filterMode}`,
-        filter_mode_duration_seconds: data.data?.filter_mode_duration_seconds,
-        filter_mode_started_at: data.data?.filter_mode_started_at,
+        filter_mode_duration_seconds: tracking.duration_seconds,
+        filter_mode_started_at: tracking.started_at,
         filtration_active: data.data?.filtration_active,
-        total_flow_liters: data.data?.total_flow_liters || 0,
-        statistics: data.data?.statistics
+        total_flow_liters: tracking.total_flow_liters || 0,
+        active_filters: activeFilters,
+        statistics: tracking.statistics
       };
     } catch (error) {
       console.error('Error fetching filter mode status:', error);

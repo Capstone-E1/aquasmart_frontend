@@ -12,6 +12,7 @@ export function FilterUV() {
   const [filterDuration, setFilterDuration] = useState<number>(0);
   const [filterStartedAt, setFilterStartedAt] = useState<string | null>(null);
   const [filtrationActive, setFiltrationActive] = useState<boolean>(false);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [totalFlowLiters, setTotalFlowLiters] = useState<{
     today: { household: number; drinking: number; };
     week: { household: number; drinking: number; };
@@ -60,6 +61,11 @@ export function FilterUV() {
         if (result.success) {
           const newFilter = result.mode === 'drinking_water' ? 'drinking' : 'household';
           setActiveFilter(newFilter);
+          
+          // Update active filters list
+          if (result.active_filters) {
+            setActiveFilters(result.active_filters);
+          }
           
           // Update additional filter stats
           if (result.filter_mode_duration_seconds !== undefined) {
@@ -491,6 +497,43 @@ export function FilterUV() {
           </p>
         </div>
       </div>
+
+      {/* Active Filters Display */}
+      {activeFilters && activeFilters.length > 0 && (
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <Layers className="w-6 h-6 text-blue-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Active Filters</h2>
+              <p className="text-sm text-slate-300">Currently running filtration layers</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {activeFilters.map((filter, index) => (
+              <div 
+                key={index}
+                className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30 p-4 hover:border-blue-400/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="flex-1">
+                    <p className="text-white font-medium text-sm">{filter}</p>
+                    <p className="text-xs text-slate-400">Active</p>
+                  </div>
+                  <div className="p-1.5 bg-green-500/20 rounded">
+                    <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Cooldown Warning (if active) */}
       {cooldownSeconds > 0 && (
