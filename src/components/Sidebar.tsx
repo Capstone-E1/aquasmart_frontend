@@ -148,7 +148,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
           <div className="p-4 border-b border-white/10 dark:border-slate-700/50">
             <div className="flex items-center justify-between">
               {isOpen && (
-                <h1 className="text-xl font-bold text-white">AquaSmart</h1>
+                <img src="/aquasmart-logo.png" alt="AquaSmart" className="h-8 object-contain" />
               )}
               
               {/* Close button for mobile */}
