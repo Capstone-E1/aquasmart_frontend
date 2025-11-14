@@ -70,10 +70,11 @@ export function Layout() {
                 </button>
               )}
               
-              <h1 className="text-slate-800 dark:text-white font-medium text-sm lg:text-base">
-                <span className="hidden sm:inline">AquaSmart Application Capstone Project E-01</span>
-                <span className="sm:hidden">AquaSmart</span>
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-slate-900 dark:text-white font-semibold text-sm lg:text-base drop-shadow-lg">
+                  <span className="hidden sm:inline">Application Capstone Project E-01</span>
+                </h1>
+              </div>
             </div>
             
             <div className="flex items-center gap-4">
