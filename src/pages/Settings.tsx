@@ -172,7 +172,7 @@ export function Settings() {
                     onChange={(e) => handleTempUpdate({ 
                       appearance: { ...tempSettings.appearance, chartStyle: e.target.value as any } 
                     })}
-                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
                     <option value="line">Line Chart</option>
                     <option value="area">Area Chart</option>
@@ -196,7 +196,7 @@ export function Settings() {
                     onChange={(e) => handleTempUpdate({ 
                       data: { ...tempSettings.data, refreshInterval: parseInt(e.target.value) } 
                     })}
-                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
                     <option value="5000">5 seconds</option>
                     <option value="10000">10 seconds</option>
@@ -219,7 +219,7 @@ export function Settings() {
                     onChange={(e) => handleTempUpdate({ 
                       data: { ...tempSettings.data, exportFormat: e.target.value as any } 
                     })}
-                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
                     <option value="csv">CSV (Comma-separated)</option>
                     <option value="json">JSON</option>
@@ -239,7 +239,7 @@ export function Settings() {
                     onChange={(e) => handleTempUpdate({ 
                       data: { ...tempSettings.data, defaultView: e.target.value as any } 
                     })}
-                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-white/20 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   >
                     <option value="dashboard">All Parameters</option>
                     <option value="ph">pH Level</option>
