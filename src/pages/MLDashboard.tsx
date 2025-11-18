@@ -1,11 +1,12 @@
-import { Brain, AlertCircle, TrendingUp, RefreshCw, Sparkles } from 'lucide-react';
+import { Brain, AlertCircle, TrendingUp, RefreshCw } from 'lucide-react';
 import { FilterHealthCard } from '../components/FilterHealthCard';
+import { FilterPredictionCard } from '../components/FilterPredictionCard';
 import { AnomalyList } from '../components/AnomalyList';
-import { PredictionCard } from '../components/PredictionCard';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { useMLPredictions } from '../hooks/useMLPredictions';
-import { useSensorPredictions } from '../hooks/useSensorPredictions';
+import { useFilterPrediction } from '../hooks/useFilterPrediction';
 import { cn } from '../lib/utils';
+import { useEffect } from 'react';
 
 export function MLDashboard() {
   const {
@@ -19,22 +20,19 @@ export function MLDashboard() {
     markAnomalyFalsePositive
   } = useMLPredictions(30000); // Refresh every 30 seconds
 
+  // Filter prediction hook
   const {
-    predictions,
-    isLoading: predictionsLoading,
-    error: predictionsError,
-    executionTime,
-    historicalDataUsed,
-    generatePredictions
-  } = useSensorPredictions();
+    filterHealth: aiFilterHealth,
+    isLoading: predictionLoading,
+    error: predictionError,
+    fetchFilterHealth,
+    analyzeFilterHealth
+  } = useFilterPrediction();
 
-  const handleGeneratePredictions = async () => {
-    try {
-      await generatePredictions('stm32_pre', 'drinking_water');
-    } catch (err) {
-      console.error('Failed to generate predictions:', err);
-    }
-  };
+  // Fetch filter prediction on mount
+  useEffect(() => {
+    fetchFilterHealth();
+  }, [fetchFilterHealth]);
 
   if (isLoading && !filterHealth) {
     return (
@@ -145,17 +143,6 @@ export function MLDashboard() {
         </div>
       </div>
 
-      {/* Sensor Predictions */}
-      <PredictionCard
-        predictions={predictions}
-        deviceId="stm32_pre"
-        isLoading={predictionsLoading}
-        error={predictionsError}
-        executionTime={executionTime}
-        historicalDataUsed={historicalDataUsed}
-        onRefresh={handleGeneratePredictions}
-      />
-
       {/* Severity Breakdown */}
       {anomalyStats && Object.keys(anomalyStats.by_severity).length > 0 && (
         <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6">
@@ -181,31 +168,29 @@ export function MLDashboard() {
         </div>
       )}
 
+      {/* AI Filter Health Prediction */}
+      <FilterPredictionCard
+        filterHealth={aiFilterHealth}
+        isLoading={predictionLoading}
+        error={predictionError}
+        onAnalyze={analyzeFilterHealth}
+        onRefresh={fetchFilterHealth}
+      />
+
       {/* Info Banner */}
       <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-lg rounded-xl border border-purple-500/30 shadow-lg p-6">
         <div className="flex items-start gap-4">
           <Brain className="w-6 h-6 text-purple-400 flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="text-white font-semibold mb-2">About AI Predictions</h3>
-            <p className="text-slate-300 text-sm leading-relaxed mb-3">
+            <p className="text-slate-300 text-sm leading-relaxed">
               Our AI system continuously monitors water quality parameters using advanced anomaly detection
               algorithms. It analyzes pH levels, turbidity, and TDS values to identify unusual patterns,
-              spikes, and potential sensor failures. The filter health predictor uses machine learning to
-              estimate remaining filter lifespan based on flow rate, water quality degradation, and usage
-              patterns, helping you maintain optimal water filtration performance.
+              spikes, and potential sensor failures. The intelligent filter health predictor uses machine learning
+              to estimate remaining filter lifespan based on pre and post filtration readings, efficiency degradation,
+              flow rate, and usage patterns, helping you maintain optimal water filtration performance and plan
+              timely maintenance.
             </p>
-            <div className="flex items-start gap-3 bg-white/5 rounded-lg p-3">
-              <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-white font-medium text-sm mb-1">Sensor Predictions</h4>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  The new prediction system forecasts future water quality parameters up to 24 time periods ahead
-                  using exponential smoothing with trend analysis. Each prediction includes a confidence score to
-                  help you understand forecast reliability. Generate fresh predictions anytime to see how your
-                  water quality metrics are expected to trend.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -143,45 +143,6 @@ export interface MLDashboard {
   };
 }
 
-// Sensor Prediction Interfaces (matches backend PascalCase response)
-export interface SensorPrediction {
-  Timestamp: string;
-  PredictedFlow: number;
-  PredictedPh: number;
-  PredictedTurbidity: number;
-  PredictedTDS: number;
-  ConfidenceScore: number;
-  Method: string;
-}
-
-export interface PredictionGenerateResponse {
-  message: string;
-  device_id: string;
-  filter_mode: string;
-  predictions_count: number;
-  execution_time_ms: number;
-  predictions: SensorPrediction[];
-  historical_data_used: number;
-}
-
-export interface PredictionSystemStatus {
-  prediction_system_status: {
-    running: boolean;
-    real_time_anomaly_enabled: boolean;
-    auto_prediction_update_enabled: boolean;
-    baseline_update_interval: string;
-    health_analysis_interval: string;
-    prediction_update_interval: string;
-  };
-  features: {
-    autonomous_updates: string;
-    trigger_on_new_data: string;
-    scheduled_updates: string;
-    forecast_horizon: string;
-    prediction_method: string;
-  };
-}
-
 class ApiService {
   private async fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 10000) {
     const controller = new AbortController();
@@ -794,7 +755,7 @@ class ApiService {
     }
   }
 
-  async getFilterHealth(deviceId: string = 'filter_system'): Promise<FilterHealth> {
+  async getFilterHealth(deviceId: string = 'filter_system'): Promise<FilterHealth | null> {
     try {
       console.log('ML API: Fetching filter health for device:', deviceId);
       const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/filter/health?device_id=${deviceId}`);
@@ -804,14 +765,16 @@ class ApiService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data: { success: boolean; data: FilterHealth } = await response.json();
+      const data = await response.json();
       console.log('ML API: Received filter health response:', data);
 
-      if (data.success && data.data) {
-        return data.data;
+      // Backend returns FilterHealth directly if data exists, or { message: string } if no data
+      if (data.message && !data.health_score) {
+        console.log('ML API: No filter health data available yet');
+        return null;
       }
 
-      throw new Error('Invalid filter health response');
+      return data as FilterHealth;
     } catch (error) {
       console.error('Error fetching filter health:', error);
       throw error;
@@ -828,17 +791,19 @@ class ApiService {
 
       if (!response.ok) {
         console.error('ML API: HTTP Error:', response.status, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
-      const data: { success: boolean; data: FilterHealth } = await response.json();
+      const data: { message: string; health: FilterHealth } = await response.json();
       console.log('ML API: Filter health analysis complete:', data);
 
-      if (data.success && data.data) {
-        return data.data;
+      if (data.health) {
+        return data.health;
       }
 
-      throw new Error('Invalid filter health analysis response');
+      // If health is not available, throw error with message
+      throw new Error(data.message || 'Insufficient data for filter health analysis');
     } catch (error) {
       console.error('Error analyzing filter health:', error);
       throw error;
@@ -1026,81 +991,6 @@ class ApiService {
       console.log('ML API: Baseline calculation triggered successfully');
     } catch (error) {
       console.error('Error calculating baselines:', error);
-      throw error;
-    }
-  }
-
-  // Sensor Prediction Methods
-  async generatePredictions(params?: {
-    deviceId?: string;
-    filterMode?: 'drinking_water' | 'household_water';
-  }): Promise<PredictionGenerateResponse> {
-    try {
-      const queryParams = new URLSearchParams();
-      if (params?.deviceId) queryParams.set('device_id', params.deviceId);
-      if (params?.filterMode) queryParams.set('filter_mode', params.filterMode);
-
-      const url = `${API_BASE_URL}/ml/predictions/generate${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-      console.log('ML API: Generating predictions from:', url);
-
-      const response = await this.fetchWithTimeout(url, {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        console.error('ML API: HTTP Error:', response.status, response.statusText);
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      const data: PredictionGenerateResponse = await response.json();
-      console.log('ML API: Received predictions response:', data);
-
-      return data;
-    } catch (error) {
-      console.error('Error generating predictions:', error);
-      throw error;
-    }
-  }
-
-  async updatePredictions(): Promise<{ message: string; status: string; timestamp: string }> {
-    try {
-      console.log('ML API: Triggering prediction update from:', `${API_BASE_URL}/ml/predictions/update`);
-      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/predictions/update`, {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        console.error('ML API: HTTP Error:', response.status, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('ML API: Prediction update triggered:', data);
-
-      return data;
-    } catch (error) {
-      console.error('Error updating predictions:', error);
-      throw error;
-    }
-  }
-
-  async getPredictionStatus(): Promise<PredictionSystemStatus> {
-    try {
-      console.log('ML API: Fetching prediction status from:', `${API_BASE_URL}/ml/predictions/status`);
-      const response = await this.fetchWithTimeout(`${API_BASE_URL}/ml/predictions/status`);
-
-      if (!response.ok) {
-        console.error('ML API: HTTP Error:', response.status, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data: PredictionSystemStatus = await response.json();
-      console.log('ML API: Received prediction status response:', data);
-
-      return data;
-    } catch (error) {
-      console.error('Error fetching prediction status:', error);
       throw error;
     }
   }
