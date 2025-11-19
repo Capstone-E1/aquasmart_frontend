@@ -244,17 +244,19 @@ class ApiService {
         if (value >= 6.5 && value <= 8.5) return 'normal';
         if ((value >= 6.0 && value < 6.5) || (value > 8.5 && value <= 9.0)) return 'warning';
         return 'danger';
-      
+
       case 'turbidity':
-        if (value <= 1.0) return 'normal';
-        if (value <= 4.0) return 'warning';
+        // Adjusted for both pre-filter (up to 10 NTU) and post-filter (very low)
+        if (value <= 10.0) return 'normal';
+        if (value <= 50.0) return 'warning';
         return 'danger';
-      
+
       case 'tds':
-        if (value >= 300 && value <= 600) return 'normal';
-        if ((value >= 150 && value < 300) || (value > 600 && value <= 1000)) return 'warning';
+        // Adjusted to accommodate post-filter readings (as low as 50 PPM)
+        if (value >= 50 && value <= 600) return 'normal';
+        if ((value >= 20 && value < 50) || (value > 600 && value <= 1000)) return 'warning';
         return 'danger';
-      
+
       default:
         return 'normal';
     }
