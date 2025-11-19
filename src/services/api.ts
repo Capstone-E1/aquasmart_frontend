@@ -994,6 +994,35 @@ class ApiService {
       throw error;
     }
   }
+
+  // Delete all sensor data
+  async deleteAllSensorData(): Promise<{ success: boolean; message: string }> {
+    try {
+      console.log('API: Deleting all sensor data from:', `${API_BASE_URL}/sensors/all`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/all`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        console.error('API: HTTP Error:', response.status, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: { success: boolean; data: { message: string } } = await response.json();
+      console.log('API: Delete all sensor data response:', data);
+
+      return {
+        success: data.success,
+        message: data.data.message || 'All sensor data deleted successfully',
+      };
+    } catch (error) {
+      console.error('Error deleting all sensor data:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to delete sensor data',
+      };
+    }
+  }
 }
 
 export const apiService = new ApiService();

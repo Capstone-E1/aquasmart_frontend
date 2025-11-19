@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Filter, Download, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { Filter, Download, ChevronLeft, ChevronRight, RefreshCw, Trash2 } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { useHistoryData } from '../hooks/useHistoryData';
 import { apiService } from '../services/api';
@@ -24,6 +24,8 @@ export function History() {
   const [sensorFilter, setSensorFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const itemsPerPage = 20;
   const { settings } = useSettings();
 
@@ -109,11 +111,32 @@ export function History() {
     }
   };
 
+  // Delete all data function
+  const handleDeleteAllData = async () => {
+    setIsDeleting(true);
+    try {
+      const result = await apiService.deleteAllSensorData();
+      if (result.success) {
+        // Close modal and refresh data
+        setShowDeleteModal(false);
+        await refetch();
+        alert('All sensor data has been deleted successfully');
+      } else {
+        alert(`Failed to delete data: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error deleting all data:', error);
+      alert('An error occurred while deleting data');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // Export function
   const handleExport = () => {
     const format = settings.data.exportFormat;
     const timestamp = new Date().toISOString().split('T')[0];
-    
+
     if (format === 'csv') {
       // CSV Export
       const csvContent = [
@@ -280,6 +303,15 @@ export function History() {
             <span className="hidden sm:inline">Export {settings.data.exportFormat.toUpperCase()}</span>
             <span className="sm:hidden">Export</span>
           </button>
+
+          {/* Delete All Data Button */}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors whitespace-nowrap"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Delete All</span>
+          </button>
         </div>
 
         {/* Table */}
@@ -361,6 +393,54 @@ export function History() {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-xl border border-white/20 p-6 max-w-md w-full shadow-xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-red-500/20 rounded-lg">
+                <Trash2 className="w-6 h-6 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Delete All Data</h3>
+                <p className="text-sm text-slate-400">This action cannot be undone</p>
+              </div>
+            </div>
+
+            <p className="text-slate-300 mb-6">
+              Are you sure you want to delete all sensor data? This will permanently remove all {allData.length} readings from the database.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAllData}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    Delete All
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
