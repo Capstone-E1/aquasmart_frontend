@@ -48,7 +48,7 @@ export function FilterPredictionCard({
           <p className="text-red-400 text-sm">{error}</p>
           {onRefresh && (
             <button
-              onClick={onRefresh}
+              onClick={() => onRefresh()}
               className="mt-3 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 hover:bg-red-500/30 transition-colors text-sm"
             >
               Retry
@@ -74,7 +74,7 @@ export function FilterPredictionCard({
           </p>
           {onAnalyze && (
             <button
-              onClick={onAnalyze}
+              onClick={() => onAnalyze()}
               className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-colors text-sm"
             >
               Analyze Filter Health
@@ -135,7 +135,7 @@ export function FilterPredictionCard({
         <div className="flex gap-2">
           {onRefresh && (
             <button
-              onClick={onRefresh}
+              onClick={() => onRefresh()}
               className="p-2 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
               title="Refresh prediction"
             >
@@ -144,7 +144,7 @@ export function FilterPredictionCard({
           )}
           {onAnalyze && (
             <button
-              onClick={onAnalyze}
+              onClick={() => onAnalyze()}
               className="px-3 py-2 text-xs rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"
               title="Trigger new analysis"
             >
