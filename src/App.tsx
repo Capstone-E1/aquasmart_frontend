@@ -17,13 +17,13 @@ import { MLDashboard } from './pages/MLDashboard';
 function DefaultRoute() {
   const { settings } = useSettings();
   const routeMap = {
-    'dashboard': '/',
+    'dashboard': '/dashboard',
     'ph': '/ph-level',
     'tds': '/tds',
     'turbidity': '/turbidity'
   };
   
-  const defaultPath = routeMap[settings.data.defaultView] || '/';
+  const defaultPath = routeMap[settings.data.defaultView] || '/dashboard';
   return <Navigate to={defaultPath} replace />;
 }
 
