@@ -81,6 +81,7 @@ export function Weather() {
         duration_minutes: 120, // 2 hours
         days_of_week: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
         is_active: true,
+        timezone: 'Asia/Jakarta',
       };
 
       await apiService.createSchedule(scheduleData);
@@ -126,6 +127,7 @@ export function Weather() {
         duration_minutes: 120, // 2 hours
         days_of_week: [today], // Only for today
         is_active: true,
+        timezone: 'Asia/Jakarta',
       };
 
       await apiService.createSchedule(scheduleData);
