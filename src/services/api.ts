@@ -49,6 +49,7 @@ export interface Schedule {
   duration_minutes: number;
   days_of_week: string[];
   is_active: boolean;
+  timezone: string;
   created_at: string;
   updated_at: string;
 }
@@ -65,6 +66,7 @@ export interface CreateScheduleData {
   duration_minutes: number;
   days_of_week: string[];
   is_active: boolean;
+  timezone: string;
 }
 
 // ML Feature Interfaces
