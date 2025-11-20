@@ -42,7 +42,7 @@ export function MLDashboard() {
       <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-8">
         <div className="text-center">
           <Brain className="w-12 h-12 text-red-400 mx-auto mb-3" />
-          <h3 className="text-white font-semibold text-lg mb-2">Error Loading AI Predictions</h3>
+          <h3 className="text-white font-semibold text-lg mb-2">Error Loading Predictions</h3>
           <p className="text-slate-400 text-sm mb-4">{error}</p>
           <button
             onClick={refetch}
@@ -64,8 +64,8 @@ export function MLDashboard() {
             <Brain className="w-6 h-6 text-purple-400" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white">AI Predictions</h1>
-            <p className="text-slate-400 text-sm">Smart filter health predictions</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white">Filter Information</h1>
+            <p className="text-slate-400 text-sm">Smart filter health information</p>
           </div>
         </div>
         <button
@@ -96,7 +96,7 @@ export function MLDashboard() {
       />
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-lg rounded-xl border border-purple-500/30 shadow-lg p-6">
+      {/* <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-lg rounded-xl border border-purple-500/30 shadow-lg p-6">
         <div className="flex items-start gap-4">
           <Brain className="w-6 h-6 text-purple-400 flex-shrink-0 mt-0.5" />
           <div>
@@ -110,7 +110,7 @@ export function MLDashboard() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
