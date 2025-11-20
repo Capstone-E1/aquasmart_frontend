@@ -11,6 +11,14 @@ export interface SensorData {
   tds: number;
 }
 
+export interface NormalizedSensorData extends SensorData {
+  normalized: {
+    ph: number;        // 0 = good, 1 = bad
+    turbidity: number; // 0 = good, 1 = bad
+    tds: number;       // 0 = good, 1 = bad
+  };
+}
+
 export interface ApiResponse {
   success: boolean;
   data: SensorData[];
@@ -237,29 +245,122 @@ class ApiService {
     };
   }
 
-  // Helper method to determine status based on sensor values
-  getParameterStatus(type: 'ph' | 'turbidity' | 'tds', value: number): 'normal' | 'warning' | 'danger' {
+  // Normalize raw sensor values to 0-1 scale where 0 = good, 1 = bad/dangerous
+  normalizeParameter(type: 'ph' | 'turbidity' | 'tds', rawValue: number): number {
     switch (type) {
-      case 'ph':
-        if (value >= 6.5 && value <= 8.5) return 'normal';
-        if ((value >= 6.0 && value < 6.5) || (value > 8.5 && value <= 9.0)) return 'warning';
-        return 'danger';
+      case 'ph': {
+        // Optimal pH is 7.0, range 6.5-8.5 is normal
+        // Map: 7.0 -> 0, values outside 6.5-8.5 approach 1
+        const optimalPH = 7.0;
+        const normalMin = 6.5;
+        const normalMax = 8.5;
+        const dangerMin = 5.0;
+        const dangerMax = 10.0;
 
-      case 'turbidity':
-        // Adjusted for both pre-filter (up to 10 NTU) and post-filter (very low)
-        if (value <= 10.0) return 'normal';
-        if (value <= 50.0) return 'warning';
-        return 'danger';
+        if (rawValue >= normalMin && rawValue <= normalMax) {
+          // Within normal range, calculate distance from optimal
+          const distanceFromOptimal = Math.abs(rawValue - optimalPH);
+          const maxNormalDistance = Math.max(optimalPH - normalMin, normalMax - optimalPH);
+          return (distanceFromOptimal / maxNormalDistance) * 0.3; // 0 to 0.3 for normal range
+        } else if (rawValue < normalMin) {
+          // Below normal range
+          const distance = normalMin - rawValue;
+          const maxDistance = normalMin - dangerMin;
+          return 0.3 + (distance / maxDistance) * 0.7; // 0.3 to 1.0
+        } else {
+          // Above normal range
+          const distance = rawValue - normalMax;
+          const maxDistance = dangerMax - normalMax;
+          return 0.3 + (distance / maxDistance) * 0.7; // 0.3 to 1.0
+        }
+      }
 
-      case 'tds':
-        // Adjusted to accommodate post-filter readings (as low as 50 PPM)
-        if (value >= 50 && value <= 600) return 'normal';
-        if ((value >= 20 && value < 50) || (value > 600 && value <= 1000)) return 'warning';
-        return 'danger';
+      case 'turbidity': {
+        // Turbidity: 0 NTU is best, 1000 NTU is maximum
+        // Optimal: 0-1 NTU (0-0.1 normalized)
+        // Normal: 0-5 NTU (0-0.3 normalized)
+        // Warning: 5-50 NTU (0.3-0.7 normalized)
+        // Danger: 50+ NTU (0.7-1.0 normalized)
+        const maxTurbidity = 1000;
+        const normalThreshold = 5;
+        const warningThreshold = 50;
+
+        if (rawValue <= normalThreshold) {
+          return (rawValue / normalThreshold) * 0.3;
+        } else if (rawValue <= warningThreshold) {
+          const progress = (rawValue - normalThreshold) / (warningThreshold - normalThreshold);
+          return 0.3 + progress * 0.4;
+        } else {
+          const progress = Math.min((rawValue - warningThreshold) / (maxTurbidity - warningThreshold), 1.0);
+          return 0.7 + progress * 0.3;
+        }
+      }
+
+      case 'tds': {
+        // TDS: Optimal 300-600 PPM
+        // Too low (<150) or too high (>1000) is bad
+        const optimalMin = 300;
+        const optimalMax = 600;
+        const normalMin = 150;
+        const normalMax = 1000;
+        const dangerMin = 0;
+        const dangerMax = 2000;
+
+        if (rawValue >= optimalMin && rawValue <= optimalMax) {
+          // Within optimal range
+          return 0; // Perfect
+        } else if (rawValue >= normalMin && rawValue < optimalMin) {
+          // Below optimal but within normal
+          const distance = optimalMin - rawValue;
+          const maxDistance = optimalMin - normalMin;
+          return (distance / maxDistance) * 0.3;
+        } else if (rawValue > optimalMax && rawValue <= normalMax) {
+          // Above optimal but within normal
+          const distance = rawValue - optimalMax;
+          const maxDistance = normalMax - optimalMax;
+          return (distance / maxDistance) * 0.3;
+        } else if (rawValue < normalMin) {
+          // Below normal range
+          const distance = normalMin - rawValue;
+          const maxDistance = normalMin - dangerMin;
+          return 0.3 + (distance / maxDistance) * 0.7;
+        } else {
+          // Above normal range
+          const distance = rawValue - normalMax;
+          const maxDistance = dangerMax - normalMax;
+          return 0.3 + Math.min(distance / maxDistance, 1.0) * 0.7;
+        }
+      }
 
       default:
-        return 'normal';
+        return 0;
     }
+  }
+
+  // Helper method to determine status based on normalized values (0 = good, 1 = bad)
+  getParameterStatus(type: 'ph' | 'turbidity' | 'tds', value: number): 'normal' | 'warning' | 'danger' {
+    const normalized = this.normalizeParameter(type, value);
+
+    if (normalized <= 0.3) return 'normal';
+    if (normalized <= 0.7) return 'warning';
+    return 'danger';
+  }
+
+  // Get normalized value (0-1 scale where 0 is good, 1 is bad)
+  getNormalizedValue(type: 'ph' | 'turbidity' | 'tds', value: number): number {
+    return this.normalizeParameter(type, value);
+  }
+
+  // Convert raw sensor data to normalized sensor data
+  addNormalizedValues(data: SensorData): NormalizedSensorData {
+    return {
+      ...data,
+      normalized: {
+        ph: this.normalizeParameter('ph', data.ph),
+        turbidity: this.normalizeParameter('turbidity', data.turbidity),
+        tds: this.normalizeParameter('tds', data.tds),
+      }
+    };
   }
 
   async getDailyAnalytics(): Promise<DailyAnalytics> {
