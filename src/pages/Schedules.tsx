@@ -118,6 +118,11 @@ export function Schedules() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.name.length < 3) {
+      showNotification('Schedule name must be at least 3 characters long', 'warning');
+      return;
+    }
     
     if (formData.days_of_week.length === 0) {
       showNotification('Please select at least one day', 'warning');
