@@ -47,7 +47,7 @@ const menuItems: MenuItem[] = [
       { icon: FlaskConical, label: 'TDS', path: '/tds' }
     ]
   },
-  { icon: Brain, label: 'AI Predictions', path: '/ai-predictions' },
+  { icon: Brain, label: 'Filter Information', path: '/ai-predictions' },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
   { icon: CloudRain, label: 'Weather Condition', path: '/weather' },
   { icon: Calendar, label: 'Schedules', path: '/schedules' },

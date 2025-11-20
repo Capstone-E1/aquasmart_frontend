@@ -11,10 +11,6 @@ export interface SensorData {
   tds: number;
 }
 
-export interface NormalizedSensorData extends SensorData {
-  normalizedTurbidity: number; // 0 = good, 1 = bad (0-1000 NTU normalized to 0-1)
-}
-
 export interface ApiResponse {
   success: boolean;
   data: SensorData[];
@@ -241,28 +237,6 @@ class ApiService {
     };
   }
 
-  // Normalize turbidity from 0-1000 NTU to 0-1 scale where 0 = good, 1 = bad/dangerous
-  normalizeTurbidity(rawTurbidity: number): number {
-    // Turbidity: 0 NTU is best, 1000 NTU is maximum
-    // Optimal: 0-1 NTU (0-0.1 normalized)
-    // Normal: 0-5 NTU (0-0.3 normalized)
-    // Warning: 5-50 NTU (0.3-0.7 normalized)
-    // Danger: 50+ NTU (0.7-1.0 normalized)
-    const maxTurbidity = 1000;
-    const normalThreshold = 5;
-    const warningThreshold = 50;
-
-    if (rawTurbidity <= normalThreshold) {
-      return (rawTurbidity / normalThreshold) * 0.3;
-    } else if (rawTurbidity <= warningThreshold) {
-      const progress = (rawTurbidity - normalThreshold) / (warningThreshold - normalThreshold);
-      return 0.3 + progress * 0.4;
-    } else {
-      const progress = Math.min((rawTurbidity - warningThreshold) / (maxTurbidity - warningThreshold), 1.0);
-      return 0.7 + progress * 0.3;
-    }
-  }
-
   // Helper method to determine status based on sensor values
   getParameterStatus(type: 'ph' | 'turbidity' | 'tds', value: number): 'normal' | 'warning' | 'danger' {
     switch (type) {
@@ -271,13 +245,11 @@ class ApiService {
         if ((value >= 6.0 && value < 6.5) || (value > 8.5 && value <= 9.0)) return 'warning';
         return 'danger';
 
-      case 'turbidity': {
-        // Use normalized turbidity (0-1 scale) to determine status
-        const normalized = this.normalizeTurbidity(value);
-        if (normalized <= 0.3) return 'normal';
-        if (normalized <= 0.7) return 'warning';
+      case 'turbidity':
+        // Adjusted for both pre-filter (up to 10 NTU) and post-filter (very low)
+        if (value <= 10.0) return 'normal';
+        if (value <= 50.0) return 'warning';
         return 'danger';
-      }
 
       case 'tds':
         // Adjusted to accommodate post-filter readings (as low as 50 PPM)
@@ -288,14 +260,6 @@ class ApiService {
       default:
         return 'normal';
     }
-  }
-
-  // Convert raw sensor data to include normalized turbidity
-  addNormalizedTurbidity(data: SensorData): NormalizedSensorData {
-    return {
-      ...data,
-      normalizedTurbidity: this.normalizeTurbidity(data.turbidity)
-    };
   }
 
   async getDailyAnalytics(): Promise<DailyAnalytics> {

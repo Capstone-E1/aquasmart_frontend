@@ -24,7 +24,7 @@ export function FilterPredictionCard({
           <div className="bg-blue-500/20 p-2 rounded-lg border border-blue-500/30">
             <Brain className="w-5 h-5 text-blue-400 animate-pulse" />
           </div>
-          <h3 className="text-white font-semibold text-lg">AI Filter Health Prediction</h3>
+          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="space-y-3">
           <div className="h-4 bg-white/10 rounded animate-pulse" />
@@ -42,7 +42,7 @@ export function FilterPredictionCard({
           <div className="bg-red-500/20 p-2 rounded-lg border border-red-500/30">
             <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
-          <h3 className="text-white font-semibold text-lg">AI Filter Health Prediction</h3>
+          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
@@ -66,7 +66,7 @@ export function FilterPredictionCard({
           <div className="bg-blue-500/20 p-2 rounded-lg border border-blue-500/30">
             <Brain className="w-5 h-5 text-blue-400" />
           </div>
-          <h3 className="text-white font-semibold text-lg">AI Filter Health Prediction</h3>
+          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="text-center py-8">
           <p className="text-slate-400 text-sm mb-4">
@@ -128,8 +128,7 @@ export function FilterPredictionCard({
             )} />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-lg">AI Filter Health Prediction</h3>
-            <p className="text-slate-400 text-xs">Advanced ML-based Analysis</p>
+            <h3 className="text-white font-semibold text-lg">Filter Health</h3>
           </div>
         </div>
         <div className="flex gap-2">
