@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Droplets, Eye, Sprout, Filter, Shield, Layers, Clock } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
-import { apiService } from '../services/api';
+import { apiService, type ScheduleExecution } from '../services/api';
 import { useNotifications } from '../contexts/NotificationContext';
 
 export function FilterUV() {
@@ -26,6 +26,7 @@ export function FilterUV() {
   const [pendingFilterType, setPendingFilterType] = useState<'household' | 'drinking' | null>(null);
   const [targetLiters, setTargetLiters] = useState<string>('');
   const [currentTotalFlow, setCurrentTotalFlow] = useState<number>(0);
+  const [activeSchedule, setActiveSchedule] = useState<ScheduleExecution | null>(null); // NEW state for active schedule
   const { addNotification } = useNotifications();
 
   // Initialize cooldown from localStorage on mount
@@ -99,6 +100,9 @@ export function FilterUV() {
               },
             });
           }
+
+          // NEW: Set active schedule state
+          setActiveSchedule(result.active_schedule || null);
         }
       } catch (error) {
         console.error('Error fetching filter status:', error);
@@ -117,6 +121,7 @@ export function FilterUV() {
 
     return () => clearInterval(interval);
   }, [activeFilter]);
+
 
   // Cooldown timer effect
   useEffect(() => {
@@ -550,21 +555,37 @@ export function FilterUV() {
         </div>
       )}
 
+      {/* Active Schedule Warning */}
+      {activeSchedule && (
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+              <span className="text-xl">⏰</span>
+            </div>
+            <div className="flex-1">
+              <p className="text-blue-400 font-medium">Schedule "{activeSchedule.schedule_id}" is Active</p>
+              <p className="text-slate-300 text-sm">Manual filter mode changes are temporarily disabled.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Filter Type Toggle */}
       <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 mb-4 lg:mb-6">
         <button
           onClick={() => handleFilterChange('household')}
-          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
+          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
               ? 'bg-accent border-accent text-white'
               : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Household Water</h3>
             <p className="text-xs lg:text-sm opacity-75">
               {activeFilter === null ? 'Loading...' :
+               activeSchedule !== null ? 'Schedule Active' :
                cooldownSeconds > 0 && activeFilter !== 'household' 
                 ? `Wait ${cooldownSeconds}s` 
                 : 'Basic filtration for daily use'}
@@ -574,17 +595,18 @@ export function FilterUV() {
         
         <button
           onClick={() => handleFilterChange('drinking')}
-          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0}
+          disabled={activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null}
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
               ? 'bg-accent border-accent text-white'
               : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
-          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
             <h3 className="text-base lg:text-lg font-semibold mb-1">Drinking Water</h3>
             <p className="text-xs lg:text-sm opacity-75">
               {activeFilter === null ? 'Loading...' :
+               activeSchedule !== null ? 'Schedule Active' :
                cooldownSeconds > 0 && activeFilter !== 'drinking' 
                 ? `Wait ${cooldownSeconds}s` 
                 : 'Advanced purification for consumption'}

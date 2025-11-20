@@ -69,6 +69,16 @@ export interface CreateScheduleData {
   timezone: string;
 }
 
+export interface ScheduleExecution {
+  id: number;
+  schedule_id: number;
+  executed_at: string;
+  completed_at?: string; // Optional, if schedule is still running
+  status: string;        // 'running', 'completed', 'overridden', 'failed', 'cancelled'
+  override_reason?: string; // Optional
+  created_at: string;
+}
+
 // ML Feature Interfaces
 export interface Anomaly {
   id: number;
@@ -439,6 +449,7 @@ class ApiService {
         total_readings: number;
       };
     };
+    active_schedule?: ScheduleExecution; // NEW: currently running schedule
   }> {
     try {
       console.log('API: Fetching filter mode status from:', `${API_BASE_URL}/commands/filter`);
