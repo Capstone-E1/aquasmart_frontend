@@ -36,6 +36,7 @@ export function Schedules() {
     duration_minutes: 60,
     days_of_week: [],
     is_active: true,
+    timezone: 'Asia/Jakarta',
   });
 
   const handleOpenModal = (schedule?: Schedule) => {
@@ -49,6 +50,7 @@ export function Schedules() {
         duration_minutes: schedule.duration_minutes,
         days_of_week: schedule.days_of_week,
         is_active: schedule.is_active,
+        timezone: 'Asia/Jakarta',
       });
     } else {
       setEditingSchedule(null);
@@ -59,6 +61,7 @@ export function Schedules() {
         duration_minutes: 60,
         days_of_week: [],
         is_active: true,
+        timezone: 'Asia/Jakarta',
       });
     }
     setShowModal(true);
@@ -347,7 +350,17 @@ export function Schedules() {
                 {next_execution && (
                   <div className="mt-3 pt-3 border-t border-white/20">
                     <p className="text-xs text-slate-400">
-                      Next run: <span className="text-slate-300">{new Date(next_execution).toLocaleString()}</span>
+                      Next run: <span className="text-slate-300">
+                        {new Date(next_execution).toLocaleDateString('en-US', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: 'Asia/Jakarta',
+                        })} (WIB)
+                      </span>
                     </p>
                   </div>
                 )}
