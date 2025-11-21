@@ -211,27 +211,28 @@ class ApiService {
 
   async getAllSensorData(): Promise<SensorData[]> {
     try {
-      console.log('API: Fetching all sensor data from:', `${API_BASE_URL}/sensors/latest`);
-      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/latest`);
-      
+      console.log('API: Fetching all sensor data from:', `${API_BASE_URL}/sensors/all`);
+      const response = await this.fetchWithTimeout(`${API_BASE_URL}/sensors/all`);
+
       if (!response.ok) {
         console.error('API: HTTP Error:', response.status, response.statusText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
-      const data: ApiResponse = await response.json();
-      console.log('API: Received all data response:', data);
-      
-      if (data.success && data.data) {
+
+      const result = await response.json();
+      console.log('API: Received all data response:', result);
+
+      // Handle nested data structure: { success: true, data: { data: [...] } }
+      if (result.success && result.data && result.data.data) {
         // Sort by timestamp (newest first) for historical display
-        const sortedData = [...data.data].sort((a, b) => 
+        const sortedData = [...result.data.data].sort((a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
-        
+
         console.log('API: Returning all sensor data array with', sortedData.length, 'items (sorted by timestamp)');
         return sortedData;
       }
-      
+
       console.log('API: No sensor data array available');
       return [];
     } catch (error) {

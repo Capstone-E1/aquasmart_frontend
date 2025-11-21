@@ -76,7 +76,7 @@ const allFacts = [
 ];
 
 export function Dashboard() {
-  const { latestData, dailyAnalytics, worstValues, isLoading, error, refetch } = useSensorData();
+  const { latestData, allData, dailyAnalytics, worstValues, isLoading, error, refetch } = useSensorData();
   const navigate = useNavigate();
   const [totalFlowLiters, setTotalFlowLiters] = useState<{
     today: number;
@@ -91,6 +91,10 @@ export function Dashboard() {
   });
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Separate pre and post filtration data
+  const preData = allData.find(data => data.device_id.toLowerCase().includes('stm32_pre'));
+  const postData = allData.find(data => data.device_id.toLowerCase().includes('stm32_post'));
 
   // Auto-rotate facts every 15 seconds
   useEffect(() => {
@@ -142,10 +146,15 @@ export function Dashboard() {
     return <LoadingSkeleton variant="page" />;
   }
 
-  // Get status for each parameter
-  const phStatus = latestData ? apiService.getParameterStatus('ph', latestData.ph) : 'normal';
-  const turbidityStatus = latestData ? apiService.getParameterStatus('turbidity', latestData.turbidity) : 'normal';
-  const tdsStatus = latestData ? apiService.getParameterStatus('tds', latestData.tds) : 'normal';
+  // Get status for each parameter (pre-filtration)
+  const prePhStatus = preData ? apiService.getParameterStatus('ph', preData.ph) : 'normal';
+  const preTurbidityStatus = preData ? apiService.getParameterStatus('turbidity', preData.turbidity) : 'normal';
+  const preTdsStatus = preData ? apiService.getParameterStatus('tds', preData.tds) : 'normal';
+
+  // Get status for each parameter (post-filtration)
+  const postPhStatus = postData ? apiService.getParameterStatus('ph', postData.ph) : 'normal';
+  const postTurbidityStatus = postData ? apiService.getParameterStatus('turbidity', postData.turbidity) : 'normal';
+  const postTdsStatus = postData ? apiService.getParameterStatus('tds', postData.tds) : 'normal';
 
   // Status messages for charts
   const getStatusMessage = (type: string, status: string) => {
@@ -195,121 +204,211 @@ export function Dashboard() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      {/* Pre-Filtration Section */}
+      {preData && (
         <div className="space-y-4 lg:space-y-6">
-          {/* Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
-              {!latestData ? (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
+            <h2 className="text-lg lg:text-xl font-semibold text-cyan-400">Pre-Filtration (Before Treatment)</h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div className="space-y-4 lg:space-y-6">
+              {/* Pre-Filtration Metric Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+                <MetricCard
+                  title="Pre pH Level"
+                  value={preData.ph.toFixed(1)}
+                  color="purple"
+                  status={prePhStatus}
+                  isBest={prePhStatus === 'normal'}
+                />
+                <MetricCard
+                  title="Pre Turbidity"
+                  value={preData.turbidity.toFixed(2)}
+                  color="red"
+                  status={preTurbidityStatus}
+                  isBest={preTurbidityStatus === 'normal'}
+                />
+                <MetricCard
+                  title="Pre TDS"
+                  value={preData.tds.toString()}
+                  color="green"
+                  status={preTdsStatus}
+                  isBest={preTdsStatus === 'normal'}
+                />
+              </div>
+
+              {/* Pre-Filtration Charts Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+                <GaugeChart
+                  title="Pre pH Level"
+                  value={preData.ph}
+                  maxValue={14}
+                  color="purple"
+                  status={getStatusMessage('pH', prePhStatus).message}
+                />
+                <GaugeChart
+                  title="Pre Turbidity"
+                  value={preData.turbidity}
+                  maxValue={10}
+                  color="red"
+                  status={getStatusMessage('turbidity', preTurbidityStatus).message}
+                />
+                <GaugeChart
+                  title="Pre TDS"
+                  value={preData.tds}
+                  maxValue={1000}
+                  color="green"
+                  status={getStatusMessage('TDS', preTdsStatus).message}
+                />
+              </div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-cyan-500/20 shadow-lg p-6">
+              <h3 className="text-cyan-400 font-medium text-base mb-4 flex items-center">
+                <span className="w-3 h-3 bg-cyan-500 rounded-full mr-2"></span>
+                Raw Water Quality
+              </h3>
+              <div className="space-y-3">
+                <p className="text-slate-300 text-sm">This shows the water quality before it goes through the filtration system.</p>
+                <div className="flex justify-between items-center pt-3 border-t border-white/10">
+                  <span className="text-slate-400 text-sm">Device:</span>
+                  <span className="text-cyan-400 text-sm font-mono">{preData.device_id}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400 text-sm">Last Updated:</span>
+                  <span className="text-cyan-400 text-sm">{new Date(preData.timestamp).toLocaleTimeString('id-ID')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Post-Filtration Section */}
+      <div className="space-y-4 lg:space-y-6">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          <h2 className="text-lg lg:text-xl font-semibold text-green-400">Post-Filtration (After Treatment)</h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+          <div className="space-y-4 lg:space-y-6">
+            {/* Post-Filtration Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+                {!postData ? (
+                  <>
+                    <LoadingSkeleton variant="card" />
+                    <LoadingSkeleton variant="card" />
+                    <LoadingSkeleton variant="card" />
+                  </>
+                ) : (
+                  <>
+                    <MetricCard
+                      title="Post pH Level"
+                      value={postData.ph.toFixed(1)}
+                      color="purple"
+                      status={postPhStatus}
+                      isBest={postPhStatus === 'normal'}
+                    />
+                    <MetricCard
+                      title="Post Turbidity"
+                      value={postData.turbidity.toFixed(2)}
+                      color="red"
+                      status={postTurbidityStatus}
+                      isBest={postTurbidityStatus === 'normal'}
+                    />
+                    <MetricCard
+                      title="Post TDS"
+                      value={postData.tds.toString()}
+                      color="green"
+                      status={postTdsStatus}
+                      isBest={postTdsStatus === 'normal'}
+                    />
+                  </>
+                )}
+            </div>
+
+            {/* Post-Filtration Charts Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+              {!postData ? (
                 <>
-                  <LoadingSkeleton variant="card" />
-                  <LoadingSkeleton variant="card" />
-                  <LoadingSkeleton variant="card" />
+                  <LoadingSkeleton variant="chart" />
+                  <LoadingSkeleton variant="chart" />
+                  <LoadingSkeleton variant="chart" />
                 </>
               ) : (
                 <>
-                  <MetricCard
-                    title="pH Level"
-                    value={latestData.ph.toFixed(1)}
+                  {/* PH Level Chart */}
+                  <GaugeChart
+                    title="Post pH Level"
+                    value={postData.ph}
+                    maxValue={14}
                     color="purple"
-                    status={phStatus}
-                    isBest={phStatus === 'normal'}
+                    status={getStatusMessage('pH', postPhStatus).message}
                   />
-                  <MetricCard
-                    title="Turbidity Level"
-                    value={latestData.turbidity.toFixed(2)}
+
+                  {/* Turbidity Chart */}
+                  <GaugeChart
+                    title="Post Turbidity"
+                    value={postData.turbidity}
+                    maxValue={10}
                     color="red"
-                    status={turbidityStatus}
-                    isBest={turbidityStatus === 'normal'}
+                    status={getStatusMessage('turbidity', postTurbidityStatus).message}
                   />
-                  <MetricCard
-                    title="TDS Value"
-                    value={latestData.tds.toString()}
+
+                  {/* TDS Chart */}
+                  <GaugeChart
+                    title="Post TDS"
+                    value={postData.tds}
+                    maxValue={1000}
                     color="green"
-                    status={tdsStatus}
-                    isBest={tdsStatus === 'normal'}
+                    status={getStatusMessage('TDS', postTdsStatus).message}
                   />
                 </>
               )}
+            </div>
           </div>
 
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-            {!latestData ? (
-              <>
-                <LoadingSkeleton variant="chart" />
-                <LoadingSkeleton variant="chart" />
-                <LoadingSkeleton variant="chart" />
-              </>
-            ) : (
-              <>
-                {/* PH Level Chart */}
-                <GaugeChart
-                  title="PH Level"
-                  value={latestData.ph}
-                  maxValue={14}
-                  color="purple"
-                  status={getStatusMessage('pH', phStatus).message}
-                />
+          <div>
+            <Card
+              title="Start Your Water Filtration"
+              description="Keep your water clean and safe with UV filtration. Monitor and control your filtration system in real-time for optimal water quality."
+              className="h-full min-h-[500px] flex flex-col justify-between p-8 bg-gradient-to-br from-slate-800 via-blue-900 to-indigo-900 text-white shadow-2xl border border-blue-500/20"
+            >
+              <div className="flex-1 flex flex-col justify-center items-center space-y-8">
+                <div className="w-24 h-24 bg-blue-500/30 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-blue-400/40 shadow-lg">
+                  <svg className="w-12 h-12 text-blue-300 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
 
-                {/* Turbidity Chart */}
-                <GaugeChart
-                  title="Turbidity Level"
-                  value={latestData.turbidity}
-                  maxValue={10}
-                  color="red"
-                  status={getStatusMessage('turbidity', turbidityStatus).message}
-                />
+                {/* Features */}
+                <div className="grid grid-cols-2 gap-4 w-full mt-6">
+                  <div className="bg-blue-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-blue-400/30 shadow-xl">
+                    <p className="text-2xl font-bold text-blue-200 drop-shadow-md">UV</p>
+                    <p className="text-xs text-blue-300/90">Sterilization</p>
+                  </div>
+                  <div className="bg-indigo-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-indigo-400/30 shadow-xl">
+                    <p className="text-2xl font-bold text-indigo-200 drop-shadow-md">Safe</p>
+                    <p className="text-xs text-indigo-300/90">Water Quality</p>
+                  </div>
+                </div>
+              </div>
 
-                {/* TDS Chart */}
-                <GaugeChart
-                  title="TDS Value"
-                  value={latestData.tds}
-                  maxValue={1000}
-                  color="green"
-                  status={getStatusMessage('TDS', tdsStatus).message}
-                />
-              </>
-            )}
+              {/* CTA Button */}
+              <div className="flex flex-col items-center space-y-3 mt-8">
+                <button
+                  onClick={() => navigate('/filter-uv')}
+                  className="w-full px-8 py-4 bg-blue-500/30 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-blue-400/50 hover:bg-blue-500/40 hover:scale-105 transform transition-all duration-200 shadow-xl"
+                >
+                  Start UV Filtration
+                </button>
+                <p className="text-sm text-blue-200/90 drop-shadow">Begin filtering your water now</p>
+              </div>
+            </Card>
           </div>
-        </div>
-
-        <div>
-          <Card
-            title="Start Your Water Filtration"
-            description="Keep your water clean and safe with UV filtration. Monitor and control your filtration system in real-time for optimal water quality."
-            className="h-full min-h-[500px] flex flex-col justify-between p-8 bg-gradient-to-br from-slate-800 via-blue-900 to-indigo-900 text-white shadow-2xl border border-blue-500/20"
-          >
-            <div className="flex-1 flex flex-col justify-center items-center space-y-8">
-              <div className="w-24 h-24 bg-blue-500/30 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-blue-400/40 shadow-lg">
-                <svg className="w-12 h-12 text-blue-300 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              
-              {/* Features */}
-              <div className="grid grid-cols-2 gap-4 w-full mt-6">
-                <div className="bg-blue-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-blue-400/30 shadow-xl">
-                  <p className="text-2xl font-bold text-blue-200 drop-shadow-md">UV</p>
-                  <p className="text-xs text-blue-300/90">Sterilization</p>
-                </div>
-                <div className="bg-indigo-500/20 backdrop-blur-lg rounded-xl p-4 text-center border border-indigo-400/30 shadow-xl">
-                  <p className="text-2xl font-bold text-indigo-200 drop-shadow-md">Safe</p>
-                  <p className="text-xs text-indigo-300/90">Water Quality</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* CTA Button */}
-            <div className="flex flex-col items-center space-y-3 mt-8">
-              <button 
-                onClick={() => navigate('/filter-uv')}
-                className="w-full px-8 py-4 bg-blue-500/30 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-blue-400/50 hover:bg-blue-500/40 hover:scale-105 transform transition-all duration-200 shadow-xl"
-              >
-                Start UV Filtration
-              </button>
-              <p className="text-sm text-blue-200/90 drop-shadow">Begin filtering your water now</p>
-            </div>
-          </Card>
         </div>
       </div>
 
