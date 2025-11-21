@@ -47,7 +47,7 @@ const menuItems: MenuItem[] = [
       { icon: FlaskConical, label: 'TDS', path: '/tds' }
     ]
   },
-  { icon: Brain, label: 'Filter Information', path: '/ai-predictions' },
+  { icon: Brain, label: 'AI Predictions', path: '/ai-predictions' },
   { icon: Zap, label: 'Filter + UV', path: '/filter-uv' },
   { icon: CloudRain, label: 'Weather Condition', path: '/weather' },
   { icon: Calendar, label: 'Schedules', path: '/schedules' },
@@ -155,7 +155,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
               {isMobile && isOpen && (
                 <button
                   onClick={onToggle}
-                  className="p-2 rounded-lg hover:bg-white/20 backdrop-blur-lg text-slate-300 hover:text-white lg:hidden transition-colors"
+                  className="p-2 rounded-lg hover:bg-white/20 backdrop-blur-lg text-black dark:text-slate-300 hover:text-white lg:hidden transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -165,7 +165,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
               {!isMobile && (
                 <button
                   onClick={onToggle}
-                  className="p-2 rounded-lg hover:bg-white/20 backdrop-blur-lg text-slate-300 hover:text-white hidden lg:block transition-colors"
+                  className="p-2 rounded-lg hover:bg-white/20 backdrop-blur-lg text-black dark:text-slate-300 hover:text-white hidden lg:block transition-colors"
                 >
                   {isOpen ? (
                     <ChevronLeft className="w-5 h-5" />
@@ -181,13 +181,13 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
           {isOpen && (
             <div className="p-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black dark:text-slate-400 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Search menu..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg text-white placeholder-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors"
+                  className="w-full pl-10 pr-10 py-2 bg-white/10 backdrop-blur-lg border border-black dark:border-white/20 rounded-lg text-black dark:text-slate-300 placeholder-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors"
                 />
                 {searchQuery && (
                   <button
@@ -235,7 +235,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                       }
                     }}
                     className={cn(
-                      "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-white/30 text-slate-300 hover:text-white hover:bg-white/20 backdrop-blur-lg transition-colors",
+                      "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-black dark:border-white/20 text-black dark:text-slate-300 hover:text-white hover:bg-white/20 backdrop-blur-lg transition-colors",
                       isSubmenuActive(item.children) && "bg-accent hover:bg-accent-hover !text-white",
                       !isOpen && "lg:justify-center lg:px-2"
                     )}
@@ -260,7 +260,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                     onClick={isMobile ? onToggle : undefined}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg border border-white/30 text-slate-300 hover:text-white hover:bg-white/20  backdrop-blur-lg transition-colors",
+                        "flex items-center gap-3 px-3 py-2 rounded-lg border border-black dark:border-white/30 text-black dark:text-slate-300 hover:text-white hover:bg-white/20  backdrop-blur-lg transition-colors",
                         isActive && "bg-accent hover:bg-accent-hover !text-white",
                         !isOpen && "lg:justify-center lg:px-2"
                       )
@@ -283,7 +283,7 @@ export function Sidebar({ isOpen, onToggle, isMobile = false }: SidebarProps) {
                         onClick={isMobile ? onToggle : undefined}
                         className={({ isActive }) =>
                           cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/20 backdrop-blur-lg transition-colors text-sm",
+                            "flex items-center gap-3 px-3 py-2 rounded-lg border border-black dark:border-white/30 text-black dark:text-slate-300 hover:text-white hover:bg-white/20 backdrop-blur-lg transition-colors text-sm",
                             isActive && "bg-accent hover:bg-accent-hover !text-white"
                           )
                         }

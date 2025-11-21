@@ -167,7 +167,7 @@ export function Weather() {
       case 'clear':
         return <Sun className="w-16 h-16 text-yellow-400" />;
       case 'clouds':
-        return <Cloud className="w-16 h-16 text-slate-400" />;
+        return <Cloud className="w-16 h-16 text-slate-800 dark:text-slate-400" />;
       case 'rain':
       case 'drizzle':
         return <CloudRain className="w-16 h-16 text-blue-400" />;
@@ -176,7 +176,7 @@ export function Weather() {
       case 'thunderstorm':
         return <CloudRain className="w-16 h-16 text-purple-400" />;
       default:
-        return <Cloud className="w-16 h-16 text-slate-400" />;
+        return <Cloud className="w-16 h-16 text-slate-800 dark:text-slate-400" />;
     }
   };
 
@@ -219,8 +219,8 @@ export function Weather() {
     return (
       <div className="space-y-4 lg:space-y-6">
           <div>
-            <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Weather Condition</h1>
-            <p className="text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-2">Weather Condition</h1>
+            <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
           </div>
           
           <div className="bg-yellow-500/20 backdrop-blur-2xl border border-yellow-400/40 rounded-xl p-6 shadow-2xl">
@@ -247,8 +247,8 @@ export function Weather() {
     return (
       <div className="space-y-4 lg:space-y-6">
           <div>
-            <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Weather Condition</h1>
-            <p className="text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-2">Weather Condition</h1>
+            <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">Real-time weather monitoring for smart water filtration</p>
           </div>
           
           <div className="bg-red-500/20 backdrop-blur-2xl border border-red-400/40 rounded-xl p-6 shadow-2xl">
@@ -280,8 +280,8 @@ export function Weather() {
         {/* Page Title */}
         <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Weather Condition</h1>
-          <p className="text-slate-400 text-sm lg:text-base">
+          <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-2">Weather Condition</h1>
+          <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">
             Real-time weather monitoring for smart water filtration
           </p>
         </div>
@@ -314,7 +314,7 @@ export function Weather() {
                     <Calendar className="w-5 h-5 text-blue-400" />
                     <div>
                       <p className="text-white font-medium">Auto-Create Filtration Schedule</p>
-                      <p className="text-xs text-slate-400">Automatically run filtration when rain is detected</p>
+                      <p className="text-xs text-slate-800 dark:text-slate-400">Automatically run filtration when rain is detected</p>
                     </div>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -398,7 +398,7 @@ export function Weather() {
               </div>
 
               <div className="bg-white/10 backdrop-blur-lg rounded-lg p-3 border border-white/20">
-                <div className="flex items-center gap-2 text-slate-400 mb-1">
+                <div className="flex items-center gap-2 text-slate-800 dark:text-slate-400 mb-1">
                   <Gauge className="w-4 h-4" />
                   <span className="text-xs">Pressure</span>
                 </div>
@@ -421,19 +421,19 @@ export function Weather() {
           </h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Current</span>
+              <span className="text-slate-800 text-slate-400">Current</span>
               <span className="text-white font-semibold">{weatherData.main.temp.toFixed(1)}°C</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Feels Like</span>
+              <span className="text-slate-800 dark:text-slate-400">Feels Like</span>
               <span className="text-white font-semibold">{weatherData.main.feels_like.toFixed(1)}°C</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Minimum</span>
+              <span className="text-slate-800 dark:text-slate-400">Minimum</span>
               <span className="text-white font-semibold">{weatherData.main.temp_min.toFixed(1)}°C</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Maximum</span>
+              <span className="text-slate-800 dark:text-slate-400">Maximum</span>
               <span className="text-white font-semibold">{weatherData.main.temp_max.toFixed(1)}°C</span>
             </div>
           </div>
@@ -447,22 +447,22 @@ export function Weather() {
           </h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Pressure</span>
+              <span className="text-slate-800 dark:text-slate-400">Pressure</span>
               <span className="text-white font-semibold">{weatherData.main.pressure} hPa</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Humidity</span>
+              <span className="text-slate-800 dark:text-slate-400">Humidity</span>
               <span className="text-white font-semibold">{weatherData.main.humidity}%</span>
             </div>
             {weatherData.main.sea_level && (
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Sea Level Pressure</span>
+                <span className="text-slate-800 dark:text-slate-400">Sea Level Pressure</span>
                 <span className="text-white font-semibold">{weatherData.main.sea_level} hPa</span>
               </div>
             )}
             {weatherData.main.grnd_level && (
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Ground Level Pressure</span>
+                <span className="text-slate-800 dark:text-slate-400">Ground Level Pressure</span>
                 <span className="text-white font-semibold">{weatherData.main.grnd_level} hPa</span>
               </div>
             )}
@@ -477,7 +477,7 @@ export function Weather() {
             <CloudRain className="w-6 h-6 text-blue-400" />
             <div>
               <h3 className="text-white font-semibold text-lg">24-Hour Rain Forecast</h3>
-              <p className="text-slate-400 text-sm">Probability of precipitation and rain volume</p>
+              <p className="text-slate-800 dark:text-slate-400 text-sm">Probability of precipitation and rain volume</p>
             </div>
           </div>
 
@@ -599,7 +599,7 @@ export function Weather() {
                     <p className="text-slate-300 text-sm">
                       Create a drinking water filtration schedule to ensure clean water quality during rainfall.
                     </p>
-                    <p className="text-slate-400 text-xs mt-2">
+                    <p className="text-slate-800 dark:text-slate-400 text-xs mt-2">
                       Schedule will run for 2 hours starting now
                     </p>
                   </div>

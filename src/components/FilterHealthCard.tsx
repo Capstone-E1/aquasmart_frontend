@@ -64,7 +64,7 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
   if (!filterHealth) {
     return (
       <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-6">
-        <p className="text-slate-400 text-center">No filter health data available</p>
+        <p className="text-slate-900 dark:text-white text-center">No filter health data available</p>
       </div>
     );
   }
@@ -136,7 +136,7 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
         {/* Value in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-3xl font-bold text-white leading-none">
+            <div className="text-3xl font-bold text-slate-900 dark:text-white leading-none">
               {filterHealth.health_score.toFixed(0)}
             </div>
             <div className="text-sm text-slate-300 mt-1">Score</div>
@@ -161,18 +161,18 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="bg-white/5 rounded-lg p-3">
           <div className="flex items-center gap-2 mb-1">
-            <TrendingDown className="w-4 h-4 text-slate-400" />
-            <span className="text-xs text-slate-400">Current Efficiency</span>
+            <TrendingDown className="w-4 h-4 text-slate-900 dark:text-white" />
+            <span className="text-xs text-slate-900 dark:text-white">Current Efficiency</span>
           </div>
-          <p className="text-lg font-semibold text-white">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">
             {filterHealth.current_efficiency.toFixed(1)}%
           </p>
         </div>
 
         <div className="bg-white/5 rounded-lg p-3">
           <div className="flex items-center gap-2 mb-1">
-            <Calendar className="w-4 h-4 text-slate-400" />
-            <span className="text-xs text-slate-400">Days Until Replace</span>
+            <Calendar className="w-4 h-4 text-slate-900 dark:text-white" />
+            <span className="text-xs text-slate-900 dark:text-white">Days Until Replace</span>
           </div>
           <p className={cn(
             "text-lg font-semibold",
@@ -188,19 +188,19 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
       {/* Additional Info */}
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-slate-400">Turbidity Reduction:</span>
+          <span className="text-slate-900 dark:text-white">Turbidity Reduction:</span>
           <span className="text-white font-medium">{filterHealth.turbidity_reduction.toFixed(1)}%</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-slate-400">TDS Reduction:</span>
+          <span className="text-slate-900 dark:text-white">TDS Reduction:</span>
           <span className="text-white font-medium">{filterHealth.tds_reduction.toFixed(1)}%</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-slate-400">pH Stabilization:</span>
+          <span className="text-slate-900 dark:text-white">pH Stabilization:</span>
           <span className="text-white font-medium">{filterHealth.ph_stabilization.toFixed(1)}%</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-slate-400">Efficiency Trend:</span>
+          <span className="text-slate-900 dark:text-white">Efficiency Trend:</span>
           <span className={cn(
             "font-medium",
             filterHealth.efficiency_trend === 'degrading' ? "text-red-400" :
@@ -215,7 +215,7 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
             <div className="border-t border-white/10 pt-2 mt-2" />
             {filterHealth.total_flow_processed !== undefined && (
               <div className="flex justify-between">
-                <span className="text-slate-400">Water Processed:</span>
+                <span className="text-slate-900 dark:text-white">Water Processed:</span>
                 <span className="text-white font-medium">
                   {filterHealth.total_flow_processed.toLocaleString(undefined, { maximumFractionDigits: 0 })} L
                 </span>
@@ -223,7 +223,7 @@ export function FilterHealthCard({ filterHealth, isLoading }: FilterHealthCardPr
             )}
             {filterHealth.filter_age_days !== undefined && (
               <div className="flex justify-between">
-                <span className="text-slate-400">Filter Age:</span>
+                <span className="text-slate-900 dark:text-white">Filter Age:</span>
                 <span className="text-white font-medium">{filterHealth.filter_age_days} days</span>
               </div>
             )}

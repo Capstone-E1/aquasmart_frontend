@@ -24,7 +24,7 @@ export function FilterPredictionCard({
           <div className="bg-blue-500/20 p-2 rounded-lg border border-blue-500/30">
             <Brain className="w-5 h-5 text-blue-400 animate-pulse" />
           </div>
-          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
+          <h3 className="text-slate-900 dark:text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="space-y-3">
           <div className="h-4 bg-white/10 rounded animate-pulse" />
@@ -42,7 +42,7 @@ export function FilterPredictionCard({
           <div className="bg-red-500/20 p-2 rounded-lg border border-red-500/30">
             <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
-          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
+          <h3 className="text-slate-900 dark:text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
           <p className="text-red-400 text-sm">{error}</p>
@@ -66,10 +66,10 @@ export function FilterPredictionCard({
           <div className="bg-blue-500/20 p-2 rounded-lg border border-blue-500/30">
             <Brain className="w-5 h-5 text-blue-400" />
           </div>
-          <h3 className="text-white font-semibold text-lg">Filter Health</h3>
+          <h3 className="text-slate-900 dark:text-white font-semibold text-lg">Filter Health</h3>
         </div>
         <div className="text-center py-8">
-          <p className="text-slate-400 text-sm mb-4">
+          <p className="text-slate-900 dark:text-white text-sm mb-4">
             No filter health data available yet. Analysis requires pre and post filtration readings.
           </p>
           {onAnalyze && (
@@ -128,7 +128,7 @@ export function FilterPredictionCard({
             )} />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-lg">Filter Health</h3>
+            <h3 className="text-slate-900 dark:text-white font-semibold text-lg">Filter Health</h3>
           </div>
         </div>
         <div className="flex gap-2">
@@ -138,7 +138,7 @@ export function FilterPredictionCard({
               className="p-2 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
               title="Refresh prediction"
             >
-              <Activity className="w-4 h-4 text-white" />
+              <Activity className="w-4 h-4 text-slate-900 dark:text-white" />
             </button>
           )}
           {onAnalyze && (
@@ -229,30 +229,30 @@ export function FilterPredictionCard({
             )}>
               {filterHealth.predicted_days_remaining}
             </span>
-            <span className="text-slate-400 text-sm">days</span>
+            <span className="text-slate-900 dark:text-white text-sm">days</span>
           </div>
         </div>
       </div>
 
       {/* Performance Metrics */}
       <div className="space-y-2 mb-4">
-        <h4 className="text-white text-sm font-medium mb-3">Performance Metrics</h4>
+        <h4 className="text-slate-900 dark:text-white text-sm font-medium mb-3">Performance Metrics</h4>
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-400 text-xs mb-1">Current Efficiency</div>
-            <div className="text-white font-semibold">{filterHealth.current_efficiency?.toFixed(1)}%</div>
+            <div className="text-slate-900 dark:text-white text-xs mb-1">Current Efficiency</div>
+            <div className="text-slate-900 dark:text-white font-semibold">{filterHealth.current_efficiency?.toFixed(1)}%</div>
           </div>
           <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-400 text-xs mb-1">Average Efficiency</div>
-            <div className="text-white font-semibold">{filterHealth.average_efficiency?.toFixed(1)}%</div>
+            <div className="text-slate-900 dark:text-white text-xs mb-1">Average Efficiency</div>
+            <div className="text-slate-900 dark:text-white font-semibold">{filterHealth.average_efficiency?.toFixed(1)}%</div>
           </div>
           <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-400 text-xs mb-1">Turbidity Reduction</div>
-            <div className="text-white font-semibold">{filterHealth.turbidity_reduction?.toFixed(1)}%</div>
+            <div className="text-slate-900 dark:text-white text-xs mb-1">Turbidity Reduction</div>
+            <div className="text-slate-900 dark:text-white font-semibold">{filterHealth.turbidity_reduction?.toFixed(1)}%</div>
           </div>
           <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-400 text-xs mb-1">TDS Reduction</div>
-            <div className="text-white font-semibold">{filterHealth.tds_reduction?.toFixed(1)}%</div>
+            <div className="text-slate-900 dark:text-white text-xs mb-1">TDS Reduction</div>
+            <div className="text-slate-900 dark:text-white font-semibold">{filterHealth.tds_reduction?.toFixed(1)}%</div>
           </div>
         </div>
       </div>
@@ -261,7 +261,7 @@ export function FilterPredictionCard({
       {filterHealth.efficiency_trend && (
         <div className="mb-4">
           <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
-            <span className="text-slate-400 text-xs">Efficiency Trend</span>
+            <span className="text-slate-900 dark:text-white text-xs">Efficiency Trend</span>
             <span className={cn(
               "px-2 py-1 rounded text-xs font-medium capitalize",
               filterHealth.efficiency_trend === 'improving' && "bg-green-500/20 text-green-400 border border-green-500/30",
@@ -280,18 +280,18 @@ export function FilterPredictionCard({
           {filterHealth.total_flow_processed !== undefined && (
             <div className="bg-white/5 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <Droplets className="w-3 h-3 text-slate-400" />
-                <div className="text-slate-400 text-xs">Flow Processed</div>
+                <Droplets className="w-3 h-3 text-slate-900 dark:text-white" />
+                <div className="text-slate-900 dark:text-white text-xs">Flow Processed</div>
               </div>
-              <div className="text-white font-semibold text-sm">
+              <div className="text-slate-900 dark:text-white font-semibold text-sm">
                 {(filterHealth.total_flow_processed / 1000).toFixed(1)}k L
               </div>
             </div>
           )}
           {filterHealth.filter_age_days !== undefined && (
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-slate-400 text-xs mb-1">Filter Age</div>
-              <div className="text-white font-semibold text-sm">{filterHealth.filter_age_days} days</div>
+              <div className="text-slate-900 dark:text-white text-xs mb-1">Filter Age</div>
+              <div className="text-slate-900 dark:text-white font-semibold text-sm">{filterHealth.filter_age_days} days</div>
             </div>
           )}
         </div>
@@ -300,7 +300,7 @@ export function FilterPredictionCard({
       {/* Recommendations */}
       {filterHealth.recommendations && filterHealth.recommendations.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-white text-sm font-medium">Recommendations</h4>
+          <h4 className="text-slate-900 dark:text-white text-sm font-medium">Recommendations</h4>
           <div className="space-y-1">
             {filterHealth.recommendations.map((rec, idx) => (
               <div
@@ -320,7 +320,7 @@ export function FilterPredictionCard({
       {/* Footer Info */}
       <div className="mt-4 pt-4 border-t border-white/10">
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-slate-400">
+          <div className="flex items-center gap-2 text-slate-900 dark:text-white">
             <CheckCircle className="w-3 h-3" />
             <span>AI-Powered Prediction</span>
           </div>

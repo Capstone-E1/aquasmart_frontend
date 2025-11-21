@@ -75,7 +75,7 @@ export function History() {
       <div className="space-y-4 lg:space-y-6">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">History</h1>
-          <p className="text-slate-400 text-sm lg:text-base">View historical water quality data</p>
+          <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">View historical water quality data</p>
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400">Error loading history data: {error}</p>
@@ -107,7 +107,7 @@ export function History() {
       case 'normal': return 'text-green-400 bg-green-400/20';
       case 'warning': return 'text-yellow-400 bg-yellow-400/20';
       case 'danger': return 'text-red-400 bg-red-400/20';
-      default: return 'text-slate-400 bg-slate-400/20';
+      default: return 'text-slate-800 dark:text-slate-400 bg-slate-400/20';
     }
   };
 
@@ -224,8 +224,8 @@ export function History() {
     <div className="space-y-4 lg:space-y-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">History</h1>
-        <p className="text-slate-400 text-sm lg:text-base">
+        <h1 className="text-xl lg:text-2xl font-bold text:black dark:text-white mb-2">History</h1>
+        <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">
           View recent water quality data ({allData.length} readings)
         </p>
       </div>
@@ -235,7 +235,7 @@ export function History() {
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           {/* Sensor Reading Filter Buttons */}
           <div className="flex items-center gap-2 flex-1">
-            <Filter className="text-slate-400 w-4 h-4" />
+            <Filter className="text-slate-800 dark:text-slate-400 w-4 h-4" />
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setSensorFilter('all')}
@@ -354,7 +354,7 @@ export function History() {
 
         {/* Pagination */}
         <div className="flex items-center justify-between mt-6">
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-slate-800 dark:text-slate-400">
             Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length} entries
           </div>
           
@@ -362,7 +362,7 @@ export function History() {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-white/20 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg border border-white/20 text-slate-800 dark:text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -375,7 +375,7 @@ export function History() {
                   className={`px-3 py-1 rounded-lg text-sm ${
                     currentPage === page
                       ? 'bg-accent text-white'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                      : 'text-slate-800 dark:text-slate-400 hover:text-white hover:bg-slate-700'
                   }`}
                 >
                   {page}
@@ -386,7 +386,7 @@ export function History() {
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-lg border border-white/20 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg border border-white/20 text-slate-800 dark:text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -404,7 +404,7 @@ export function History() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white">Delete All Data</h3>
-                <p className="text-sm text-slate-400">This action cannot be undone</p>
+                <p className="text-sm text-slate-800 dark:text-slate-400">This action cannot be undone</p>
               </div>
             </div>
 

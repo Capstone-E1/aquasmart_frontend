@@ -364,7 +364,7 @@ export function FilterUV() {
               <p className="text-white font-semibold mb-1">
                 Switch to {pendingFilterType === 'drinking' ? 'Drinking Water' : 'Household Water'} Mode?
               </p>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-black dark:text-slate-400">
                 {pendingFilterType === 'drinking' 
                   ? 'Advanced purification with UV sterilization'
                   : 'Basic filtration for general household use'
@@ -386,11 +386,11 @@ export function FilterUV() {
                   min="0"
                   step="0.1"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-black dark:text-slate-400">
                   Liters
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-black dark:text-slate-400 mt-1">
                 Get notified when this volume is reached
               </p>
             </div>
@@ -423,8 +423,8 @@ export function FilterUV() {
 
       {/* Page Title */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">AquaSmart</h1>
-        <p className="text-slate-400 text-sm lg:text-base">Advanced Water Filtration & Purification System</p>
+        <h1 className="text-xl lg:text-2xl font-bold text-black dark:text-white mb-2">AquaSmart</h1>
+        <p className="text-black dark:text-slate-400 text-sm lg:text-base">Advanced Water Filtration & Purification System</p>
       </div>
 
       {/* Real-Time Filter Statistics */}
@@ -436,17 +436,17 @@ export function FilterUV() {
               <Clock className="w-5 h-5 text-blue-400" />
             </div>
             <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-              filtrationActive ? 'bg-green-500/20 text-green-400' : 'bg-slate-600/20 text-slate-400'
+              filtrationActive ? 'bg-green-500/20 text-green-400' : 'bg-slate-600/20 text-black dark:text-slate-400'
             }`}>
               {filtrationActive ? '● Active' : '○ Inactive'}
             </div>
           </div>
-          <p className="text-slate-400 text-sm mb-1">Filter Mode Duration</p>
-          <p className="text-3xl font-bold text-white mb-1">
+          <p className="text-black dark:text-slate-400 text-sm mb-1">Filter Mode Duration</p>
+          <p className="text-3xl font-bold text-black dark:text-white mb-1">
             {formatDuration(filterDuration)}
           </p>
           {filterStartedAt && (
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-black dark:text-slate-400">
               Started: {new Date(filterStartedAt).toLocaleTimeString()}
             </p>
           )}
@@ -460,12 +460,12 @@ export function FilterUV() {
             </div>
             <div className="text-xs text-purple-300">Real-time</div>
           </div>
-          <p className="text-slate-400 text-sm mb-1">Total Water Flow (Today)</p>
-          <p className="text-3xl font-bold text-white mb-1">
+          <p className="text-black dark:text-slate-400 text-sm mb-1">Total Water Flow (Today)</p>
+          <p className="text-3xl font-bold text-black dark:text-white mb-1">
             {currentTotalFlow.toFixed(2)}
-            <span className="text-xl text-slate-400 ml-2">L</span>
+            <span className="text-xl text-black dark:text-slate-400 ml-2">L</span>
           </p>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-black dark:text-slate-400">
             {activeFilter === 'drinking' ? 'Drinking Water' : 'Household Water'} Mode
           </p>
         </div>
@@ -489,8 +489,8 @@ export function FilterUV() {
               activeFilter === 'drinking' ? 'bg-cyan-500 animate-pulse' : 'bg-green-500 animate-pulse'
             }`}></div>
           </div>
-          <p className="text-slate-400 text-sm mb-1">Current Filter Mode</p>
-          <p className="text-2xl font-bold text-white mb-1">
+          <p className="text-black dark:text-slate-400 text-sm mb-1">Current Filter Mode</p>
+          <p className="text-2xl font-bold text-black dark:text-white mb-1">
             {activeFilter === null ? 'Loading...' :
              activeFilter === 'drinking' ? 'Drinking Water' : 'Household Water'}
           </p>
@@ -526,7 +526,7 @@ export function FilterUV() {
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   <div className="flex-1">
                     <p className="text-white font-medium text-sm">{filter}</p>
-                    <p className="text-xs text-slate-400">Active</p>
+                    <p className="text-xs text-black dark:text-slate-400">Active</p>
                   </div>
                   <div className="p-1.5 bg-green-500/20 rounded">
                     <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -578,7 +578,7 @@ export function FilterUV() {
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'household'
               ? 'bg-accent border-accent text-white'
-              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
+              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-black dark:text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
@@ -599,7 +599,7 @@ export function FilterUV() {
           className={`flex-1 p-3 lg:p-4 rounded-xl border transition-all ${
             activeFilter === 'drinking'
               ? 'bg-accent border-accent text-white'
-              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-slate-400 hover:text-white hover:border-slate-500'
+              : 'bg-white/10 backdrop-blur-lg/50 border-white/20 text-black dark:text-slate-400 hover:text-white hover:border-slate-500'
           } ${(activeFilter === null || isSwitchingFilter || cooldownSeconds > 0 || activeSchedule !== null) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="text-center">
@@ -632,7 +632,7 @@ export function FilterUV() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-white mb-1">{use.title}</h3>
-                  <p className="text-sm text-slate-400">{use.description}</p>
+                  <p className="text-sm text-black dark:text-slate-400">{use.description}</p>
                 </div>
               </div>
             ))}
@@ -666,7 +666,7 @@ export function FilterUV() {
                     {step.name}
                   </span>
                 </div>
-                <span className="text-sm text-slate-400">: {step.description}</span>
+                <span className="text-sm text-black dark:text-slate-400">: {step.description}</span>
               </div>
             ))}
 
@@ -686,7 +686,7 @@ export function FilterUV() {
                       </span>
                     </div>
                     <span className={`text-sm ${
-                      step.active ? 'text-slate-400' : 'text-slate-600'
+                      step.active ? 'text-black dark:text-slate-400' : 'text-slate-600'
                     }`}>: {step.description}</span>
                   </div>
                 ))}
@@ -731,11 +731,11 @@ export function FilterUV() {
               <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-xs text-slate-400">Today</span>
+              <span className="text-xs text-black dark:text-slate-400">Today</span>
             </div>
             <p className="text-3xl font-bold text-white">
               {(activeFilter === 'drinking' ? totalFlowLiters.today.drinking : totalFlowLiters.today.household).toFixed(2)}
-              <span className="text-sm text-slate-400 ml-1">L</span>
+              <span className="text-sm text-black dark:text-slate-400 ml-1">L</span>
             </p>
           </div>
 
@@ -745,11 +745,11 @@ export function FilterUV() {
               <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <span className="text-xs text-slate-400">This Week</span>
+              <span className="text-xs text-black dark:text-slate-400">This Week</span>
             </div>
             <p className="text-3xl font-bold text-white">
               {(activeFilter === 'drinking' ? totalFlowLiters.week.drinking : totalFlowLiters.week.household).toFixed(2)}
-              <span className="text-sm text-slate-400 ml-1">L</span>
+              <span className="text-sm text-black dark:text-slate-400 ml-1">L</span>
             </p>
           </div>
 
@@ -759,11 +759,11 @@ export function FilterUV() {
               <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              <span className="text-xs text-slate-400">This Month</span>
+              <span className="text-xs text-black dark:text-slate-400">This Month</span>
             </div>
             <p className="text-3xl font-bold text-white">
               {(activeFilter === 'drinking' ? totalFlowLiters.month.drinking : totalFlowLiters.month.household).toFixed(2)}
-              <span className="text-sm text-slate-400 ml-1">L</span>
+              <span className="text-sm text-black dark:text-slate-400 ml-1">L</span>
             </p>
           </div>
         </div>

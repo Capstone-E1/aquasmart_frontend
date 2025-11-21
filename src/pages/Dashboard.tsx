@@ -164,11 +164,11 @@ export function Dashboard() {
       <div className="space-y-4 lg:space-y-6">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-300 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <p className="text-slate-800 dark:text-slate-300 text-sm lg:text-base">Monitor your filtration water quality</p>
         </div>
         <div className="bg-red-500/20 backdrop-blur-lg border border-red-400/40 rounded-lg shadow-lg p-4">
           <p className="text-red-300">Error loading sensor data: {error}</p>
-          <p className="text-sm text-slate-300 mt-2">Please check if the backend server is running and properly configured in .env file</p>
+          <p className="text-sm text-slate-800 dark:text-slate-300 mt-2">Please check if the backend server is running and properly configured in .env file</p>
         </div>
       </div>
     );
@@ -179,10 +179,10 @@ export function Dashboard() {
       {/* Page Title */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-300 text-sm lg:text-base">Monitor your filtration water quality</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-2">Dashboard</h1>
+          <p className="text-slate-900 dark:text-white text-sm lg:text-base">Monitor your filtration water quality</p>
           {latestData && (
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-900 dark:text-white mt-1">
               Last data sensor updated: {new Date(latestData.timestamp).toLocaleString('id-ID')}
             </p>
           )}
@@ -328,7 +328,7 @@ export function Dashboard() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg">Did You Know?</h3>
+                <h3 className="text-slate-800 dark:text-white font-semibold text-lg">Did You Know?</h3>
                 <p className="text-xs text-blue-300">{allFacts[currentFactIndex].category}</p>
               </div>
             </div>
@@ -338,7 +338,7 @@ export function Dashboard() {
               className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105 group"
               title="Next fact"
             >
-              <span className="text-xs text-blue-300 group-hover:text-blue-200 font-medium whitespace-nowrap">
+              <span className="text-xs text-gray-300 group-hover:text-blue-200 font-medium whitespace-nowrap">
                 Get to know more
               </span>
             </button>
@@ -353,7 +353,7 @@ export function Dashboard() {
               transition: 'all 0.3s ease-in-out'
             }}
           >
-            <p className="text-slate-200 text-sm leading-relaxed">
+            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed">
               {allFacts[currentFactIndex].text}
             </p>
           </div>
@@ -380,7 +380,7 @@ export function Dashboard() {
 
       {/* Daily Best & Worst Values */}
       <div className="space-y-4">
-        <h2 className="text-lg lg:text-xl font-semibold text-white">Today's Performance</h2>
+        <h2 className="text-lg lg:text-xl font-semibold text-black dark:text-white">Today's Performance</h2>
         
         {!dailyAnalytics ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
@@ -391,14 +391,14 @@ export function Dashboard() {
           <div className="space-y-4">
             {/* Summary Section */}
             <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
-              <h3 className="text-white font-medium text-base mb-4 flex items-center">
+              <h3 className="text-black dark:text-white font-medium text-base mb-4 flex items-center">
                 <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
                 Daily Summary
               </h3>
               <div className="space-y-3">
-                <p className="text-slate-300 text-sm">{dailyAnalytics.summary}</p>
+                <p className="text-slate-800 dark:text-slate-300 text-sm">{dailyAnalytics.summary}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-300 text-sm">Overall Quality:</span>
+                  <span className="text-slate-800 dark:text-slate-300 text-sm">Overall Quality:</span>
                   <span className={`font-medium px-2 py-1 rounded-md text-xs ${
                     dailyAnalytics.overall_quality === 'Excellent' ? 'bg-green-900 text-green-400' :
                     dailyAnalytics.overall_quality === 'Good' ? 'bg-blue-900 text-blue-400' :
@@ -409,7 +409,7 @@ export function Dashboard() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-300 text-sm">Total Readings:</span>
+                  <span className="text-slate-800 dark:text-slate-300 text-sm">Total Readings:</span>
                   <span className="font-medium text-cyan-400">{dailyAnalytics.total_readings}</span>
                 </div>
               </div>
@@ -417,7 +417,7 @@ export function Dashboard() {
 
             {/* Water Flow Statistics */}
             <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
-              <h3 className="text-white font-medium text-base mb-4 flex items-center">
+              <h3 className="text-black dark:text-white font-medium text-base mb-4 flex items-center">
                 <span className="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
                 Water Flow Statistics
               </h3>
@@ -428,11 +428,11 @@ export function Dashboard() {
                     <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-xs text-slate-400">Today</span>
+                    <span className="text-xs text-slate-900 dark:text-white">Today</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {totalFlowLiters.today.toFixed(2)}
-                    <span className="text-sm text-slate-400 ml-1">L</span>
+                    <span className="text-sm text-slate-900 dark:text-white ml-1">L</span>
                   </p>
                   <p className="text-xs text-blue-400 mt-1">Total Water</p>
                 </div>
@@ -443,11 +443,11 @@ export function Dashboard() {
                     <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-xs text-slate-400">This Week</span>
+                    <span className="text-xs text-slate-900 dark:text-white">This Week</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {totalFlowLiters.week.toFixed(2)}
-                    <span className="text-sm text-slate-400 ml-1">L</span>
+                    <span className="text-sm text-slate-900 dark:text-white ml-1">L</span>
                   </p>
                   <p className="text-xs text-green-400 mt-1">Total Water</p>
                 </div>
@@ -458,11 +458,11 @@ export function Dashboard() {
                     <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
-                    <span className="text-xs text-slate-400">This Month</span>
+                    <span className="text-xs text-slate-900 dark:text-white">This Month</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {totalFlowLiters.month.toFixed(2)}
-                    <span className="text-sm text-slate-400 ml-1">L</span>
+                    <span className="text-sm text-slate-900 dark:text-white ml-1">L</span>
                   </p>
                   <p className="text-xs text-purple-400 mt-1">Total Water</p>
                 </div>
@@ -473,9 +473,9 @@ export function Dashboard() {
                     <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span className="text-xs text-slate-400">Readings</span>
+                    <span className="text-xs text-slate-900 dark:text-white">Readings</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {totalFlowLiters.readings}
                   </p>
                   <p className="text-xs text-cyan-400 mt-1">Data Points</p>
@@ -487,25 +487,25 @@ export function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               {/* Best Values */}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
-                <h3 className="text-white font-medium text-base mb-4 flex items-center">
+                <h3 className="text-black dark:text-white font-medium text-base mb-4 flex items-center">
                   <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                   Best Values Today
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">pH:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">pH:</span>
                     <span className="font-medium text-green-400">
                       {dailyAnalytics.best_ph?.toFixed(1) || 'N/A'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">Turbidity:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">Turbidity:</span>
                     <span className="font-medium text-green-400">
                       {dailyAnalytics.best_turbidity?.toFixed(2) || 'N/A'} NTU
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">TDS:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">TDS:</span>
                     <span className="font-medium text-green-400">
                       {dailyAnalytics.best_tds || 'N/A'} ppm
                     </span>
@@ -515,25 +515,25 @@ export function Dashboard() {
 
               {/* Worst Values */}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6">
-                <h3 className="text-white font-medium text-base mb-4 flex items-center">
+                <h3 className="text-black dark:text-white font-medium text-base mb-4 flex items-center">
                   <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                   Worst Values Today
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">pH:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">pH:</span>
                     <span className="font-medium text-red-400">
                       {worstValues.worst_ph?.toFixed(1) || 'N/A'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">Turbidity:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">Turbidity:</span>
                     <span className="font-medium text-red-400">
                       {worstValues.worst_turbidity?.toFixed(2) || 'N/A'} NTU
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-sm">TDS:</span>
+                    <span className="text-slate-800 dark:text-slate-300 text-sm">TDS:</span>
                     <span className="font-medium text-red-400">
                       {worstValues.worst_tds || 'N/A'} ppm
                     </span>

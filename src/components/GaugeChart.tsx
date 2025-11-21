@@ -34,7 +34,7 @@ export function GaugeChart({
   unit, 
   color, 
   status,
-  statusColor = 'text-slate-400'
+  statusColor = 'text-slate-900 dark:text-white'
 }: GaugeChartProps) {
   const percentage = Math.min((value / maxValue) * 100, 100);
   const circumference = 2 * Math.PI * 90;
@@ -46,7 +46,7 @@ export function GaugeChart({
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg p-4 lg:p-6 flex flex-col">
       <div className="mb-4">
-        <h3 className="text-white font-medium text-base lg:text-lg">{title}</h3>
+        <h3 className="text-slate-900 dark:text-white font-medium text-base lg:text-lg">{title}</h3>
       </div>
 
       {/* Gauge Chart Container */}
@@ -83,7 +83,7 @@ export function GaugeChart({
         {/* Value in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-3xl lg:text-2xl font-bold text-white leading-none">
+            <div className="text-3xl lg:text-2xl font-bold text-slate-900 dark:text-white leading-none">
               {value.toFixed(2)}
             </div>
             {unit && (

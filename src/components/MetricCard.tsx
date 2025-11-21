@@ -57,7 +57,7 @@ export function MetricCard({ title, value, unit, status, color, isBest }: Metric
 
       {/* Value */}
       <div className="flex items-baseline gap-1 mb-2">
-        <span className="text-2xl font-bold text-white">{value}</span>
+        <span className="text-2xl font-bold text-slate-900 dark:text-white">{value}</span>
         {unit && <span className="text-slate-400 text-sm">{unit}</span>}
       </div>
 

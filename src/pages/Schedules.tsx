@@ -222,8 +222,8 @@ export function Schedules() {
     return (
       <div className="space-y-4 lg:space-y-6">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Schedule Management</h1>
-          <p className="text-slate-400 text-sm lg:text-base">Manage your filter mode schedules</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-black dark:text-white mb-2">Schedule Management</h1>
+          <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">Manage your filter mode schedules</p>
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400">Error loading schedules: {error}</p>
@@ -236,8 +236,8 @@ export function Schedules() {
     <div className="space-y-4 lg:space-y-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text-white mb-2">Schedule Management</h1>
-        <p className="text-slate-400 text-sm lg:text-base">
+        <h1 className="text-xl lg:text-2xl font-bold text-black dark:text-white mb-2">Schedule Management</h1>
+        <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">
           Automate your water filtration modes ({schedules.length} schedules)
         </p>
       </div>
@@ -249,7 +249,7 @@ export function Schedules() {
             onClick={() => setShowActiveOnly(!showActiveOnly)}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               showActiveOnly
-                ? 'bg-accent text-white shadow-lg shadow-accent/30'
+                ? 'bg-accent text-black dark:text-white shadow-lg shadow-accent/30'
                 : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
             }`}
           >
@@ -261,7 +261,7 @@ export function Schedules() {
           <button
             onClick={refetch}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-black dark:text-white rounded-lg transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
@@ -269,7 +269,7 @@ export function Schedules() {
 
           <button
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-black dark:text-white rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Schedule
@@ -293,8 +293,8 @@ export function Schedules() {
                     {modeInfo.icon}
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg">{schedule.name}</h3>
-                    <p className="text-slate-400 text-sm">{modeInfo.label}</p>
+                    <h3 className="text-black dark:text-white font-semibold text-lg">{schedule.name}</h3>
+                    <p className="text-slate-800 dark:text-slate-400 text-sm">{modeInfo.label}</p>
                   </div>
                 </div>
 
@@ -304,7 +304,7 @@ export function Schedules() {
                     className={`p-2 rounded-lg transition-colors ${
                       schedule.is_active
                         ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                        : 'bg-slate-600/20 text-slate-400 hover:bg-slate-600/30'
+                        : 'bg-slate-600/20 text-slate-800 dark:text-slate-400 hover:bg-slate-600/30'
                     }`}
                     title={schedule.is_active ? 'Active' : 'Inactive'}
                   >
@@ -328,14 +328,14 @@ export function Schedules() {
               {/* Schedule Info */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-slate-300">
-                  <Clock className="w-4 h-4 text-slate-400" />
+                  <Clock className="w-4 h-4 text-slate-800 dark:text-slate-400" />
                   <span className="text-sm">
                     {formatTime(schedule.start_time)} • {formatDuration(schedule.duration_minutes)}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <Calendar className="w-4 h-4 text-slate-800 dark:text-slate-400" />
                   <div className="flex flex-wrap gap-1">
                     {DAYS_OF_WEEK.map(day => (
                       <span
@@ -354,7 +354,7 @@ export function Schedules() {
 
                 {next_execution && (
                   <div className="mt-3 pt-3 border-t border-white/20">
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-800 dark:text-slate-400">
                       Next run: <span className="text-slate-300">
                         {new Date(next_execution).toLocaleDateString('en-US', {
                           weekday: 'long',
@@ -376,7 +376,7 @@ export function Schedules() {
                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                   schedule.is_active
                     ? 'bg-green-500/20 text-green-400'
-                    : 'bg-slate-600/20 text-slate-400'
+                    : 'bg-slate-600/20 text-slate-800 dark:text-slate-400'
                 }`}>
                   {schedule.is_active ? '● Active' : '○ Inactive'}
                 </span>
@@ -389,11 +389,11 @@ export function Schedules() {
       {schedules.length === 0 && (
         <div className="text-center py-12">
           <Calendar className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">No schedules yet</h3>
-          <p className="text-slate-400 mb-4">Create your first schedule to automate filter modes</p>
+          <h3 className="text-xl font-semibold text-black dark:text-white mb-2">No schedules yet</h3>
+          <p className="text-slate-800 dark:text-slate-400 mb-4">Create your first schedule to automate filter modes</p>
           <button
             onClick={() => handleOpenModal()}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-black dark:text-white rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Schedule
@@ -405,7 +405,7 @@ export function Schedules() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-slate-800 rounded-xl border border-white/20 p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold text-white mb-4">
+            <h2 className="text-xl font-bold text-black dark:text-white mb-4">
               {editingSchedule ? 'Edit Schedule' : 'Create Schedule'}
             </h2>
 
@@ -419,7 +419,7 @@ export function Schedules() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   placeholder="e.g., Morning Drinking Water"
                   required
                 />
@@ -438,7 +438,7 @@ export function Schedules() {
                       onClick={() => setFormData({ ...formData, filter_mode: mode.value })}
                       className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                         formData.filter_mode === mode.value
-                          ? `${mode.color} border-white/30 text-white`
+                          ? `${mode.color} border-white/30 text-black dark:text-white`
                           : 'bg-slate-700/30 border-white/20 text-slate-300 hover:border-slate-500'
                       }`}
                     >
@@ -458,7 +458,7 @@ export function Schedules() {
                   type="time"
                   value={formData.start_time.substring(0, 5)}
                   onChange={(e) => setFormData({ ...formData, start_time: e.target.value + ':00' })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   required
                 />
               </div>
@@ -472,7 +472,7 @@ export function Schedules() {
                   type="number"
                   value={formData.duration_minutes}
                   onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
                   min="1"
                   required
                 />
@@ -491,8 +491,8 @@ export function Schedules() {
                       onClick={() => toggleDay(day.value)}
                       className={`px-2 py-2 rounded-lg text-xs font-medium transition-all ${
                         formData.days_of_week.includes(day.value)
-                          ? 'bg-accent text-white'
-                          : 'bg-slate-700/50 text-slate-400 hover:bg-slate-700'
+                          ? 'bg-accent text-black dark:text-white'
+                          : 'bg-slate-700/50 text-slate-800 dark:text-slate-400 hover:bg-slate-700'
                       }`}
                     >
                       {day.label}
@@ -529,7 +529,7 @@ export function Schedules() {
                           <p className="text-red-300 text-xs">
                             Your schedule ({formData.start_time.substring(0, 5)} - {formattedEndTime}) overlaps with:
                           </p>
-                          <p className="text-white text-xs mt-1 font-medium">
+                          <p className="text-black dark:text-white text-xs mt-1 font-medium">
                             "{conflictSchedule.name}"
                           </p>
                           <p className="text-red-300 text-xs">
@@ -572,13 +572,13 @@ export function Schedules() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-black dark:text-white rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-black dark:text-white rounded-lg transition-colors"
                 >
                   {editingSchedule ? 'Update' : 'Create'}
                 </button>

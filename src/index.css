@@ -18,12 +18,20 @@
 
   /* Light mode (default) */
   html:not(.dark) {
-    background-color: #e2e8f0; /* slate-200 */
+    background-image: url('/background-light.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Optional: fixes background during scroll */
+    background-color: #e2e8f0; /* Fallback color */
   }
 
   /* Dark mode */
   html.dark {
-    background-color: #081028; /* primary */
+    background-image: url('/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Optional: fixes background during scroll */
+    background-color: #081028; /* Fallback color */
   }
 
   * {

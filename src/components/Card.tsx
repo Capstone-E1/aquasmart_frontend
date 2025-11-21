@@ -14,10 +14,10 @@ export function Card({ title, description, children, className }: CardProps) {
       "p-6 transition-all duration-200 hover:shadow-xl hover:-translate-y-1",
       className
     )}>
-      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-xl font-semibold text-white dark:text-white mb-2">
         {title}
       </h3>
-      <p className="text-gray-600 dark:text-gray-300 mb-4">
+      <p className="text-white dark:text-white mb-4">
         {description}
       </p>
       {children}
