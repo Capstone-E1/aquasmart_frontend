@@ -5,12 +5,14 @@ import { Bell, HelpCircle, Menu } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useAccentColor } from '../hooks/useAccentColor';
+import { useTheme } from '../contexts/ThemeContext'; // Import useTheme
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+  const { theme } = useTheme(); // Get the current theme
   useAccentColor(); // Apply accent color to CSS variables
 
   useEffect(() => {
@@ -32,12 +34,12 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-200 dark:bg-primary relative">
+    <div className="min-h-screen relative">
       {/* Global Background Image */}
       <div 
-        className="fixed inset-0 bg-slate-800"
+        className="fixed inset-0"
         style={{ 
-          backgroundImage: 'url("/background.jpg")',
+          backgroundImage: theme === 'dark' ? 'url("/background.jpg")' : 'url("/background-light.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
