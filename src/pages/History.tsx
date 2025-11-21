@@ -224,7 +224,7 @@ export function History() {
     <div className="space-y-4 lg:space-y-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text:black dark:text-white mb-2">History</h1>
+        <h1 className="text-xl lg:text-2xl font-bold text-black dark:text-white mb-2">History</h1>
         <p className="text-slate-800 dark:text-slate-400 text-sm lg:text-base">
           View recent water quality data ({allData.length} readings)
         </p>
@@ -241,7 +241,7 @@ export function History() {
                 onClick={() => setSensorFilter('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'all'
-                    ? 'bg-accent text-white shadow-lg shadow-accent/30'
+                    ? 'bg-accent text-black dark:text-white shadow-lg shadow-accent/30'
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
@@ -251,7 +251,7 @@ export function History() {
                 onClick={() => setSensorFilter('pre')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'pre'
-                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                    ? 'bg-blue-500 text-black dark:text-white shadow-lg shadow-blue-500/30'
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
@@ -261,7 +261,7 @@ export function History() {
                 onClick={() => setSensorFilter('post')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sensorFilter === 'post'
-                    ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
+                    ? 'bg-green-500 text-black dark:text-white shadow-lg shadow-green-500/30'
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/20'
                 }`}
               >
@@ -275,7 +275,7 @@ export function History() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-4 pr-8 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent"
+              className="pl-4 pr-8 py-2 bg-slate-700/50 border border-white/20 rounded-lg text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">All Status</option>
               <option value="normal">Normal</option>
@@ -288,7 +288,7 @@ export function History() {
           <button
             onClick={refetch}
             disabled={isLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-black dark:text-white rounded-lg transition-colors whitespace-nowrap"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
@@ -297,7 +297,7 @@ export function History() {
           {/* Export Button */}
           <button
             onClick={handleExport}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-black dark:text-white rounded-lg transition-colors whitespace-nowrap"
           >
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline">Export {settings.data.exportFormat.toUpperCase()}</span>
@@ -307,7 +307,7 @@ export function History() {
           {/* Delete All Data Button */}
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-black dark:text-white rounded-lg transition-colors whitespace-nowrap"
           >
             <Trash2 className="w-4 h-4" />
             <span className="hidden sm:inline">Delete All</span>
@@ -319,28 +319,28 @@ export function History() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/20">
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Sensor Reading</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Time</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Date</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">pH</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Turbidity</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">TDS</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Flow</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Filter Mode</th>
-                <th className="text-left py-3 px-4 text-slate-300 font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Sensor Reading</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Time</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Date</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">pH</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Turbidity</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">TDS</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Flow</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Filter Mode</th>
+                <th className="text-left py-3 px-4 text-slate-900 dark:text-slate-300 font-medium">Status</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((item) => (
                 <tr key={item.id} className="border-b border-slate-700/50 hover:bg-slate-700/20">
-                  <td className="py-3 px-4 text-white font-mono text-sm">{item.device_id}</td>
-                  <td className="py-3 px-4 text-white">{item.time}</td>
-                  <td className="py-3 px-4 text-white">{item.date}</td>
-                  <td className="py-3 px-4 text-white">{item.ph.toFixed(1)}</td>
-                  <td className="py-3 px-4 text-white">{item.turbidity.toFixed(2)}</td>
-                  <td className="py-3 px-4 text-white">{item.tds}</td>
-                  <td className="py-3 px-4 text-white">{item.flow.toFixed(1)}</td>
-                  <td className="py-3 px-4 text-white capitalize">{item.filter_mode.replace('_', ' ')}</td>
+                  <td className="py-3 px-4 text-black dark:text-white font-mono text-sm">{item.device_id}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.time}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.date}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.ph.toFixed(1)}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.turbidity.toFixed(2)}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.tds}</td>
+                  <td className="py-3 px-4 text-black dark:text-white">{item.flow.toFixed(1)}</td>
+                  <td className="py-3 px-4 text-black dark:text-white capitalize">{item.filter_mode.replace('_', ' ')}</td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(item.status)}`}>
                       {item.status}
@@ -374,7 +374,7 @@ export function History() {
                   onClick={() => setCurrentPage(page)}
                   className={`px-3 py-1 rounded-lg text-sm ${
                     currentPage === page
-                      ? 'bg-accent text-white'
+                      ? 'bg-accent text-black dark:text-white'
                       : 'text-slate-800 dark:text-slate-400 hover:text-white hover:bg-slate-700'
                   }`}
                 >
