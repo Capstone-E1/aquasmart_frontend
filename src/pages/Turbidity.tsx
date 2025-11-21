@@ -185,15 +185,15 @@ export function Turbidity() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-slate-300">0 - 1 NTU: Safe (WHO Standard)</span>
+                  <span className="text-slate-300">0 - 5 NTU: Safe (WHO Standard)</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <span className="text-slate-300">1 - 4 NTU: Warning Level</span>
+                  <span className="text-slate-300">5 - 20 NTU: Warning Level</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span className="text-slate-300">&gt; 4 NTU: Dangerous</span>
+                  <span className="text-slate-300">&gt; 20 NTU: Dangerous</span>
                 </div>
               </div>
             </div>
